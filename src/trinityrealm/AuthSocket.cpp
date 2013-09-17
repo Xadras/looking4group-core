@@ -490,7 +490,7 @@ bool AuthSocket::_HandleLogonChallenge()
         return true;
     }
 
-    QueryResultAutoPtr  emailbanresult = AccountsDatabase.PQuery("SELECT email FROM email_banned WHERE email = '%s'", (*result)[7].GetString());
+    QueryResultAutoPtr  emailbanresult = AccountsDatabase.PQuery("SELECT email FROM email_banned WHERE email = '%s'", (*result)[5].GetString());
     if (emailbanresult)
     {
         pkt << uint8(WOW_FAIL_BANNED);
