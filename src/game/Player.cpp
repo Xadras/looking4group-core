@@ -20758,3 +20758,580 @@ void Player::InterruptTaxiFlying()
     else
         SaveRecallPosition();
 }
+
+uint8 Player::GetValidForPush()
+{
+// return: 1 = zu hohes level; 2 = bereits zu viele auf zu hohem level; 3 = alles okay, gib feuer
+    if (getLevel() >= 60)
+    {
+        QueryResultAutoPtr result = RealmDataDatabase.PQuery("SELECT guid FROM characters WHERE account in (SELECT account FROM characters WHERE guid = '%u')", GUID_LOPART(GetGUID()));
+        Field *fields = NULL;
+        uint32 maxchars = 0;
+        do
+        {
+            fields = result->Fetch();
+            QueryResultAutoPtr level = RealmDataDatabase.PQuery("SELECT level FROM characters WHERE guid = %u", fields->GetUInt32());
+            if (level->Fetch()->GetUInt32() >= 60)
+                maxchars++;
+        } while (result->NextRow());
+
+        if (maxchars >= 2)
+            return 1;
+
+        return 0;
+    }
+
+    QueryResultAutoPtr result = RealmDataDatabase.PQuery("SELECT guid FROM characters WHERE account in (SELECT account FROM characters WHERE guid = '%u')", GUID_LOPART(GetGUID()));
+    Field *fields = NULL;
+    uint32 maxchars = 0;
+
+    do
+    {
+        fields = result->Fetch();
+        QueryResultAutoPtr level = RealmDataDatabase.PQuery("SELECT level FROM characters WHERE guid = %u", fields->GetUInt32());
+        if (level->Fetch()->GetUInt32() >= 60)
+            maxchars++;
+    } while (result->NextRow());
+
+    if (maxchars >= 2)
+        return 2;
+
+
+    return 3;
+}
+
+void Player::Push()
+{
+    GiveLevel(60);
+    learnSpell(33392);
+
+    uint32 accid = sObjectMgr.GetPlayerAccountIdByGUID(GetGUID());
+    std::string last_ip;
+    QueryResultAutoPtr result = RealmDataDatabase.PQuery("SELECT last_ip FROM account WHERE account_id = %u", accid);
+    if (result)
+    {
+        Field* fields = result->Fetch();
+        last_ip = fields[0].GetCppString();
+    }
+    RealmDataDatabase.PExecute("DELETE FROM character_push WHERE account = '%u'", accid);
+    RealmDataDatabase.PExecute("INSERT INTO character_push (account, ip) VALUES ('%u', '%s')", accid, last_ip.c_str());
+
+    std::vector<uint32> accidpool;
+    accidpool.clear();
+    result = RealmDataDatabase.PQuery("SELECT account FROM character_push WHERE ip = '%s'", last_ip.c_str());
+    if (result)
+    {
+        do
+        {
+            Field* field = result->Fetch();
+            accidpool.push_back(field[0].GetUInt32());
+        }
+        while (result->NextRow());
+    }
+
+    if (accidpool.size() >= 2)
+    {
+        uint64 strange_guid = sObjectMgr.GetPlayerGUIDByName("Strange");
+        std::stringstream mail_text;
+        mail_text << "Folgende Accounts hatten beim Push NPC die selbe IP ( " + last_ip + " ):\n\n";
+        for (uint8 j = 0; j < accidpool.size(); j++)
+        {
+            mail_text << accidpool[j] << " - " << RealmDataDatabase.PQuery("SELECT username FROM account WHERE account_id = %u", accidpool[j])->Fetch()->GetCppString() << "\n";
+        }
+
+        
+        MailDraft draft("!!! ABUSE WARNUNG !!!", sObjectMgr.CreateItemText(mail_text.str()));
+        draft.SendMailTo(sObjectMgr.GetPlayer(strange_guid), MailSender(this, MAIL_STATIONERY_GM));
+    }
+    SaveToDB();
+}
+
+
+void Player::EquipForPush(uint16 items[])
+{
+/* Wieso machen wir den Quatch eigentlich???
+    for (uint16 i = 23; i < 39; i++) //Alles löschen, bis auf EQ und Taschen - Nun auch nichts mehr auf der Bank ;)
+    {
+        DestroyItem(255, i, true);
+    }
+    uint16 d = 19; //19 entspricht der ersten Tasche nach dem nicht löschbaren Rucksack
+
+    if(getClass()!= CLASS_HUNTER) //Nur bei nicht huntern die ersten 3 Tascheninhalte leeren
+    {
+        for (uint16 i = 0; i < 24;i++)  //i = 24 entspricht der maximalen bekannten taschenslotzahl
+        {
+            DestroyItem(d, i, true);
+            if (i == 23 && d < INVENTORY_SLOT_BAG_3) //Die ersten 3 zusätzlichen Taschen leeren (Bei Bedarf auch die 4., dazu INVENTORY_SLOT_BAG_3 anpassen.
+            {
+                i = 0;
+                d++;
+            }
+        }
+    }
+    else //Bei Huntern die 2. bis 4. Tasche
+    {
+        d = 20; //20 entspricht der zweiten Tasche nach dem nicht löschbaren Rucksack
+        for (uint16 i = 0; i < 24 ;i++)  //i = 24 entspricht der maximalen bekannten taschenslotzahl
+        {
+            DestroyItem(d, i, true);
+            if (i == 23 && d < INVENTORY_SLOT_BAG_4) //Die 2. bis 4. zusätzlichen Taschen leeren (Bei Bedarf auch die 4., dazu INVENTORY_SLOT_BAG_3 anpassen.
+            {
+                i = 0;
+                d++;
+            }
+        }
+    }*/
+
+    if (!HasItemCount(6948, 1, true))
+        AddItem(6948,1); //Ruhestein Adden
+
+    switch (GetTeam())
+    {
+        case ALLIANCE:
+        {
+            switch (getRace())
+            {
+                case RACE_HUMAN:
+                    if (!HasItemCount(18778, 1, true))
+                        AddItem(18778, 1);
+                    break;
+                case RACE_DWARF:
+                    if (!HasItemCount(18787, 1, true))
+                        AddItem(18787, 1);
+                    break;
+                case RACE_NIGHTELF:
+                    if (!HasItemCount(18767, 1, true))
+                        AddItem(18767, 1);
+                    break;
+                case RACE_GNOME:
+                    if (!HasItemCount(18772, 1, true))
+                    AddItem(18772, 1);
+                    break;
+                case RACE_DRAENEI:
+                    if (!HasItemCount(29745, 1, true))
+                        AddItem(29745, 1);
+                    break;
+            }
+
+            switch (getClass())
+            {
+                case CLASS_WARRIOR:
+                    learnSpell(71);
+                    learnSpell(355);
+                    learnSpell(7386);
+                    learnSpell(2458);
+                    learnSpell(20252);
+                    learnSpell(750);
+                    learnSpell(197);
+                    learnSpell(196);
+                    learnSpell(201);
+                    learnSpell(2567);
+                    learnSpell(266);
+                    learnSpell(15590);
+                    learnSpell(264);
+                    learnSpell(674);
+                    learnSpell(198);
+                    break;
+                case CLASS_PALADIN:
+                    learnSpell(750);
+                    learnSpell(7328);
+                    learnSpell(198);
+                    learnSpell(199);
+                    learnSpell(201);
+                    learnSpell(200);
+                    if (!HasItemCount(21177, 100, true))
+                        AddItem(21177, 100);
+                    if (!HasItemCount(17033, 5, true))
+                    AddItem(17033, 5);
+                    break;
+                case CLASS_HUNTER:
+                {
+                    learnSpell(1515);
+                    learnSpell(883);
+                    learnSpell(2641);
+                    learnSpell(5149);
+                    learnSpell(6991);
+                    learnSpell(982);
+                    learnSpell(200);
+                    learnSpell(264);
+                    learnSpell(197);
+                    learnSpell(1180);
+                    learnSpell(674);
+                    if (!HasItemCount(28053, 1000, true))
+                        AddItem(28053, 1000);
+                    learnSpell(8737);
+                    if (getRace() == RACE_DWARF)
+                        if (!HasItemCount(2101, 1, true))
+                            AddItem(2101, 1);
+                }
+                    break;
+                case CLASS_ROGUE:
+                    learnSpell(1804);
+                    SetSkill(633, 350, 300);
+                    learnSpell(2842);
+                    SetSkill(40, 350, 300);
+                    learnSpell(201);
+                    learnSpell(674);
+                    learnSpell(2567);
+                    learnSpell(15590);
+                    if (!HasItemCount(5140, 20, true))
+                        AddItem(5140, 20);
+                    break;
+                case CLASS_PRIEST:
+                    learnSpell(198);
+                    learnSpell(227);
+                    if (!HasItemCount(17029, 20, true))
+                        AddItem(17029, 20);
+                    break;
+                case CLASS_SHAMAN:
+                    AddItem(5175, 1);
+                    AddItem(5176, 1);
+                    AddItem(5177, 1);
+                    AddItem(5178, 1);
+                    learnSpell(8071);
+                    learnSpell(3599);
+                    learnSpell(5394);
+                    learnSpell(196);
+                    learnSpell(15590);
+                    learnSpell(8737);
+                    learnSpell(227);
+                    learnSpell(198);
+                    learnSpell(197);
+                    learnSpell(1180);
+                    AddItem(17030, 10);
+                    AddItem(17058, 20);
+                    AddItem(17057, 20);
+                    break;
+                case CLASS_MAGE:
+                    learnSpell(227);
+                    if (!HasItemCount(17020, 20, true))
+                        AddItem(17020, 20);
+                    learnSpell(201);
+                    break;
+                case CLASS_DRUID:
+                    learnSpell(18960);
+                    learnSpell(1066);
+                    learnSpell(6795);
+                    learnSpell(5487);
+                    learnSpell(6807);
+                    learnSpell(227);
+                    learnSpell(198);
+                    if (!HasItemCount(17026, 20, true))
+                        AddItem(17026, 20);
+                    if (!HasItemCount(17038, 10, true))
+                        AddItem(17038, 10);
+                    break;
+                case CLASS_WARLOCK:
+                    learnSpell(688);
+                    learnSpell(697);
+                    learnSpell(712);
+                    learnSpell(691);
+                    if (!HasItemCount(6265, 5, true))
+                        AddItem(6265, 5);
+                    learnSpell(227);
+                    learnSpell(201);
+                    break;
+            }
+            break;
+    }
+        case HORDE:
+        {
+            switch (getRace())
+            {
+                case RACE_BLOODELF:
+                    if (!HasItemCount(29223, 1, true))
+                        AddItem(29223, 1);
+                    break;
+                case RACE_ORC:
+                    if (!HasItemCount(18797, 1, true))
+                        AddItem(18797, 1);
+                    break;
+                case RACE_UNDEAD_PLAYER:
+                    if (!HasItemCount(13334, 1, true))
+                        AddItem(13334, 1);
+                    break;
+                case RACE_TAUREN:
+                    if (!HasItemCount(18795, 1, true))
+                        AddItem(18795, 1);
+                    break;
+                case RACE_TROLL:
+                    if (!HasItemCount(18788, 1, true))
+                        AddItem(18788, 1);
+                    break;
+            }
+
+            switch (getClass())
+            {
+                case CLASS_WARRIOR:
+                    learnSpell(71);
+                    learnSpell(355);
+                    learnSpell(7386);
+                    learnSpell(2458);
+                    learnSpell(20252);
+                    learnSpell(750);
+                    learnSpell(197);
+                    learnSpell(196);
+                    learnSpell(201);
+                    learnSpell(2567);
+                    learnSpell(266);
+                    learnSpell(264);
+                    learnSpell(15590);
+                    learnSpell(15590);
+                    learnSpell(674);
+                    learnSpell(198);
+                    break;
+                case CLASS_PALADIN:
+                    learnSpell(7328);
+                    learnSpell(750);
+                    learnSpell(198);
+                    learnSpell(199);
+                    learnSpell(201);
+                    learnSpell(200);
+                    if (!HasItemCount(21177, 100, true))
+                        AddItem(21177, 100);
+                    if (!HasItemCount(17033, 5, true))
+                        AddItem(17033, 5);
+                    break;
+                case CLASS_HUNTER:
+                {
+                    learnSpell(1515);
+                    learnSpell(883);
+                    learnSpell(2641);
+                    learnSpell(5149);
+                    learnSpell(6991);
+                    learnSpell(982);
+                    learnSpell(200);
+                    learnSpell(264);
+                    learnSpell(197);
+                    learnSpell(1180);
+                    learnSpell(674);
+                    if (!HasItemCount(28053, 1000, true))
+                        AddItem(28053, 1000);
+                    learnSpell(8737);
+                    if (getRace() == RACE_TAUREN)
+                        if (!HasItemCount(2101, 1, true))
+                            AddItem(2101, 1);
+                }
+                    break;
+                case CLASS_ROGUE:
+                    learnSpell(1804);
+                    SetSkill(633, 350, 300);
+                    learnSpell(2842);
+                    SetSkill(40, 350, 300);
+                    learnSpell(201);
+                    learnSpell(674);
+                    learnSpell(2567);
+                    learnSpell(15590);
+                    if (!HasItemCount(5140, 20, true))
+                        AddItem(5140, 20);
+                    break;
+                case CLASS_PRIEST:
+                    learnSpell(198);
+                    learnSpell(227);
+                    if (!HasItemCount(17029, 20, true))
+                        AddItem(17029, 20);
+                    break;
+                case CLASS_SHAMAN:
+                    AddItem(5175, 1);
+                    AddItem(5176, 1);
+                    AddItem(5177, 1);
+                    AddItem(5178, 1);
+                    learnSpell(8071);
+                    learnSpell(3599);
+                    learnSpell(5394);
+                    learnSpell(196);
+                    learnSpell(15590);
+                    learnSpell(8737);
+                    learnSpell(227);
+                    learnSpell(198);
+                    learnSpell(197);
+                    learnSpell(1180);
+                    AddItem(17030, 10);
+                    AddItem(17058, 20);
+                    AddItem(17057, 20);
+                    break;
+                case CLASS_MAGE:
+                    learnSpell(227);
+                    if (!HasItemCount(17020, 20, true))
+                        AddItem(17020, 20);
+                    break;
+                case CLASS_DRUID:
+                    learnSpell(18960);
+                    learnSpell(1066);
+                    learnSpell(6795);
+                    learnSpell(5487);
+                    learnSpell(6807);
+                    learnSpell(227);
+                    learnSpell(198);
+                    if (!HasItemCount(17026, 20, true))
+                        AddItem(17026, 20);
+                    if (!HasItemCount(17038, 10, true))
+                        AddItem(17038, 10);
+                    break;
+                case CLASS_WARLOCK:
+                    learnSpell(688);
+                    learnSpell(697);
+                    learnSpell(712);
+                    learnSpell(691);
+                    if (!HasItemCount(6265, 5, true))
+                        AddItem(6265, 5);
+                    learnSpell(227);
+                    break;
+            }
+            break;
+        }
+    }
+    UpdateSkillsToMaxSkillsForLevel();
+
+    for (uint16 i = 0; i < 18; i++)
+    {
+        DestroyItem(255, i, true);
+    }
+
+    for (uint16 i = 0; i < 18; i++)
+    {
+        if (items[i] != 0)
+        {
+            Item *item = EquipNewItem(i, items[i], true);
+            if (item)
+                item->SendCreateUpdateToPlayer(this);
+        }
+    }
+    SaveToDB();
+}
+
+// obsolete
+void Player::PvpPush(uint16 items[])
+{
+    for (uint16 i = 0; i < 18; i++)
+    {
+        if (items[i] != 0)
+        {
+            AddItem(items[i],1);
+            SaveToDB();
+        }
+    }
+}
+
+void Player::FinishPush()
+{
+    RealmDataDatabase.PExecute("UPDATE character_homebind SET map='%u', zone='%u', position_x='%f', position_y='%f', position_z='%f' WHERE guid='%u'", 0, 4, -11789.0f, -3171.169922f, -29.0f, GUID_LOPART(GetGUID()));
+    m_homebindMapId = 0;
+    m_homebindZoneId = 4;
+    m_homebindX = -11778.870117f;
+    m_homebindY = -3200.828369f;
+    m_homebindZ = -26.389161f;
+
+    WorldPacket data(SMSG_BINDPOINTUPDATE, (4 + 4 + 4 + 4 + 4));
+    data << float(m_homebindX);
+    data << float(m_homebindY);
+    data << float(m_homebindZ);
+    data << uint32(m_homebindMapId);
+    data << uint32(m_homebindZoneId);
+    GetSession()->SendPacket(&data);
+
+    SaveToDB();
+
+    switch (GetTeam())
+    {
+        case ALLIANCE:
+        {
+            m_taxi.LoadTaxiMask("3456411898 2148078929 805356359 8 0 262240 4100 0 ");
+            InitTaxiNodesForLevel();
+            switch (getClass())
+            {
+                case CLASS_WARRIOR:
+                    TeleportTo(0, -8687.632812, 321.413391, 110.480995, 2.250117, 0);
+                    break;
+                case CLASS_PALADIN:
+                    TeleportTo(0, -8574.831055, 878.700256, 106.518562, 2.232057, 0);
+                    break;
+                case CLASS_HUNTER:
+                    TeleportTo(0, -8415.0, 553.182007, 95.703003, 3.923000, 0);
+                    break;
+                case CLASS_ROGUE:
+                    TeleportTo(0, -8795.99707, 328.733734, 103.087486, 6.149279, 0);
+                    break;
+                case CLASS_PRIEST:
+                    TeleportTo(0, -8728.0, 1102.959961, 92.602997, 3.875, 0);
+                    break;
+                case CLASS_SHAMAN:
+                    TeleportTo(0, -9029.720703, 547.543884, 71.682114, 2.240351, 0);
+                    break;
+                case CLASS_MAGE:
+                    TeleportTo(0, -8990.582031, 859.554565, 29.620600, 1.389934, 0);
+                    break;
+                case CLASS_DRUID:
+                    TeleportTo(0, -8775.655273, 1095.394775, 92.537529, 1.685111, 0);
+                    break;
+                case CLASS_WARLOCK:
+                    TeleportTo(0, -8985.674805, 1033.822632, 102.565697, 6.088196, 0);
+                    break;
+            }
+            break;
+        }
+        case HORDE:
+        {
+            m_taxi.LoadTaxiMask("830150144 315656864 449720 4 0 262176 1052672 0 ");
+            InitTaxiNodesForLevel();
+            switch (getClass())
+            {
+                case CLASS_WARRIOR:
+                    TeleportTo(1, 1980.852173, -4797.317383, 56.038826, 4.276412, 0);
+                    break;
+                case CLASS_PALADIN:
+                    TeleportTo(1, 1936.041260, -4137.010254, 40.918613, 0.832872, 0);
+                    break;
+                case CLASS_HUNTER:
+                    TeleportTo(1, 2084.959961, -4623.77002, 58.676102, 0.15708, 0);
+                    break;
+                case CLASS_ROGUE:
+                    TeleportTo(1, 1777.062012, -4286.221680, 7.113022, 2.162591, 0);
+                    break;
+                case CLASS_PRIEST:
+                    TeleportTo(1, 1455.801880, -4180.849609, 44.063820, 2.869229, 0);
+                    break;
+                case CLASS_SHAMAN:
+                    TeleportTo(1, 1930.528076, -4210.815430, 42.095303, 6.012136, 0);
+                    break;
+                case CLASS_MAGE:
+                    TeleportTo(1, 1468.180054, -4219.879883, 43.0424, 5.95157, 0);
+                    break;
+                case CLASS_DRUID:
+                    TeleportTo(1, -1042.834351, -289.17746, 159.030426, 0.138817, 0);
+                    break;
+                case CLASS_WARLOCK:
+                    TeleportTo(1, 1844.067139, -4357.225586, -14.88052, 5.99207, 0);
+                    break;
+            }
+            break;
+        }
+    }
+    SaveToDB();
+}
+
+void Player::AddItem(uint32 itemID, uint32 Count)
+{
+        uint32 noSpaceForCount = 0;
+        uint32 count = Count;
+
+        // check space and find places
+        ItemPosCountVec dest;
+        uint8 msg = CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, itemID, count, &noSpaceForCount);
+        if (msg != EQUIP_ERR_OK) // convert to possible store amount
+            count = noSpaceForCount;
+
+        if (count == 0 || dest.empty()) // can't add any
+        {
+            // -- TODO: Send to mailbox if no space
+            ChatHandler(this).PSendSysMessage("You don't have any space in your bags for a new item.");
+            return;
+        }
+
+        Item* item = StoreNewItem(dest, itemID, true, Item::GenerateItemRandomPropertyId(itemID));
+        if (item)
+        {
+         SendNewItem(item, count, true, false);
+            item->SendCreateUpdateToPlayer(this);
+        }
+}
