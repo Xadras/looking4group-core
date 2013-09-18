@@ -20836,12 +20836,12 @@ void Player::Push()
         mail_text << "Folgende Accounts hatten beim Push NPC die selbe IP ( " + last_ip + " ):\n\n";
         for (uint8 j = 0; j < accidpool.size(); j++)
         {
-            mail_text << accidpool[j] << " - " << RealmDataDatabase.PQuery("SELECT username FROM account WHERE account_id = %u", accidpool[j])->Fetch()->GetCppString() << "\n";
+            mail_text << accidpool[j] << " - " << AccountsDatabase.PQuery("SELECT username FROM account WHERE account_id = %u", accidpool[j])->Fetch()->GetCppString() << "\n";
         }
 
-        
+        Player *receiver = sObjectMgr.GetPlayer(188);
         MailDraft draft("!!! ABUSE WARNUNG !!!", sObjectMgr.CreateItemText(mail_text.str()));
-        draft.SendMailTo(sObjectMgr.GetPlayer(strange_guid), MailSender(this, MAIL_STATIONERY_GM));
+        draft.SendMailTo(MailReceiver(receiver, ObjectGuid(strange_guid)), MailSender(this, MAIL_STATIONERY_GM));
     }
     SaveToDB();
 }
