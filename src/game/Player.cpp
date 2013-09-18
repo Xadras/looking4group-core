@@ -20839,13 +20839,15 @@ void Player::Push()
             mail_text << accidpool[j] << " - " << AccountsDatabase.PQuery("SELECT username FROM account WHERE account_id = %u", accidpool[j])->Fetch()->GetCppString() << "\n";
         }
 
-        Player *receiver = sObjectMgr.GetPlayer(188);
-        MailDraft draft("!!! ABUSE WARNUNG !!!", sObjectMgr.CreateItemText(mail_text.str()));
-        draft.SendMailTo(MailReceiver(receiver, ObjectGuid(strange_guid)), MailSender(this, MAIL_STATIONERY_GM));
+        Player *receiver = sObjectMgr.GetPlayer(strange_guid);
+        if (receiver)
+        {
+            MailDraft draft("!!! ABUSE WARNUNG !!!", sObjectMgr.CreateItemText(mail_text.str()));
+            draft.SendMailTo(MailReceiver(receiver, ObjectGuid(strange_guid)), MailSender(this, MAIL_STATIONERY_GM));
+        }
     }
     SaveToDB();
 }
-
 
 void Player::EquipForPush(uint16 items[])
 {
