@@ -250,7 +250,7 @@ bool ChatHandler::HandleServerInfoCommand(const char* /*args*/)
     uint32 updateTime = sWorld.GetUpdateTime();
     std::string str2 = TimeToTimestampStr(sWorld.GetGameTime());
 
-    PSendSysMessage("HellGround.net - rev: %s",_REVISION);
+    PSendSysMessage("Looking4Group - rev: %s",_REVISION);
     PSendSysMessage(LANG_CONNECTED_USERS, activeClientsNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);
     PSendSysMessage(LANG_UPTIME, str.c_str());
     PSendSysMessage("Current time: %s", str2.c_str());
