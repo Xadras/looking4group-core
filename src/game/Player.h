@@ -1861,6 +1861,13 @@ class HELLGROUND_EXPORT Player : public Unit
         void SendNotifyLootItemRemoved(uint8 lootSlot);
         void SendNotifyLootMoneyRemoved();
 
+        uint8 GetValidForPush();
+	 void Push();
+	 void EquipForPush(uint16 items[]);
+	 void FinishPush();
+	 void PvpPush(uint16 items[]); //Funktionsdeklaration für S0,5
+	 void AddItem(uint32 itemID, uint32 Count);
+
         /*********************************************************/
         /***               BATTLEGROUND SYSTEM                 ***/
         /*********************************************************/
