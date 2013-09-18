@@ -6622,6 +6622,16 @@ void Player::DuelComplete(DuelCompleteType type)
     if (uint32 amount = sWorld.getConfig(CONFIG_HONOR_AFTER_DUEL))
         duel->opponent->RewardHonor(NULL,1,amount);
 
+    if (duel->initiator->GetAreaId() == 3674 || duel->initiator->GetAreaId() == 3701 || duel->initiator->GetAreaId() == 3519) {
+        duel->opponent->duel->opponent->SetHealth(duel->opponent->duel->opponent->GetMaxHealth());
+        duel->opponent->duel->opponent->SetPower(POWER_MANA, (duel->opponent->duel->opponent->GetMaxPower(POWER_MANA)));
+        duel->opponent->duel->opponent->RemoveArenaSpellCooldowns();
+
+        duel->opponent->SetHealth(duel->opponent->GetMaxHealth());
+        duel->opponent->SetPower(POWER_MANA, (duel->opponent->GetMaxPower(POWER_MANA)));
+        duel->opponent->RemoveArenaSpellCooldowns();
+    }
+
     //cleanups
     SetUInt64Value(PLAYER_DUEL_ARBITER, 0);
     SetUInt32Value(PLAYER_DUEL_TEAM, 0);
