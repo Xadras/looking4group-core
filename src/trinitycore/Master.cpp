@@ -149,7 +149,7 @@ int Master::Run()
         return 1;
 
     // set server offline (not connectable)
-    AccountsDatabase.DirectPExecute("UPDATE realms SET flags = (flags & ~%u) | %u WHERE realm_id = '%d'", REALM_FLAG_OFFLINE, REALM_FLAG_INVALID, realmID);
+    AccountsDatabase.DirectPExecute("UPDATE realms SET flags = %u WHERE realm_id = '%d'", REALM_FLAG_OFFLINE, realmID);
 
     ///- Initialize the World
     sWorld.SetInitialWorldSettings();
