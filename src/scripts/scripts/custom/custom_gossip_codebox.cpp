@@ -210,7 +210,7 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
         case GOSSIP_ACTION_INFO_DEF + 18:
         {
             // HUNTER - fertig
-            uint16 items[] = {16677, 22340, 16679, 0, 16674, 16680, 16678, 16675, 16681, 16676, 18701, 13098, 7734, 22321, 13397, 13368, 13368, 18680};
+            uint16 items[] = {16677, 22340, 16679, 0, 16674, 16680, 16678, 16675, 16681, 16676, 18701, 13098, 7734, 18537, 13397, 13368, 13368, 18680};
             Player->EquipForPush(items);
             Player->ADD_GOSSIP_ITEM(0, "Los gehts!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
             Player->PlayerTalkClass->SendGossipMenu(30013, Creature->GetGUID());
