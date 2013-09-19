@@ -503,6 +503,38 @@ bool ItemUse_item_chest_of_containment_coffers(Player *player, Item* _Item, Spel
     return true;
 }
 
+/*#####
+# item_reset_talents
+#####*/
+bool ItemUse_item_reset_talents(Player *player, Item* _Item, SpellCastTargets const& /*targets*/)
+{
+    if (player){
+        player->resetTalents(true);
+        player->DestroyItemCount(1000022, 1, true, false);
+        WorldPacket data(SMSG_SERVER_MESSAGE, 0);              // guess size
+        data << "Your talents have been reset.  Deine Talente wurden zurückgesetzt.";
+        if(player)
+            player->GetSession()->SendPacket(&data);
+        return true;
+    }
+    else
+        return false;
+}
+
+/*#####
+# item_maxskill
+#####*/
+bool ItemUse_item_maxskill(Player *player, Item* _Item, SpellCastTargets const& /*targets*/)
+{
+    if (player){
+        player->UpdateSkillsToMaxSkillsForLevel();
+        player->DestroyItemCount(1000023, 1, true, false);
+        return true;
+    }
+    else
+        return false;
+}
+
 void AddSC_item_scripts()
 {
     Script *newscript;
@@ -566,6 +598,16 @@ void AddSC_item_scripts()
     newscript = new Script;
     newscript->Name="item_chest_of_containment_coffers";
     newscript->pItemUse = &ItemUse_item_chest_of_containment_coffers;
+    newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name="item_reset_talents";
+    newscript->pItemUse = &ItemUse_item_reset_talents;
+    newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name="item_maxskill";
+    newscript->pItemUse = &ItemUse_item_maxskill;
     newscript->RegisterSelf();
 }
 
