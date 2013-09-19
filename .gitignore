@@ -1725,3 +1725,5 @@
 /win/VC100/Win32_Release/zlib/CL.5032.read.1.tlog
 /win/VC100/Win32_Release/zlib/CL.5032.write.1.tlog
 /win/VC100/Win32_Release/zlib/zlib.Build.CppClean.log
+/win/VC100/Win32_Release
+/win/ipch
