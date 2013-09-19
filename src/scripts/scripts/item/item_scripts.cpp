@@ -47,6 +47,7 @@ EndContentData */
 #include "SpellMgr.h"
 #include "Spell.h"
 #include "WorldPacket.h"
+#include "Chat.h"
 
 /*#####
 # item_only_for_flight
@@ -508,14 +509,34 @@ bool ItemUse_item_chest_of_containment_coffers(Player *player, Item* _Item, Spel
 #####*/
 bool ItemUse_item_reset_talents(Player *player, Item* _Item, SpellCastTargets const& /*targets*/)
 {
-    if (player){
-        player->resetTalents(true);
-        player->DestroyItemCount(1000022, 1, true, false);
-        WorldPacket data(SMSG_SERVER_MESSAGE, 0);              // guess size
-        data << "Your talents have been reset.  Deine Talente wurden zurückgesetzt.";
-        if(player)
-            player->GetSession()->SendPacket(&data);
-        return true;
+    if (player)
+    {
+        if (player->getLevel() < 10)
+        {
+            WorldPacket data(SMSG_CAST_FAILED, (4+2));              // prepare packet error message
+            data << uint32(_Item->GetEntry());                      // itemId
+            data << uint8(SPELL_FAILED_LEVEL_REQUIREMENT);          // reason
+            player->GetSession()->SendPacket(&data);                // send message: Invalid target
+        }
+        else
+        {
+            if (MapEntry const* mapEntry = sMapStore.LookupEntry(player->GetMapId()))
+                if (mapEntry->IsBattleArena())
+                {
+                    WorldPacket data(SMSG_CAST_FAILED, (4+2));              // prepare packet error message
+                    data << uint32(_Item->GetEntry());                      // itemId
+                    data << uint8(SPELL_FAILED_NOT_IN_ARENA);               // reason
+                    player->GetSession()->SendPacket(&data);                // send message: Invalid target
+                }
+                else
+                {
+                    player->resetTalents(true);
+                    player->DestroyItemCount(1000022, 1, true, false);
+                    ChatHandler(player).SendSysMessage("Your talents have been reset.");
+                    ChatHandler(player).SendSysMessage("Deine Talente wurden zurueckgesetzt.");
+                    return true;
+                }
+        }
     }
     else
         return false;
