@@ -175,7 +175,7 @@ enum AccountPermissionMasks
     PERM_PLAYER         = 0x000001,
     PERM_DEVELOPER      = 0x000002,
 
-    PERM_GM_TRIAL       = 0x000100,
+    VIP                 = 0x000100,
     PERM_GM_HELPER      = 0x000200,
 
     PERM_GM_HEAD        = 0x000800,
@@ -185,7 +185,7 @@ enum AccountPermissionMasks
 
     PERM_CONSOLE        = 0x800000,
 
-    PERM_GMT            = PERM_GM_TRIAL | PERM_GM_HELPER | PERM_GM_HEAD,
+    PERM_GMT            = PERM_GM_HELPER | PERM_GM_HEAD,
     PERM_ADM            = PERM_ADM_NORM | PERM_ADM_HEAD,
     PERM_HIGH_GMT       = PERM_ADM | PERM_GM_HEAD,
     PERM_GMT_DEV        = PERM_GMT | PERM_DEVELOPER,

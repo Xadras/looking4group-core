@@ -100,7 +100,7 @@ class ChatHandler
         bool HandleAccountDeleteCommand(const char* args);
         bool HandleAccountOnlineListCommand(const char* args);
         bool HandleAccountSetAddonCommand(const char* args);
-        bool HandleAccountSetGmLevelCommand(const char* args);
+        bool HandleAccountSetPermissionsCommand(const char* args);
         bool HandleAccountSetPasswordCommand(const char* args);
         bool HandleAccountWeatherCommand(const char*args);
         bool HandleAccountSpecialLogCommand(const char* args);
@@ -431,6 +431,9 @@ class ChatHandler
         bool HandleUnBanCharacterCommand(const char* args);
         bool HandleUnBanIPCommand(const char* args);
         bool HandleUnBanEmailCommand(const char* args);
+
+        bool HandleAddVIPAccountCommand(const char* args);
+        bool HandleDelVIPAccountCommand(const char* args);
 
         bool HandleWpAddCommand(const char* args);
         bool HandleWpEventCommand(const char* args);

@@ -41,10 +41,10 @@ ChatCommand * ChatHandler::getCommandTable()
 {
     static ChatCommand accountSetCommandTable[] =
     {
-        { "addon",          PERM_ADM,       true,   &ChatHandler::HandleAccountSetAddonCommand,     "", NULL },
-        { "gmlevel",        PERM_CONSOLE,   true,   &ChatHandler::HandleAccountSetGmLevelCommand,   "", NULL },
-        { "password",       PERM_CONSOLE,   true,   &ChatHandler::HandleAccountSetPasswordCommand,  "", NULL },
-        { NULL,             0,              false,  NULL,                                           "", NULL }
+        { "addon",          PERM_ADM,       true,   &ChatHandler::HandleAccountSetAddonCommand,       "", NULL },
+        { "permissions",    PERM_CONSOLE,   true,   &ChatHandler::HandleAccountSetPermissionsCommand, "", NULL },
+        { "password",       PERM_CONSOLE,   true,   &ChatHandler::HandleAccountSetPasswordCommand,    "", NULL },
+        { NULL,             0,              false,  NULL,                                             "", NULL }
     };
 
     static ChatCommand accountAnnounceCommandTable[] =
@@ -748,7 +748,8 @@ ChatCommand * ChatHandler::getCommandTable()
         { "wchange",        PERM_ADM,       false,  &ChatHandler::HandleChangeWeather,              "", NULL },
         { "weather",        PERM_PLAYER,    true,   &ChatHandler::HandleAccountWeatherCommand,      "", NULL },
         { "whispers",       PERM_GMT,       false,  &ChatHandler::HandleWhispersCommand,            "", NULL },
-
+        { "vipadd",         PERM_ADM,       true,   &ChatHandler::HandleAddVIPAccountCommand,       "", NULL },
+        { "vipdel",         PERM_ADM,       true,   &ChatHandler::HandleDelVIPAccountCommand,       "", NULL },
         { NULL,             0,              false,  NULL,                                           "", NULL }
     };
 

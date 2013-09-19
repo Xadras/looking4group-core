@@ -810,7 +810,7 @@ bool ChatHandler::HandleReloadAuctionsCommand(const char* args)
     return true;
 }
 
-bool ChatHandler::HandleAccountSetGmLevelCommand(const char* args)
+bool ChatHandler::HandleAccountSetPermissionsCommand(const char* args)
 {
     if (!*args)
         return false;
@@ -847,16 +847,15 @@ bool ChatHandler::HandleAccountSetGmLevelCommand(const char* args)
         }
 
         // Decide which string to show
-        if (m_session->GetPlayer()!=targetPlayer)
-        {
+        if (m_session->GetPlayer() != targetPlayer)
             PSendSysMessage(LANG_YOU_CHANGE_SECURITY, targetAccountName.c_str(), gm);
-        }else{
+        else
             PSendSysMessage(LANG_YOURS_SECURITY_CHANGED, m_session->GetPlayer()->GetName(), gm);
-        }
 
-        AccountsDatabase.PExecute("UPDATE account SET gmlevel = '%d' WHERE id = '%u'", gm, targetAccountId);
+        AccountsDatabase.PExecute("UPDATE account_permissions SET permission_mask = '%u' WHERE account_id = '%u' AND realm_id = '%u'", gm, targetAccountId, realmID);
         return true;
-    }else
+    }
+    else
     {
         // Check for second parameter
         if (!arg2)
@@ -866,7 +865,7 @@ bool ChatHandler::HandleAccountSetGmLevelCommand(const char* args)
         targetAccountName = arg1;
         if (!AccountMgr::normilizeString(targetAccountName))
         {
-            PSendSysMessage(LANG_ACCOUNT_NOT_EXIST,targetAccountName.c_str());
+            PSendSysMessage(LANG_ACCOUNT_NOT_EXIST, targetAccountName.c_str());
             SetSentErrorMessage(true);
             return false;
         }
@@ -7397,5 +7396,37 @@ bool ChatHandler::HandleMmapTestArea(const char* args)
         PSendSysMessage("No creatures in %f yard range.", radius);
     }
 
+    return true;
+}
+
+bool ChatHandler::HandleAddVIPAccountCommand(const char* args)
+{
+    if (!*args)
+        return false;
+
+    char* id_accvip = strtok((char*)args, " ");
+    char* time_to_expire = strtok((char*)NULL, " ");
+    uint32 idaccvip = atoi(id_accvip);
+    if (!idaccvip || !time_to_expire)
+        return false;
+
+    AccountsDatabase.PExecute("DELETE FROM account_permissions WHERE account_id = '%u'", idaccvip);
+    AccountsDatabase.PExecute("INSERT INTO account_access VALUES ('%u','%u',1,UNIX_TIMESTAMP(),UNIX_TIMESTAMP()+'%u')", idaccvip, realmID, TimeStringToSecs(time_to_expire));
+    PSendSysMessage("%s%s%u|r", "|cff00ff00", "Add new vip account id: ", idaccvip);
+    return true;
+}
+
+bool ChatHandler::HandleDelVIPAccountCommand(const char* args)
+{
+    if (!*args)
+        return false;
+
+    char* id_accvip = strtok((char*)args, " ");
+    uint32 idaccvip = atoi(id_accvip);
+    if (!idaccvip)
+        return false;
+
+    AccountsDatabase.PExecute("DELETE FROM account_access WHERE account_id = '%u'", idaccvip);
+    PSendSysMessage("%s%s%u|r", "|cff00ff00", "Delete vip account id: ", idaccvip);
     return true;
 }

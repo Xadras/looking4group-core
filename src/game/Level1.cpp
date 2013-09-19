@@ -2307,6 +2307,12 @@ bool ChatHandler::HandleTeleCommand(const char * args)
         return false;
     }
 
+    if (_player->isInCombat()) {
+        SendSysMessage(LANG_YOU_IN_COMBAT);
+        SetSentErrorMessage(true);
+        return false;
+    }
+
     // stop flight if need
     _player->InterruptTaxiFlying();
 
