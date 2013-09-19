@@ -5777,7 +5777,8 @@ void Player::CheckAreaExploreAndOutdoor()
                     XP = uint32(sObjectMgr.GetBaseXP(p->area_level)*GetXPRate(RATE_XP_EXPLORE));
                 }
 
-                GiveXP(XP, NULL);
+                if (!StopLevel(GetGUID()))
+                    GiveXP(XP, NULL);
                 SendExplorationExperience(area,XP);
             }
             sLog.outDetail("PLAYER: Player %u discovered a new area: %u", GetGUIDLow(), area);
@@ -12914,7 +12915,7 @@ void Player::RewardQuest(Quest const *pQuest, uint32 reward, Object* questGiver,
     // Not give XP in case already completed once repeatable quest
     uint32 XP = q_status.m_rewarded ? 0 : uint32(pQuest->XPValue(this)*GetXPRate(RATE_XP_QUEST));
 
-    if (getLevel() < sWorld.getConfig(CONFIG_MAX_PLAYER_LEVEL))
+    if (getLevel() < sWorld.getConfig(CONFIG_MAX_PLAYER_LEVEL) && (!StopLevel(GetGUID())))
         GiveXP(XP , NULL);
     else
         ModifyMoney(int32(pQuest->GetRewMoneyMaxLevel() * sWorld.getRate(RATE_DROP_MONEY)));
@@ -21347,4 +21348,18 @@ void Player::AddItem(uint32 itemID, uint32 Count)
          SendNewItem(item, count, true, false);
             item->SendCreateUpdateToPlayer(this);
         }
+}
+
+bool Player::StopLevel(uint64 charid){
+    // Check if account premium
+    QueryResultAutoPtr stoplevelresult = RealmDataDatabase.PQuery ("SELECT 1 "
+     "FROM character_stop_level "
+     "WHERE id = '%u' "
+     "AND active = 1",
+     charid);
+    if (stoplevelresult) // if account premium
+    {
+        return true;
+    }
+    return false;
 }

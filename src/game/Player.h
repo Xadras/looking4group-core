@@ -2216,6 +2216,7 @@ class HELLGROUND_EXPORT Player : public Unit
         void InterruptTaxiFlying();
 
         Camera& GetCamera() { return m_camera; }
+        bool StopLevel(uint64 charid);
 
     protected:
         TimeTrackerSmall positionStatus;

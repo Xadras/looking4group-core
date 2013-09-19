@@ -240,6 +240,35 @@ bool ChatHandler::HandleAccountWeatherCommand(const char* args)
     return true;
 }
 
+bool ChatHandler::HandleStopLevelCharacterCommand(const char* /*args*/)
+{
+    Player *chr = m_session->GetPlayer();
+
+    uint64 idchar = chr->GetGUID();
+    if (!idchar)
+        return false;
+
+    RealmDataDatabase.PExecute("DELETE FROM character_stop_level WHERE id = '%u'", idchar);
+    RealmDataDatabase.PExecute("INSERT INTO character_stop_level VALUES ('%u',1)", idchar);
+    PSendSysMessage("%s%s", "|cff00ff00", "You won't get any XP now. Press .charactivatelevel to activate gaining XP again.");
+
+    return true;
+}
+
+bool ChatHandler::HandleActivateLevelCharacterCommand(const char* /*args*/)
+{
+    Player *chr = m_session->GetPlayer();
+
+    uint64 idchar = chr->GetGUID();
+    if (!idchar)
+        return false;
+
+    RealmDataDatabase.PExecute("DELETE FROM character_stop_level WHERE id = '%u'", idchar);
+    PSendSysMessage("%s%s", "|cff00ff00", "You will get XP now. Press .charstoplevel to deactivate gaining XP again.");
+
+    return true;
+}
+
 bool ChatHandler::HandleServerInfoCommand(const char* /*args*/)
 {
     uint32 activeClientsNum = sWorld.GetActiveSessionCount();

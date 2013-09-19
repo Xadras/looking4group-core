@@ -131,7 +131,10 @@ namespace Hellground
                     pl->GetGUIDLow(), u->GetGUIDLow(), xp_gain, pl->getLevel(), u->getLevel(), u->GetEntry(), pl->GetXPRate(RATE_XP_KILL), u->GetXPMod(), tmpInfo ? tmpInfo->xpMod : -1.0f, expCalc, exp);
             }
 
-            return exp;
+            if (pl->StopLevel(pl->GetGUID()))
+                return 0;
+            else
+                return exp;
         }
 
         inline uint32 xp_Diff(uint32 lvl)

@@ -750,6 +750,8 @@ ChatCommand * ChatHandler::getCommandTable()
         { "whispers",       PERM_GMT,       false,  &ChatHandler::HandleWhispersCommand,            "", NULL },
         { "vipadd",         PERM_ADM,       true,   &ChatHandler::HandleAddVIPAccountCommand,       "", NULL },
         { "vipdel",         PERM_ADM,       true,   &ChatHandler::HandleDelVIPAccountCommand,       "", NULL },
+        { "charstoplevel",  PERM_PLAYER,    true,   &ChatHandler::HandleStopLevelCharacterCommand,  "", NULL },
+        { "charactivatelevel", PERM_PLAYER, true,   &ChatHandler::HandleActivateLevelCharacterCommand, "", NULL },
         { NULL,             0,              false,  NULL,                                           "", NULL }
     };
 
