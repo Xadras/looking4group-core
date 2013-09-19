@@ -2904,7 +2904,7 @@ void SpellMgr::LoadSpellCustomAttr()
                 spellInfo->AttributesCu |= SPELL_ATTR_CU_FIXED_DAMAGE;
                 break;
             case 16614:
-                spellInfo->AttributesCu |= SPELL_ATTR_CU_FIXED_DAMAGE; //Storm Gauntlets - temporary workaround for hell too big spell coef
+                spellInfo->AttributesCu |= SPELL_ATTR_CU_NO_SPELL_DMG_COEFF; //Storm Gauntlets - temporary workaround for hell too big spell coef
                 break;
             /* NO SPELL DMG COEFF */
             // Enduring Light - T6 proc
