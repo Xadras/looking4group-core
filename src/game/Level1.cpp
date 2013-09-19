@@ -2313,6 +2313,22 @@ bool ChatHandler::HandleTeleCommand(const char * args)
         return false;
     }
 
+    if (_player->GetTeam() == HORDE && _player->GetSession()->HasPermissions(VIP)){        
+        if (tele->name != "Orgrimmar" && tele->name != "Donnerfels" && tele->name != "Unterstadt" && tele->name != "Silbermond"){
+            SendSysMessage(LANG_FACTION_PEACE_FORCED);
+            SetSentErrorMessage(true);
+            return false;
+        }
+    }
+
+    if (_player->GetTeam() == ALLIANCE && _player->GetSession()->HasPermissions(VIP)){
+        if (tele->name != "Sturmwind" && tele->name != "Exodar" && tele->name != "Eisenschmiede" && tele->name != "Darnassus"){
+            SendSysMessage(LANG_FACTION_PEACE_FORCED);
+            SetSentErrorMessage(true);
+            return false;
+        }
+    }
+
     // stop flight if need
     _player->InterruptTaxiFlying();
 
