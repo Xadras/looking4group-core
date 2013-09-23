@@ -60,7 +60,7 @@ void instance_karazhan::Initialize()
     MedivhGUID          = 0;
     CheckTimer          = 5000;
 
-    needRespawn         = true;
+    needRespawn         = false;
 }
 
 bool instance_karazhan::IsEncounterInProgress() const
@@ -460,7 +460,7 @@ void instance_karazhan::Update(uint32 diff)
             if(Kilrek && !Kilrek->isAlive() && !needRespawn)
             {
                 needRespawn = true;
-                CheckTimer = 45000;
+                CheckTimer = 25000;
             }
             else
                 CheckTimer = 5000;

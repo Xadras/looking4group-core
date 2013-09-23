@@ -1,7 +1,7 @@
 #include "precompiled.h"
 #include "def_karazhan.h"
 
-#define SPELL_DANCE_VIBE            29521
+//#define SPELL_DANCE_VIBE            29521
 #define SPELL_SEARING_PAIN          29492
 #define SPELL_IMMOLATE              29928
 #define SPELL_THROW                 29582
@@ -29,7 +29,7 @@ struct mob_phantom_guestAI : public ScriptedAI
 
     void Reset()
     {
-        me->CastSpell(me, SPELL_DANCE_VIBE, true);
+        //me->CastSpell(me, SPELL_DANCE_VIBE, true); //something is wrong cause nearly all mobs of the ini got the spell
 
         MainTimer = 0;
         SecondaryTimer = urand(5000, 20000);

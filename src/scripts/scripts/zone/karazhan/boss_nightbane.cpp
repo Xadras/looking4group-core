@@ -47,14 +47,14 @@ EndScriptData */
 
 float IntroWay[8][3] =
 {
-    {-11053.37,-1794.48,149},
-    {-11141.07,-1841.40,125},
-    {-11187.28,-1890.23,125},
-    {-11189.20,-1931.25,125},
-    {-11153.76,-1948.93,125},
-    {-11128.73,-1929.75,125},
-    {-11140   , -1915  ,122},
-    {-11163   , -1903  ,91.473}
+    {-11053.37, -1794.48, 149},
+    {-11141.07, -1841.40, 125},
+    {-11187.28, -1890.23, 125},
+    {-11189.20, -1931.25, 125},
+    {-11153.76, -1948.93, 125},
+    {-11128.73, -1929.75, 125},
+    {-11195.01, -1890.01, 125},
+    {-11163.01, -1903.01, 91.473}
 };
 
 struct boss_nightbaneAI : public ScriptedAI
@@ -146,14 +146,28 @@ struct boss_nightbaneAI : public ScriptedAI
         }
 
         Summoned = false;
+
+        m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
     }
 
     void HandleTerraceDoors(bool open)
     {
         if(GameObject *Door = GameObject::GetGameObject((*m_creature),pInstance->GetData64(DATA_MASTERS_TERRACE_DOOR_1)))
+        {
             Door->SetUInt32Value(GAMEOBJECT_STATE, open ? 0 : 1);
+            if (open)
+                Door->ToggleFlag(GAMEOBJECT_FLAGS, GO_FLAG_INTERACT_COND);
+            else
+                Door->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_INTERACT_COND);
+        }
         if(GameObject *Door = GameObject::GetGameObject((*m_creature),pInstance->GetData64(DATA_MASTERS_TERRACE_DOOR_2)))
+        {
             Door->SetUInt32Value(GAMEOBJECT_STATE, open ? 0 : 1);
+            if (open)
+                Door->ToggleFlag(GAMEOBJECT_FLAGS, GO_FLAG_INTERACT_COND);
+            else
+                Door->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_INTERACT_COND);
+        }
     }
 
     void EnterCombat(Unit *who)
@@ -248,6 +262,8 @@ struct boss_nightbaneAI : public ScriptedAI
         m_creature->SetLevitate(true);
         (*m_creature).GetMotionMaster()->Clear(false);
         (*m_creature).GetMotionMaster()->MovePoint(0,IntroWay[2][0],IntroWay[2][1],IntroWay[2][2]);
+
+        m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
         Flying = true;
 
@@ -380,8 +396,8 @@ struct boss_nightbaneAI : public ScriptedAI
                     for (uint8 i = 0; i <= 3; ++i)
                     {
                         DoCast(m_creature->getVictim(), SPELL_SUMMON_SKELETON);
-                        Skeletons = true;
                     }
+                    Skeletons = true;
                 }
 
                 if (RainofBonesTimer < diff && !RainBones) // only once at the beginning of phase 2
@@ -429,6 +445,8 @@ struct boss_nightbaneAI : public ScriptedAI
 
                 (*m_creature).GetMotionMaster()->Clear(false);
                 m_creature->GetMotionMaster()->MovePoint(3,IntroWay[3][0],IntroWay[3][1],IntroWay[3][2]);
+
+                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
                 Flying = true;
             }else FlyTimer -= diff;
