@@ -1,33 +1,36 @@
 /* ScriptData
- SDName: Boss_Netherspite
- SD%Complete: 90
- SDComment: Not sure about timing and portals placing
- SDCategory: Karazhan
- EndScriptData */
+SDName: Boss_Netherspite
+SD%Complete: 90
+SDComment: Not sure about timing and portals placing
+SDCategory: Karazhan
+EndScriptData */
 
- #include "precompiled.h"
- #include "def_karazhan.h"
+#include "precompiled.h"
+#include "def_karazhan.h"
+#include <vector>
 
- #define EMOTE_PHASE_PORTAL          -1532089
- #define EMOTE_PHASE_BANISH          -1532090
+#define EMOTE_PHASE_PORTAL -1532089
+#define EMOTE_PHASE_BANISH -1532090
 
-#define SPELL_NETHERBURN_AURA       30522
-#define SPELL_VOIDZONE              37063
-#define SPELL_NETHER_INFUSION       38688
-#define SPELL_NETHERBREATH          38523
-#define SPELL_BANISH_VISUAL         39833
-#define SPELL_BANISH_ROOT           42716
-#define SPELL_EMPOWERMENT           38549
-#define SPELL_NETHERSPITE_ROAR      38684
-#define SPELL_VOID_ZONE_EFFECT      46264
+#define SPELL_NETHERBURN_AURA 30522
+#define SPELL_VOIDZONE 37063
+#define SPELL_NETHER_INFUSION 38688
+#define SPELL_NETHERBREATH 38523
+#define SPELL_BANISH_VISUAL 39833
+#define SPELL_BANISH_ROOT 42716
+#define SPELL_EMPOWERMENT 38549
+#define SPELL_NETHERSPITE_ROAR 38684
+#define SPELL_VOID_ZONE_EFFECT 46264
 
-#define NETHER_PATROL_PATH          15689
+#define NETHER_PATROL_PATH 15689
+
+#define NPC_VOID_ZONE 16697
 
 const float PortalCoord[3][3] =
 {
     {-11195.353516, -1613.237183, 278.237258}, // Left side
     {-11137.846680, -1685.607422, 278.239258}, // Right side
-    {-11094.493164, -1591.969238, 279.949188}  // Back side
+    {-11094.493164, -1591.969238, 279.949188} // Back side
 };
 
 enum Netherspite_Portal
@@ -132,7 +135,6 @@ struct boss_netherspiteAI : public ScriptedAI
             BeamTarget[i] = 0;
         }
     }
-
     void UpdatePortals() // Here we handle the beams' behavior
     {
         for(int j=0; j<3; ++j) // j = color
@@ -154,7 +156,7 @@ struct boss_netherspiteAI : public ScriptedAI
                         Player* p = i->getSource();
                         if(p && p->isAlive() // alive
                             && (!target || target->GetExactDistance2d(portal->GetPositionX(), portal->GetPositionY()) > p->GetExactDistance2d(portal->GetPositionX(), portal->GetPositionY())) // closer than current best
-                            && !p->HasAura(PlayerDebuff[j],0) // not exhausted
+                            && (!p->HasAura(PlayerDebuff[j],0) || (p->HasAura(PlayerDebuff[j],0) && p->HasAura(PlayerBuff[j],0))) // not exhausted or exhausted AND has SAME stacks!
                             && !p->HasAura(PlayerBuff[(j+1)%3],0) // not on another beam
                             && !p->HasAura(PlayerBuff[(j+2)%3],0)
                             && p->isBetween(m_creature, portal)) // on the beam
@@ -168,6 +170,13 @@ struct boss_netherspiteAI : public ScriptedAI
                 else
                     target->AddAura(NetherBuff[j], target);
 
+                //(Re-)Debuff last target
+                if(current && target != current)
+                {
+                    if(current->GetTypeId()== TYPEID_PLAYER)
+                        current->AddAura(PlayerDebuff[j], current);
+                }
+
                 // cast visual beam on the chosen target if switched
                 // simple target switching isn't working -> using BeamerGUID to cast (workaround)
                 if(!current || target != current)
@@ -176,21 +185,21 @@ struct boss_netherspiteAI : public ScriptedAI
                     // remove currently beaming portal
                     if(Creature *beamer = Unit::GetCreature(*portal, BeamerGUID[j]))
                     {
-                        beamer->CastSpell(target, PortalBeam[j], false);
+                        beamer->CastSpell(target, PortalBeam[j], true);
+                        //beamer->CastSpell(target, PortalBeam[j], false); //Original Line
                         beamer->SetVisibility(VISIBILITY_OFF);
-                        beamer->DealDamage(beamer, beamer->GetMaxHealth());
-                        beamer->RemoveFromWorld();
+                        beamer->DealDamage(beamer, beamer->GetMaxHealth()); //Original Line
+                        beamer->RemoveFromWorld(); //Original Line
                         BeamerGUID[j] = 0;
                     }
-
                     // create new one and start beaming on the target
                     if(Creature *beamer = portal->SummonCreature(PortalID[j],portal->GetPositionX(),portal->GetPositionY(),portal->GetPositionZ(),portal->GetOrientation(),TEMPSUMMON_TIMED_DESPAWN,60000))
                     {
-                        beamer->CastSpell(target, PortalBeam[j], false);
+                        beamer->CastSpell(target, PortalBeam[j], true);
+                        //beamer->CastSpell(target, PortalBeam[j], false); //Original Line
                         BeamerGUID[j] = beamer->GetGUID();
                     }
                 }
-
                 // aggro target if Red Beam
                 if(j == RED_PORTAL && m_creature->getVictim() != target && target->GetTypeId() == TYPEID_PLAYER)
                     m_creature->getThreatManager().addThreat(target, 100000.0f+DoGetThreat(m_creature->getVictim()));
@@ -269,8 +278,11 @@ struct boss_netherspiteAI : public ScriptedAI
         if(VoidZoneTimer < diff)
         {
             if(Unit *target = SelectUnit(SELECT_TARGET_RANDOM,1,GetSpellMaxRange(SPELL_VOIDZONE),true, m_creature->getVictimGUID()))
-                AddSpellToCast(target,SPELL_VOIDZONE,true);
-
+            {
+                AddSpellToCast(target,SPELL_VOIDZONE,true); //Does work!
+                //Spawns Void-Zone as NPC with a 25 sec despawn
+                //m_creature->SummonCreature(NPC_VOID_ZONE, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), target->GetOrientation(),TEMPSUMMON_TIMED_DESPAWN, 25000);
+            }
             VoidZoneTimer = 15000;
         }
         else
@@ -390,7 +402,7 @@ struct mob_void_zoneAI : public Scripted_NoMovementAI
                 m_creature->Kill(m_creature, false);
                 m_creature->RemoveCorpse();
             }
-            const int32 dmg = frand(1000, 1500);    //workaround here, no proper spell known
+            const int32 dmg = frand(2000, 3000); //workaround here, no proper spell known
             m_creature->CastCustomSpell(NULL, SPELL_VOID_ZONE_EFFECT, &dmg, NULL, NULL, false);
             checkTimer = 2000;
         }
