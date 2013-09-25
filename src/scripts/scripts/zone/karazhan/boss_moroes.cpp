@@ -99,6 +99,9 @@ struct boss_moroesAI : public ScriptedAI
 
         if(pInstance && pInstance->GetData(DATA_MOROES_EVENT) != DONE)
             pInstance->SetData(DATA_MOROES_EVENT, NOT_STARTED);
+            
+        m_creature->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_ATTACK_POWER, false);
+        m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
     }
 
     void StartEvent()
@@ -279,6 +282,7 @@ struct boss_moroesAI : public ScriptedAI
             if (Vanish_Timer < diff)
             {
                 DoCast(m_creature, SPELL_VANISH);
+                m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 InVanish = true;
                 Vanish_Timer = 30000;
                 Wait_Timer = 5000;
@@ -314,6 +318,7 @@ struct boss_moroesAI : public ScriptedAI
                 if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM, 0, 50, true))
                    target->CastSpell(target, SPELL_GARROTE,true);
 
+                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 InVanish = false;
             }
             else
