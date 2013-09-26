@@ -636,10 +636,11 @@ bool GOGossipSelect_go_draconic_for_dummies(Player* pPlayer, GameObject* pGO, ui
 
 bool GOUse_go_personal_mole_machine(Player *player, GameObject* _GO)
 {
-    if (player->IsInPartyWith(_GO->GetOwner()) || player->IsInRaidWith(_GO->GetOwner())){
-        player->TeleportTo(230,884.04,-181.64,-43.93,1.42);
-        return false;
-    }
+    if (_GO->GetOwner())
+        if (player->IsInPartyWith(_GO->GetOwner()) || player->IsInRaidWith(_GO->GetOwner())){
+            player->TeleportTo(230,884.04,-181.64,-43.93,1.42);
+            return false;
+        }
     return true;
 }
 
