@@ -634,6 +634,15 @@ bool GOGossipSelect_go_draconic_for_dummies(Player* pPlayer, GameObject* pGO, ui
     return true;
 }
 
+bool GOUse_go_personal_mole_machine(Player *player, GameObject* _GO)
+{
+    if (player->IsInPartyWith(_GO->GetOwner()) || player->IsInRaidWith(_GO->GetOwner())){
+        player->TeleportTo(230,884.04,-181.64,-43.93,1.42);
+        return false;
+    }
+    return true;
+}
+
 void AddSC_go_scripts()
 {
     Script *newscript;
@@ -760,6 +769,12 @@ void AddSC_go_scripts()
     newscript->Name = "go_draconic_for_dummies";
     newscript->pGOUse = &GOUse_go_draconic_for_dummies;
     newscript->pGossipSelectGO =  &GOGossipSelect_go_draconic_for_dummies;
+    newscript->RegisterSelf();
+
+    
+    newscript = new Script;
+    newscript->Name = "go_personal_mole_machine";
+    newscript->pGOUse = &GOUse_go_personal_mole_machine;
     newscript->RegisterSelf();
 }
 
