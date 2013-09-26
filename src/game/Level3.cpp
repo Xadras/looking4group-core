@@ -7411,7 +7411,7 @@ bool ChatHandler::HandleAddVIPAccountCommand(const char* args)
         return false;
 
     AccountsDatabase.PExecute("DELETE FROM account_permissions WHERE account_id = '%u'", idaccvip);
-    AccountsDatabase.PExecute("INSERT INTO account_access VALUES ('%u','%u',1,UNIX_TIMESTAMP(),UNIX_TIMESTAMP()+'%u')", idaccvip, realmID, TimeStringToSecs(time_to_expire));
+    AccountsDatabase.PExecute("INSERT INTO account_permissions VALUES ('%u','%u',257,UNIX_TIMESTAMP(),UNIX_TIMESTAMP()+'%u')", idaccvip, realmID, TimeStringToSecs(time_to_expire));
     PSendSysMessage("%s%s%u|r", "|cff00ff00", "Add new vip account id: ", idaccvip);
     return true;
 }
@@ -7426,7 +7426,7 @@ bool ChatHandler::HandleDelVIPAccountCommand(const char* args)
     if (!idaccvip)
         return false;
 
-    AccountsDatabase.PExecute("DELETE FROM account_access WHERE account_id = '%u'", idaccvip);
+    AccountsDatabase.PExecute("UPDATE account_permissions SET permisssion_mask = 1 WHERE account_id = '%u' AND realm_id = %u", idaccvip, realmID);
     PSendSysMessage("%s%s%u|r", "|cff00ff00", "Delete vip account id: ", idaccvip);
     return true;
 }
