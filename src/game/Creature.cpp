@@ -1654,17 +1654,10 @@ void Creature::DeleteFromDB()
     static SqlStatementID deleteGEModelEquip;
 
     GameDataDatabase.BeginTransaction();
-    SqlStatement stmt = GameDataDatabase.CreateStatement(deleteCreature, "DELETE FROM creature WHERE guid = ?");
-    stmt.PExecute(m_DBTableGuid);
-
-    stmt = GameDataDatabase.CreateStatement(deleteCreatureAddon, "DELETE FROM creature_addon WHERE guid = ?");
-    stmt.PExecute(m_DBTableGuid);
-
-    stmt = GameDataDatabase.CreateStatement(deleteGECreature, "DELETE FROM game_event_creature WHERE guid = ?");
-    stmt.PExecute(m_DBTableGuid);
-
-    stmt = GameDataDatabase.CreateStatement(deleteGEModelEquip, "DELETE FROM game_event_model_equip WHERE guid = ?");
-    stmt.PExecute(m_DBTableGuid);
+    GameDataDatabase.PExecuteLog("DELETE FROM creature WHERE guid = '%u'", m_DBTableGuid);
+    GameDataDatabase.PExecuteLog("DELETE FROM creature_addon WHERE guid = '%u'", m_DBTableGuid);
+    GameDataDatabase.PExecuteLog("DELETE FROM game_event_creature WHERE guid = '%u'", m_DBTableGuid);
+    GameDataDatabase.PExecuteLog("DELETE FROM game_event_model_equip WHERE guid = '%u'", m_DBTableGuid);
     GameDataDatabase.CommitTransaction();
 }
 
