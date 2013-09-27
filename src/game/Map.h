@@ -265,12 +265,14 @@ class HELLGROUND_IMPORT_EXPORT Map : public GridRefManager<NGridType>
 
         void AddUpdateObject(Object *obj)
         {
-            i_objectsToClientUpdate.insert(obj);
+            if (obj)
+                i_objectsToClientUpdate.insert(obj);
         }
 
         void RemoveUpdateObject(Object *obj)
         {
-            i_objectsToClientUpdate.erase(obj);
+            if (obj)
+                i_objectsToClientUpdate.erase(obj);
         }
 
         // map restarting system
