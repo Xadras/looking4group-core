@@ -580,33 +580,27 @@ void GameObject::SaveToDB(uint32 mapid, uint8 spawnMask)
     data.ArtKit = GetUInt32Value (GAMEOBJECT_ARTKIT);
 
     // updated in DB
-    static SqlStatementID saveGameObject;
-    static SqlStatementID deleteGameObject;
+        std::ostringstream ss;
+    ss << "INSERT INTO gameobject VALUES ( "
+            << m_DBTableGuid << ", "
+            << GetUInt32Value(OBJECT_FIELD_ENTRY) << ", "
+            << mapid << ", "
+            << (uint32) spawnMask << ", "
+            << GetFloatValue(GAMEOBJECT_POS_X) << ", "
+            << GetFloatValue(GAMEOBJECT_POS_Y) << ", "
+            << GetFloatValue(GAMEOBJECT_POS_Z) << ", "
+            << GetFloatValue(GAMEOBJECT_FACING) << ", "
+            << GetFloatValue(GAMEOBJECT_ROTATION) << ", "
+            << GetFloatValue(GAMEOBJECT_ROTATION + 1) << ", "
+            << GetFloatValue(GAMEOBJECT_ROTATION + 2) << ", "
+            << GetFloatValue(GAMEOBJECT_ROTATION + 3) << ", "
+            << m_respawnDelayTime << ", "
+            << GetGoAnimProgress() << ", "
+            << GetGoState() << ")";
 
     GameDataDatabase.BeginTransaction();
-
-    SqlStatement stmt = GameDataDatabase.CreateStatement(deleteGameObject,"DELETE FROM gameobject WHERE guid = ?");
-    stmt.PExecute(m_DBTableGuid);
-
-    stmt = GameDataDatabase.CreateStatement(saveGameObject,"INSERT INTO gameobject VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
-    stmt.addUInt64(m_DBTableGuid);
-    stmt.addUInt32(GetUInt32Value(OBJECT_FIELD_ENTRY));
-    stmt.addUInt32(mapid);
-    stmt.addUInt32(spawnMask);
-    stmt.addFloat(GetFloatValue(GAMEOBJECT_POS_X));
-    stmt.addFloat(GetFloatValue(GAMEOBJECT_POS_Y));
-    stmt.addFloat(GetFloatValue(GAMEOBJECT_POS_Z));
-    stmt.addFloat(GetFloatValue(GAMEOBJECT_FACING));
-    stmt.addFloat(GetFloatValue(GAMEOBJECT_ROTATION));
-    stmt.addFloat(GetFloatValue(GAMEOBJECT_ROTATION+1));
-    stmt.addFloat(GetFloatValue(GAMEOBJECT_ROTATION+2));
-    stmt.addFloat(GetFloatValue(GAMEOBJECT_ROTATION+3));
-    stmt.addUInt32(m_respawnDelayTime);
-    stmt.addUInt32(GetGoAnimProgress());
-    stmt.addUInt32(GetGoState());
-
-    stmt.Execute();
+    GameDataDatabase.PExecuteLog("DELETE FROM gameobject WHERE guid = '%u'", m_DBTableGuid);
+    GameDataDatabase.PExecuteLog(ss.str().c_str());
     GameDataDatabase.CommitTransaction();
 }
 
@@ -681,17 +675,10 @@ bool GameObject::LoadFromDB(uint32 guid, Map *map)
 
 void GameObject::DeleteFromDB()
 {
-    static SqlStatementID deleteGO;
-    static SqlStatementID deleteGEGO;
-
     sObjectMgr.SaveGORespawnTime(m_DBTableGuid,GetInstanceId(),0);
     sObjectMgr.DeleteGOData(m_DBTableGuid);
-
-    SqlStatement stmt = GameDataDatabase.CreateStatement(deleteGO, "DELETE FROM gameobject WHERE guid = ?");
-    stmt.PExecute(m_DBTableGuid);
-
-    stmt = GameDataDatabase.CreateStatement(deleteGEGO, "DELETE FROM game_event_gameobject WHERE guid = ?");
-    stmt.PExecute(m_DBTableGuid);
+    GameDataDatabase.PExecuteLog("DELETE FROM gameobject WHERE guid = '%u'", m_DBTableGuid);
+    GameDataDatabase.PExecuteLog("DELETE FROM game_event_gameobject WHERE guid = '%u'", m_DBTableGuid);
 }
 
 GameObject* GameObject::GetGameObject(WorldObject& object, uint64 guid)
