@@ -210,7 +210,11 @@ enum eOlmSpells
 //Olm The Summoner AI
 struct boss_olm_the_summonerAI : public BossAI
 {
-    boss_olm_the_summonerAI(Creature *c) : BossAI(c, DATA_MAULGAREVENT) {}
+    boss_olm_the_summonerAI(Creature *c) : BossAI(c, DATA_MAULGAREVENT)
+    {
+        if (SpellEntry * spell = (SpellEntry*) GetSpellStore()->LookupEntry(SPELL_DEATH_COIL)) {
+            spell->AttributesEx |= SPELL_ATTR_EX_NEGATIVE;
+    }
 
     void Reset()
     {
