@@ -159,9 +159,11 @@ void PlayerTaxi::InitTaxiNodesForLevel(uint32 race, uint32 level)
         case ALLIANCE: SetTaximaskNode(100); break;
         case HORDE:    SetTaximaskNode(99);  break;
     }
+    /* we do not support QD yet
     // level dependent taxi hubs
     if (level>=68)
         SetTaximaskNode(213);                               //Shattered Sun Staging Area
+    */
 }
 
 void PlayerTaxi::LoadTaxiMask(const char* data)
@@ -20864,18 +20866,18 @@ void Player::Push()
 void Player::EquipForPush(uint16 items[])
 {
 /* Wieso machen wir den Quatch eigentlich???
-    for (uint16 i = 23; i < 39; i++) //Alles löschen, bis auf EQ und Taschen - Nun auch nichts mehr auf der Bank ;)
+    for (uint16 i = 23; i < 39; i++) //Alles lï¿½schen, bis auf EQ und Taschen - Nun auch nichts mehr auf der Bank ;)
     {
         DestroyItem(255, i, true);
     }
-    uint16 d = 19; //19 entspricht der ersten Tasche nach dem nicht löschbaren Rucksack
+    uint16 d = 19; //19 entspricht der ersten Tasche nach dem nicht lï¿½schbaren Rucksack
 
     if(getClass()!= CLASS_HUNTER) //Nur bei nicht huntern die ersten 3 Tascheninhalte leeren
     {
         for (uint16 i = 0; i < 24;i++)  //i = 24 entspricht der maximalen bekannten taschenslotzahl
         {
             DestroyItem(d, i, true);
-            if (i == 23 && d < INVENTORY_SLOT_BAG_3) //Die ersten 3 zusätzlichen Taschen leeren (Bei Bedarf auch die 4., dazu INVENTORY_SLOT_BAG_3 anpassen.
+            if (i == 23 && d < INVENTORY_SLOT_BAG_3) //Die ersten 3 zusï¿½tzlichen Taschen leeren (Bei Bedarf auch die 4., dazu INVENTORY_SLOT_BAG_3 anpassen.
             {
                 i = 0;
                 d++;
@@ -20884,11 +20886,11 @@ void Player::EquipForPush(uint16 items[])
     }
     else //Bei Huntern die 2. bis 4. Tasche
     {
-        d = 20; //20 entspricht der zweiten Tasche nach dem nicht löschbaren Rucksack
+        d = 20; //20 entspricht der zweiten Tasche nach dem nicht lï¿½schbaren Rucksack
         for (uint16 i = 0; i < 24 ;i++)  //i = 24 entspricht der maximalen bekannten taschenslotzahl
         {
             DestroyItem(d, i, true);
-            if (i == 23 && d < INVENTORY_SLOT_BAG_4) //Die 2. bis 4. zusätzlichen Taschen leeren (Bei Bedarf auch die 4., dazu INVENTORY_SLOT_BAG_3 anpassen.
+            if (i == 23 && d < INVENTORY_SLOT_BAG_4) //Die 2. bis 4. zusï¿½tzlichen Taschen leeren (Bei Bedarf auch die 4., dazu INVENTORY_SLOT_BAG_3 anpassen.
             {
                 i = 0;
                 d++;
