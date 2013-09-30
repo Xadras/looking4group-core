@@ -449,6 +449,9 @@ struct instance_dark_portal : public ScriptedInstance
         if (!player)
             return;
 
+        if (IsAnyPortalOpened())
+            return;
+
         if (Unit *medivh = Unit::GetUnit(*player,MedivhGUID))
         {
             for(uint8 i = 0; i < 4; i++)
