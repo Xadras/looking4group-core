@@ -3459,9 +3459,12 @@ void SpellMgr::LoadSpellCustomAttr()
             case 38829: // energy discharge hc
                 spellInfo->MaxAffectedTargets = 1;
                 break;
-            case 32686:
+            case 32686: //earthsquake doomwalker 
                 spellInfo->AttributesCu |= SPELL_ATTR_CU_IGNORE_ARMOR; 
                 break;
+            case 44032: // Mind Exhaust  Magtheridon
+				spellInfo->DurationIndex = 23;
+			break;
             default:
                 break;
         }
