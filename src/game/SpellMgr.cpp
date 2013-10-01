@@ -3463,8 +3463,8 @@ void SpellMgr::LoadSpellCustomAttr()
                 spellInfo->AttributesCu |= SPELL_ATTR_CU_IGNORE_ARMOR; 
                 break;
             case 44032: // Mind Exhaust  Magtheridon
-				spellInfo->DurationIndex = 23;
-			break;
+                spellInfo->DurationIndex = 23;
+            break;
             default:
                 break;
         }
