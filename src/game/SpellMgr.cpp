@@ -3047,6 +3047,9 @@ void SpellMgr::LoadSpellCustomAttr()
             case 40076://Electric Spur (used by Coilskar Wrangler 22877 in BlackTemple)
                spellInfo->EffectBasePoints[1] = 2;
                break;
+            case 15453: // Arcane Explosion 
+                spellInfo->EffectBasePoints[0] = 154; 
+                break;
             /****************/
             case 40447: // BT: Akama - Soul Channel
                 spellInfo->Effect[0] = 0;
