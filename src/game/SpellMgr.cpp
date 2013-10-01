@@ -3459,6 +3459,9 @@ void SpellMgr::LoadSpellCustomAttr()
             case 38829: // energy discharge hc
                 spellInfo->MaxAffectedTargets = 1;
                 break;
+            case 32686:
+                spellInfo->AttributesCu |= SPELL_ATTR_CU_IGNORE_ARMOR; 
+                break;
             default:
                 break;
         }
