@@ -214,7 +214,7 @@ struct boss_warchief_kargath_bladefistAI : public ScriptedAI
         {
             if (Assassins_Timer < diff)
             {
-                SpawnAssassin();
+                //SpawnAssassin();
                 Assassins_Timer = 0;
             }
             else
