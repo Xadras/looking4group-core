@@ -54,7 +54,8 @@ enum MagtheridonMobEntries
     MOB_MAGTHERIDON_ROOM    = 17516,
     MOB_HELLFIRE_CHANNELLER = 17256,
     MOB_ABYSSAL             = 17454,
-    MOB_MAGTHERIDON_TRIGGER = 19703
+    MOB_MAGTHERIDON_TRIGGER = 19703,
+    MOB_BLAZE_FIRE          = 100003
 };
 
 enum MagtheridonSpells
@@ -275,7 +276,11 @@ struct boss_magtheridonAI : public BossAI
                 }
                 case MAGTHERIDON_EVENT_BLAZE:
                 {
-                    AddSpellToCast(SPELL_BLAZE_TARGET, CAST_RANDOM);
+                    Unit * tar = SelectUnit(SELECT_TARGET_RANDOM, 0, 0, true);
+                    if (tar){
+                        m_creature->SummonCreature(MOB_BLAZE_FIRE, tar->GetPositionX(), tar->GetPositionY(), tar->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN, 120000);
+                        AddSpellToCast(tar, SPELL_BLAZE_TARGET);
+                    }
                     events.ScheduleEvent(MAGTHERIDON_EVENT_BLAZE, urand(20000, 40000));
                     break;
                 }
@@ -447,6 +452,36 @@ struct mob_magtheridon_triggerAI : public Scripted_NoMovementAI
     }
 };
 
+struct mob_blaze_fireAI : public Scripted_NoMovementAI
+{
+    mob_blaze_fireAI(Creature *c) : Scripted_NoMovementAI(c)
+    {
+        m_creature->setActive(true);
+    }
+
+    uint32 blazeTimer;
+
+    void JustRespawned()
+    {
+        me->CastSpell(me, 30757, true);
+        blazeTimer = 1000;
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (blazeTimer)
+        {
+            if (blazeTimer <= diff)
+            {
+                me->CastSpell(me, 30757, true);
+                blazeTimer = 1000;
+            }
+            else
+                blazeTimer -= diff;
+        }
+    }
+};
+
 //Manticron Cube
 bool GOUse_go_Manticron_Cube(Player *player, GameObject* _GO)
 {
@@ -499,6 +534,11 @@ CreatureAI* GetAI_mob_magtheridon_triggerAI(Creature *_Creature)
     return new mob_magtheridon_triggerAI(_Creature);
 }
 
+CreatureAI* GetAI_mob_blaze_fireAI(Creature *_Creature)
+{
+    return new mob_blaze_fireAI(_Creature);
+}
+
 void AddSC_boss_magtheridon()
 {
     Script *newscript;
@@ -525,5 +565,10 @@ void AddSC_boss_magtheridon()
     newscript = new Script();
     newscript->Name = "mob_magtheridon_trigger";
     newscript->GetAI = &GetAI_mob_magtheridon_triggerAI;
+    newscript->RegisterSelf();
+
+    newscript = new Script();
+    newscript->Name = "mob_blaze_fire";
+    newscript->GetAI = &GetAI_mob_blaze_fireAI;
     newscript->RegisterSelf();
 }
