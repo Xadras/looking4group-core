@@ -843,6 +843,7 @@ class HELLGROUND_EXPORT World
 
         time_t m_startTime;
         time_t m_gameTime;
+        IntervalTimer extmail_timer; 
         IntervalTimer m_timers[WUPDATE_COUNT];
         uint32 mail_timer;
         uint32 mail_timer_expires;

@@ -1513,7 +1513,8 @@ void World::SetInitialWorldSettings()
     //mailtimer is increased when updating auctions
     //one second is 1000 -(tested on win system)
     mail_timer = ((((localtime(&m_gameTime)->tm_hour + 20) % 24)* HOUR * 1000) / m_timers[WUPDATE_OLDMAILS].GetInterval());
-                                                            //1440
+    
+    extmail_timer.SetInterval(m_configs[CONFIG_EXTERNAL_MAIL_INTERVAL] * MINUTE * IN_MILISECONDS);                                                         //1440
     mail_timer_expires = ((DAY * 1000) / (m_timers[WUPDATE_OLDMAILS].GetInterval()));
     sLog.outDebug("Mail timer set to: %u, mail return is called every %u minutes", mail_timer, mail_timer_expires);
 
@@ -1702,6 +1703,19 @@ void World::Update(uint32 diff)
 
         diffRecorder.RecordTimeFor("ResetDailyQuests");
     }
+
+    /// Handle external mail
+    if (m_configs[CONFIG_EXTERNAL_MAIL] != 0)
+    {
+        extmail_timer.Update(diff);
+        if (extmail_timer.Passed())
+        {
+            WorldSession::SendExternalMails();
+            extmail_timer.Reset();
+        }
+    }    
+
+
     /// <ul><li> Handle auctions when the timer has passed
     if (m_timers[WUPDATE_OLDMAILS].Passed())
     {
