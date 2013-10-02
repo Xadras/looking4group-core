@@ -134,20 +134,21 @@ World::World()
     loggedInHordes = 0;
 
     // TODO: move to config
-    m_honorRanks[0] = 100;
-    m_honorRanks[1] = 500;
-    m_honorRanks[2] = 1000;
-    m_honorRanks[3] = 2000;
-    m_honorRanks[4] = 5000;
-    m_honorRanks[5] = 10000;
-    m_honorRanks[6] = 16000;
-    m_honorRanks[7] = 23000;
-    m_honorRanks[8] = 31000;
-    m_honorRanks[9] = 40000;
-    m_honorRanks[10] = 50000;
-    m_honorRanks[11] = 60000;
-    m_honorRanks[12] = 70000;
-    m_honorRanks[13] = 100000;
+    //20,50,100,200,450,750,1300,2000,3500,6000,9500,15000,21000,30000
+    m_honorRanks[0] = 20;
+    m_honorRanks[1] = 50;
+    m_honorRanks[2] = 100;
+    m_honorRanks[3] = 200;
+    m_honorRanks[4] = 450;
+    m_honorRanks[5] = 750;
+    m_honorRanks[6] = 1300;
+    m_honorRanks[7] = 2000;
+    m_honorRanks[8] = 3500;
+    m_honorRanks[9] = 6000;
+    m_honorRanks[10] = 9500;
+    m_honorRanks[11] = 15000;
+    m_honorRanks[12] = 25000;
+    m_honorRanks[13] = 50000;
 }
 
 /// World destructor
