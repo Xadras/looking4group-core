@@ -449,9 +449,6 @@ struct instance_dark_portal : public ScriptedInstance
         if (!player)
             return;
 
-        if (IsAnyPortalOpened())
-            return;
-
         if (Unit *medivh = Unit::GetUnit(*player,MedivhGUID))
         {
             for(uint8 i = 0; i < 4; i++)
@@ -534,12 +531,16 @@ struct instance_dark_portal : public ScriptedInstance
             Check_Timer -= diff;
 
         if (NextPortal_Timer && NextPortal_Timer <= diff)
-        {
-            ++mRiftPortalCount;
-            UpdateBMWorldState(WORLD_STATE_BM_RIFT,mRiftPortalCount);
+        {            
+            if (!IsAnyPortalOpened()){            
+                ++mRiftPortalCount;
+                UpdateBMWorldState(WORLD_STATE_BM_RIFT,mRiftPortalCount);
 
-            DoSpawnPortal();
-            NextPortal_Timer = GetTimer(mRiftPortalCount);
+                DoSpawnPortal();
+                NextPortal_Timer = GetTimer(mRiftPortalCount);
+            }
+            else
+                NextPortal_Timer = GetTimer(mRiftPortalCount);
         }
         else
             NextPortal_Timer -= diff;
