@@ -441,7 +441,7 @@ void WorldSession::SendExternalMails()
             Player *receiver = ObjectAccessor::FindPlayer(receiver_guid);
             if (receiver != 0)
             {
-                sLog.outDebug("EXTERNAL MAIL> Sending mail to %u, Item:%u", receiver->GetGUIDLow(), ItemID);
+                sLog.outLog(LOG_CHAR, "EXTERNAL MAIL> Sending mail to %u, Item:%u", receiver->GetGUIDLow(), ItemID);
                 uint32 itemTextId = !message.empty() ? sObjectMgr.CreateItemText(message) : 0;
 
                 RealmDataDatabase.PExecute("DELETE FROM mail_external WHERE id=%u", id);
