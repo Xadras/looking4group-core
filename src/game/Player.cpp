@@ -20821,7 +20821,7 @@ void Player::Push()
 
     uint32 accid = sObjectMgr.GetPlayerAccountIdByGUID(GetGUID());
     std::string last_ip;
-    QueryResultAutoPtr result = RealmDataDatabase.PQuery("SELECT last_ip FROM account WHERE account_id = %u", accid);
+    QueryResultAutoPtr result = AccountsDatabase.PQuery("SELECT last_ip FROM account WHERE account_id = %u", accid);
     if (result)
     {
         Field* fields = result->Fetch();
