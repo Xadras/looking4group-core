@@ -2307,14 +2307,15 @@ bool ChatHandler::HandleTeleCommand(const char * args)
         return false;
     }
 
-    if (_player->isInCombat()) {
+    if (_player->isInCombat() && !_player->GetSession()->HasPermissions(PERM_GMT)) {
         SendSysMessage(LANG_YOU_IN_COMBAT);
         SetSentErrorMessage(true);
         return false;
     }
 
     if (_player->GetTeam() == HORDE && !_player->GetSession()->HasPermissions(PERM_GMT)){        
-        if (tele->name != "Orgrimmar" && tele->name != "Donnerfels" && tele->name != "Unterstadt" && tele->name != "Silbermond"){
+        if (tele->name != "Orgrimmar" && tele->name != "Donnerfels" && tele->name != "Unterstadt" && tele->name != "Silbermond" 
+            && tele->name != "Shattrath"){
             SendSysMessage(LANG_FACTION_PEACE_FORCED);
             SetSentErrorMessage(true);
             return false;
@@ -2322,7 +2323,8 @@ bool ChatHandler::HandleTeleCommand(const char * args)
     }
 
     if (_player->GetTeam() == ALLIANCE && !_player->GetSession()->HasPermissions(PERM_GMT)){
-        if (tele->name != "Sturmwind" && tele->name != "Exodar" && tele->name != "Eisenschmiede" && tele->name != "Darnassus"){
+        if (tele->name != "Sturmwind" && tele->name != "Exodar" && tele->name != "Eisenschmiede" && tele->name != "Darnassus" 
+            && tele->name != "Shattrath"){
             SendSysMessage(LANG_FACTION_PEACE_FORCED);
             SetSentErrorMessage(true);
             return false;
