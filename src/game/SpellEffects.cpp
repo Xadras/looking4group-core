@@ -960,26 +960,44 @@ void Spell::EffectDummy(uint32 i)
                     }
 					return;
                 }
-                // Six Demon Bag, TODO: Search and add more spells to cast with normal dmg (100 ~ 200), Shadow bolt, Fireball, Summon Felhunter
-                case 14537:
-                {
-                    int32 spellid = 0;
-                    if (rand()%4)
-                        switch (urand(1,3))
-                        {
-                            case 1: spellid = 45297; break;     // Chain Lightning
-                            case 2: spellid = 23102; break;     // Frostbolt!
-                            case 3: spellid = 9487;  break;     // Fireball !
-                        }
-                    else
-                        spellid = (rand()%2) ? 29848 : 31718;     // Polymorph: Sheep : Enveloping Winds
+                // SixDeamonBag
+                case 14537: 
+                { 
+                    if (!unitTarget || !unitTarget->isAlive())
+                        return; 
+                    uint32 ClearSpellId[6] = 
+                    { 
+                        15662,   // Feuerball 
+                        11538,   // Frostball  
+                        21179,   // Blitzschlag  
+                        14621,   // Verwandeln 
+                        25189,   // Wirbel
+                        14642    // Felhunter
+                    };
 
-                    uint8 backfire = rand()%5;
-                    if (spellid == 29848 && !backfire)
-                        m_caster->CastSpell(m_caster,spellid,true); // backfire with poly chance
-                    else
-                        m_caster->CastSpell(unitTarget,spellid,true);
-                return;
+                    uint32 rand = urand(0, 100);
+                    if (rand >= 0 && rand < 25)         // Feuerball (25% chance)
+                        spell_id = ClearSpellId[0];
+                    else if (rand >= 25 && rand < 50)   // Frostblitz (25% chance)
+                        spell_id = ClearSpellId[1];
+                    else if (rand >=50 && rand < 70)    // Blitzschlag (20% chance)
+                        spell_id = ClearSpellId[2];
+                    else if (rand >= 70 && rand < 80)   // Verwandeln (10% chance)
+                    {
+                        spell_id = ClearSpellId[3];
+                        if (urand(0, 100) <= 30)        // 30% chance auf Selbstzauber
+                            unitTarget = m_caster;
+                    } 
+                    else if (rand >=80 && rand < 95)    // Wirbelwind (15% chance)
+                         spell_id = ClearSpellId[4];
+                    else                                // Felhunter (5% chance)
+                    {
+                         spell_id = ClearSpellId[5];
+                         unitTarget = m_caster;
+                    }
+
+					m_caster->CastSpell(unitTarget, spell_id, true, NULL);
+                    return;
                 }
                 // Salvage Wreckage
                 case 42287:
