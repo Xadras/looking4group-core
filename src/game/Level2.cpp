@@ -1903,12 +1903,9 @@ bool ChatHandler::HandlePInfoCommand(const char* args)
     uint32 permissions = 0;
     std::string last_login = GetTrinityString(LANG_ERROR);
 
-    QueryResultAutoPtr result = AccountsDatabase.PQuery("SELECT username, permission_mask, email, ip, login_date "
+    QueryResultAutoPtr result = AccountsDatabase.PQuery("SELECT username, permission_mask, email, last_ip, last_login "
                                                         "FROM account JOIN account_permissions ON account.account_id = account_permissions.account_id "
-                                                        "JOIN account_login ON account.account_id = account_login.account_id "
-                                                        "WHERE account.account_id = '%u' AND realm_id = '%u' "
-                                                        "ORDER BY login_date DESC "
-                                                        "LIMIT 1", accId, realmID);
+                                                        "WHERE account.account_id = '%u' AND realm_id = '%u' ", accId, realmID);
 
     if (result)
     {
