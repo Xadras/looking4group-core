@@ -1571,6 +1571,13 @@ void WorldSession::HandleDungeonDifficultyOpcode(WorldPacket & recv_data)
                     ChatHandler(this).SendSysMessage(LANG_CHANGE_DIFFICULTY_INSIDE);
                     return;
                 }
+
+                if (pl->getLevel() < LEVELREQUIREMENT_HEROIC && mode == DIFFICULTY_HEROIC)
+                {
+                    sLog.outLog(LOG_DEFAULT, "Error: WorldSession::HandleDungeonDifficultyOpcode: Player '%s' tried to change difficulty while player %s is Level %u.",_player->GetName(), pl->GetName(), pl->getLevel());
+                    ChatHandler(this).SendSysMessage(LANG_CHANGE_DIFFICULTY_LEVEL);
+                    return;
+                }
             }
             else
             {

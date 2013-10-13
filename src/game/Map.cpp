@@ -2160,6 +2160,13 @@ bool InstanceMap::CanEnter(Player *player)
         return false;
     }
 
+    if (IsHeroic() && (player->getLevel() < 70))
+    {
+        sLog.outDetail("MAP: Player '%s' try to get into Instance '%u' of map '%s' in Heroic-Mode with Level '%u'. ",player->GetName(), GetInstanceId(), GetMapName(), player->getLevel());
+        player->SendTransferAborted(GetId(), TRANSFER_ABORT_DIFFICULTY2);
+        return false;
+    }
+
     if (EncounterInProgress(player))
         return false;
 
