@@ -263,8 +263,6 @@ struct boss_nightbaneAI : public ScriptedAI
         (*m_creature).GetMotionMaster()->Clear(false);
         (*m_creature).GetMotionMaster()->MovePoint(0,IntroWay[2][0],IntroWay[2][1],IntroWay[2][2]);
 
-        m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-
         Flying = true;
 
         FlyTimer = 45000+rand()%15000; //timer wrong between 45 and 60 seconds
@@ -445,8 +443,6 @@ struct boss_nightbaneAI : public ScriptedAI
 
                 (*m_creature).GetMotionMaster()->Clear(false);
                 m_creature->GetMotionMaster()->MovePoint(3,IntroWay[3][0],IntroWay[3][1],IntroWay[3][2]);
-
-                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
                 Flying = true;
             }else FlyTimer -= diff;
