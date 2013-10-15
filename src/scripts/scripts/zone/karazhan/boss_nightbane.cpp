@@ -260,6 +260,7 @@ struct boss_nightbaneAI : public ScriptedAI
         m_creature->InterruptSpell(CURRENT_GENERIC_SPELL);
         m_creature->HandleEmoteCommand(EMOTE_ONESHOT_LIFTOFF);
         m_creature->SetLevitate(true);
+        m_creature->SetWalk(false);
         (*m_creature).GetMotionMaster()->Clear(false);
         (*m_creature).GetMotionMaster()->MovePoint(0,IntroWay[2][0],IntroWay[2][1],IntroWay[2][2]);
 

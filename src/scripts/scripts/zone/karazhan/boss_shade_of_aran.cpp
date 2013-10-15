@@ -331,7 +331,7 @@ struct boss_aranAI : public ScriptedAI
                         Available[1] = SUPER_BLIZZARD;
                         break;
                     case SUPER_FLAME:
-                        Available[0] = SUPER_AE;
+                        Available[0] = SUPER_BLIZZARD;
                         Available[1] = SUPER_BLIZZARD;
                         break;
                     case SUPER_BLIZZARD:
