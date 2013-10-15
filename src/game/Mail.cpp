@@ -426,44 +426,45 @@ void WorldSession::SendExternalMails()
     if (!result)
     {
         sLog.outDebug("EXTERNAL MAIL> No Mials to deliver!");
-        return;    
-        do
+        return;
+    }
+    do
+    {
+        Field *fields = result->Fetch();
+        uint32 id = fields[0].GetUInt32();
+        uint64 receiver_guid = fields[1].GetUInt32();
+        std::string subject = fields[2].GetString();
+        std::string message = fields[3].GetString();
+        uint32 money = fields[4].GetUInt32();
+        uint32 ItemID = fields[5].GetUInt32();
+        uint32 ItemCount = fields[6].GetUInt32();
+
+        Player *receiver = ObjectAccessor::FindPlayer(receiver_guid);
+        if (receiver != 0)
         {
-            Field *fields = result->Fetch();
-            uint32 id = fields[0].GetUInt32();
-            uint64 receiver_guid = fields[1].GetUInt32();
-            std::string subject = fields[2].GetString();
-            std::string message = fields[3].GetString();
-            uint32 money = fields[4].GetUInt32();
-            uint32 ItemID = fields[5].GetUInt32();
-            uint32 ItemCount = fields[6].GetUInt32();
+            sLog.outLog(LOG_CHAR, "EXTERNAL MAIL> Sending mail to %u, Item:%u", receiver->GetGUIDLow(), ItemID);
+            uint32 itemTextId = !message.empty() ? sObjectMgr.CreateItemText(message) : 0;
 
-            Player *receiver = ObjectAccessor::FindPlayer(receiver_guid);
-            if (receiver != 0)
+            RealmDataDatabase.PExecute("DELETE FROM mail_external WHERE id=%u", id);
+
+            if (ItemID != 0)
             {
-                sLog.outLog(LOG_CHAR, "EXTERNAL MAIL> Sending mail to %u, Item:%u", receiver->GetGUIDLow(), ItemID);
-                uint32 itemTextId = !message.empty() ? sObjectMgr.CreateItemText(message) : 0;
+                Item* ToMailItem = Item::CreateItem(ItemID, ItemCount, receiver);
+                ToMailItem -> SaveToDB();
 
-                RealmDataDatabase.PExecute("DELETE FROM mail_external WHERE id=%u", id);
-
-                if (ItemID != 0)
-                {
-                    Item* ToMailItem = Item::CreateItem(ItemID, ItemCount, receiver);
-                    ToMailItem -> SaveToDB();
-
-                    MailDraft(subject, itemTextId)
-                        .AddItem(ToMailItem)
-                        .SetMoney(money)
-                        .SendMailTo(MailReceiver(receiver), MailSender(MAIL_NORMAL, uint32(0), MAIL_STATIONERY_GM), MAIL_CHECK_MASK_RETURNED);
-                }
-                else
-                {
-                    MailDraft(subject, itemTextId)
-                        .SetMoney(money)
-                        .SendMailTo(MailReceiver(receiver), MailSender(MAIL_NORMAL, uint32(0), MAIL_STATIONERY_GM), MAIL_CHECK_MASK_RETURNED);
-                }
+                MailDraft(subject, itemTextId)
+                    .AddItem(ToMailItem)
+                    .SetMoney(money)
+                    .SendMailTo(MailReceiver(receiver), MailSender(MAIL_NORMAL, uint32(0), MAIL_STATIONERY_GM), MAIL_CHECK_MASK_RETURNED);
+            }
+            else
+            {
+                MailDraft(subject, itemTextId)
+                    .SetMoney(money)
+                    .SendMailTo(MailReceiver(receiver), MailSender(MAIL_NORMAL, uint32(0), MAIL_STATIONERY_GM), MAIL_CHECK_MASK_RETURNED);
             }
         }
-        while(result -> NextRow());    
     }
+    while(result -> NextRow());    
 }
+
