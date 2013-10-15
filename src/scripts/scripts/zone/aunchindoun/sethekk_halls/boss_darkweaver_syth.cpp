@@ -187,6 +187,7 @@ struct boss_darkweaver_sythAI : public ScriptedAI
 		elementarb[anzahl_addsb] = eleb->GetGUID();
 		Creature *elec = m_creature->SummonCreature(19206, me->GetPositionX(), me->GetPositionY()+5, me->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 1000);
 		anzahl_addsc++;
+        elementarc[anzahl_addsc] = elec->GetGUID();
     }
 
     void UpdateAI(const uint32 diff)
