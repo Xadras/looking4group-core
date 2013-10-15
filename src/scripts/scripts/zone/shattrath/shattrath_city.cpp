@@ -1143,6 +1143,7 @@ bool GossipSelect_npc_rentalmount(Player *player, Creature *_creature, uint32 se
             player->CastSpell(player,MOUNT_SPELL_ID_9,false); 
             player->ModifyMoney(-highprice); 
         }
+        break;
     case 1010: 
         if (player->GetMoney() < ultraprice) 
         { 
@@ -1152,8 +1153,6 @@ bool GossipSelect_npc_rentalmount(Player *player, Creature *_creature, uint32 se
             player->ModifyMoney(-ultraprice); 
         } 
         break; 
-        break; 
-
     } 
     player->CLOSE_GOSSIP_MENU();
     return true; 
