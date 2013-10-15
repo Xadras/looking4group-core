@@ -108,7 +108,12 @@ struct boss_warchief_kargath_bladefistAI : public ScriptedAI
 
         if (pInstance)
         {
-            pInstance->SetData(TYPE_KARGATH, IN_PROGRESS);
+            if (pInstance->GetData(TYPE_WARBRINGER) != DONE)
+            {
+                Creature *War = Unit::GetCreature(*me, pInstance->GetData64(DATA_WARBRINGER));
+                if (War && War->isAlive())
+                    War->AI()->AttackStart(who);
+            }
         }
     }
 
