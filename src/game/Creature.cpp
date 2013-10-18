@@ -2492,10 +2492,11 @@ void Creature::GetRespawnCoord(float &x, float &y, float &z, float* ori, float* 
             *dist = 0;
     }
     //lets check if our creatures have valid spawn coordinates
+    //ASSERT(false); crashes server, so ...
     if(!Hellground::IsValidMapCoord(x, y, z))
     {
         sLog.outLog(LOG_DEFAULT, "ERROR: Creature with invalid respawn coordinates: mapid = %u, guid = %u, x = %f, y = %f, z = %f", GetMapId(), GetGUIDLow(), x, y, z);
-        ASSERT(false);
+        //ASSERT(false);
     }
 }
 
