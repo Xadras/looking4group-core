@@ -3468,6 +3468,14 @@ void SpellMgr::LoadSpellCustomAttr()
             case 44032: // Mind Exhaust  Magtheridon
                 spellInfo->DurationIndex = 23;
             break;
+            case 24869:
+                spellInfo->Effect[2] = 6;
+                spellInfo->EffectBasePoints[2] = 1;
+                spellInfo->EffectApplyAuraName[2] = 23;
+                spellInfo->EffectImplicitTargetA[2] = 1;
+                spellInfo->EffectAmplitude[2] = 10000;
+                spellInfo->EffectTriggerSpell[2] = 19709;
+            break;
             default:
                 break;
         }
