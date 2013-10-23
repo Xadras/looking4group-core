@@ -77,6 +77,8 @@ volatile uint32 World::m_worldLoopCounter = 0;
 
 float World::m_VisibleObjectGreyDistance      = 0;
 
+uint32 broadcastrepeater = 0;
+
 int32 World::m_activeObjectUpdateDistanceOnContinents = DEFAULT_VISIBILITY_DISTANCE;
 int32 World::m_activeObjectUpdateDistanceInInstances = DEFAULT_VISIBILITY_DISTANCE;
 
@@ -1816,8 +1818,11 @@ void World::Update(uint32 diff)
             std::string msg;
 
             std::list<std::string>::const_iterator itr = m_Autobroadcasts.begin();
-            std::advance(itr, rand() % m_Autobroadcasts.size());
-            msg = *itr;
+            std::advance(itr, broadcastrepeater);
+		 	msg = *itr;
+			broadcastrepeater++;
+			if (broadcastrepeater >= m_Autobroadcasts.size())
+				broadcastrepeater = 0;
 
             sWorld.SendWorldText(LANG_AUTO_ANN, ACC_DISABLED_BROADCAST, msg.c_str());
         }
