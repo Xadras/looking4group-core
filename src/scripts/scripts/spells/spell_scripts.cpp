@@ -175,6 +175,37 @@ bool Spell_coax_marmot(Unit *caster, Unit* pUnit, Item* pItem, GameObject* pGame
     return true;
 }
 
+enum QuestBearTrap
+{
+    QUEST_PLAGUED_LANDS = 2118,
+    RABID_THISTLE_BEAR = 2164,
+    CAPTURED_RABID_THISTLE_BEAR = 11836,
+    BEAR_ALIVE = true
+};
+
+bool spell_bear_capture_trap(Unit *caster, Unit* pUnit, Item* pItem, GameObject* pGameObject, SpellEntry const *pSpell, uint32 effectIndex){
+
+    if (caster->GetTypeId() != TYPEID_PLAYER)
+        return true;
+
+    Player *player = caster->ToPlayer();
+    if (!player || !player->IsActiveQuest(QUEST_PLAGUED_LANDS))
+        return true;
+
+    float range = 30.0f;
+    Creature *bear = GetClosestCreatureWithEntry(player, RABID_THISTLE_BEAR, range, true); 
+    if (!bear)
+        return true;
+
+    Creature *captBear = player->SummonCreature(CAPTURED_RABID_THISTLE_BEAR,
+        bear->GetPositionX(), bear->GetPositionY(), bear->GetPositionZ(), bear->GetAngle(bear->GetPositionX(), bear->GetPositionY()),
+        TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 10 * 60 * 1000 /* 10 min */);
+    bear->DisappearAndDie();
+    player->KilledMonster(CAPTURED_RABID_THISTLE_BEAR, 0);
+    captBear->GetMotionMaster()->MoveFollow(player, 0, 0);
+    return false;
+}
+
 void AddSC_spell_scripts()
 {
     Script *newscript;
@@ -207,5 +238,10 @@ void AddSC_spell_scripts()
     newscript = new Script;
     newscript->Name = "coax_marmot";
     newscript->pSpellHandleEffect = &Spell_coax_marmot;
+    newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name = "spell_bear_capture_trap";
+    newscript->pSpellHandleEffect = &spell_bear_capture_trap;
     newscript->RegisterSelf();
 }
