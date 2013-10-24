@@ -2802,8 +2802,6 @@ void SpellMgr::LoadSpellCustomAttr()
                      spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_CAST;
                  else if (spellInfo->SpellIconID == 2367) // remove flag from steam tonk & crashin trashin racers
                      spellInfo->AttributesEx4 &= ~SPELL_ATTR_EX4_FORCE_TRIGGERED;
-
-
                  break;
             }
             case SPELLFAMILY_SHAMAN:
