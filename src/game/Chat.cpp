@@ -43,7 +43,7 @@ ChatCommand * ChatHandler::getCommandTable()
     {
         { "addon",          PERM_ADM,       true,   &ChatHandler::HandleAccountSetAddonCommand,       "", NULL },
         { "permissions",    PERM_CONSOLE,   true,   &ChatHandler::HandleAccountSetPermissionsCommand, "", NULL },
-        { "password",       PERM_CONSOLE,   true,   &ChatHandler::HandleAccountSetPasswordCommand,    "", NULL },
+        { "password",       PERM_ADM,       true,   &ChatHandler::HandleAccountSetPasswordCommand,    "", NULL },
         { NULL,             0,              false,  NULL,                                             "", NULL }
     };
 
