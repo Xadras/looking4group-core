@@ -2916,9 +2916,8 @@ void SpellMgr::LoadSpellCustomAttr()
             // Judgement of Blood
             case 32221:
             case 32220:
-            // Flame Cap, Scalding Water, Fiery Blaze
+            // Flame Cap, Fiery Blaze
             case 28715:
-            case 37284:
             case 6297:
             // Deathfrost
             case 46579:
@@ -3478,8 +3477,13 @@ void SpellMgr::LoadSpellCustomAttr()
                 spellInfo->EffectAmplitude[2] = 10000;
                 spellInfo->EffectTriggerSpell[2] = 19709;
             break;
-            case 37674:
+            case 37674: // leo chaosblast
                 spellInfo->EffectRadiusIndex[0] = 18;
+            break;
+            case 37284:  //scalding water
+                spellInfo->EffectBasePoints[1] = 1000;
+                spellInfo->EffectBasePoints[0] = 1000;
+                spellInfo->AttributesCu |= SPELL_ATTR_CU_NO_SPELL_DMG_COEFF;
             break;
             default:
                 break;
