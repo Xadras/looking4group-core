@@ -1704,6 +1704,14 @@ Network.KickOnBadPacket = 1
 #       to a newly created character.
 #       Default: "" - send no text
 #
+#   XPRateModifyItem.Entry
+#       The Entry ID of Item which Player must have in inventory to Modify XP Rate
+#		Default: 0 - disabled
+#
+#    XPRateModifyItem.Pct
+#       Modify the earned XP if XPRateModifyItem.Entry is not 0 and Player have this item in inventory
+#		Default: 5
+#
 ###################################################################################################################
 
 PlayerStart.AllReputation = 0
@@ -1722,6 +1730,8 @@ RecordUpdateTimeDiffInterval = 60000
 MinRecordUpdateTimeDiff = 10
 MinRecordUpdateTimeSessionDiff = 25
 PlayerStart.String = ""
+XPRateModifyItem.Entry = 0
+XPRateModifyItem.Pct = 5 
 
 ###################################################################################################################
 # Virtual map serving system (VMSS) configuration
