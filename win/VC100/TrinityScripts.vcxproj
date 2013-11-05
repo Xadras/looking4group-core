@@ -478,6 +478,7 @@
     <ClCompile Include="..\..\src\scripts\scripts\npc\npcs_special.cpp" />
     <ClCompile Include="..\..\src\scripts\scripts\custom\custom_example.cpp" />
     <ClCompile Include="..\..\src\scripts\scripts\custom\custom_gossip_codebox.cpp" />
+    <ClCompile Include="..\..\src\scripts\scripts\custom\event_reward.cpp" />
     <ClCompile Include="..\..\src\scripts\scripts\areatrigger\areatrigger_scripts.cpp" />
     <ClCompile Include="..\..\src\scripts\scripts\go\go_scripts.cpp" />
     <ClCompile Include="..\..\src\scripts\scripts\item\item_scripts.cpp" />

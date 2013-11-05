@@ -438,6 +438,9 @@
     <ClCompile Include="..\..\src\scripts\scripts\custom\custom_gossip_codebox.cpp">
       <Filter>Scripts\custom</Filter>
     </ClCompile>
+	<ClCompile Include="..\..\src\scripts\scripts\custom\event_reward.cpp">
+      <Filter>Scripts\custom</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\scripts\scripts\areatrigger\areatrigger_scripts.cpp">
       <Filter>Scripts\areatrigger</Filter>
     </ClCompile>
@@ -1545,6 +1548,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\scripts\scripts\zone\dire_maul\dire_maul.cpp">
       <Filter>Scripts\zone\Dire Maul</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scripts\scripts\custom\event_reward.cpp">
+      <Filter>Scripts\custom</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
