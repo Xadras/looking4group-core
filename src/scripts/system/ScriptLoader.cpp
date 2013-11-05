@@ -21,6 +21,7 @@ extern void AddSC_generic_creature();
 // -- Custom --
 extern void AddSC_custom_example();
 extern void AddSC_custom_gossip_codebox();
+extern void AddSC_event_reward();
 
 // -- GO --
 extern void AddSC_go_scripts();
@@ -644,6 +645,7 @@ void AddScripts()
     // -- Custom --
     AddSC_custom_example();
     AddSC_custom_gossip_codebox();
+    AddSC_event_reward();
 
     // -- GO --
     AddSC_go_scripts();
