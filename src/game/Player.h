@@ -2218,6 +2218,8 @@ class HELLGROUND_EXPORT Player : public Unit
         Camera& GetCamera() { return m_camera; }
         bool StopLevel(uint64 charid);
 
+        void SendItemByMail(Player *plr,uint32 item, uint32 count);
+
     protected:
         TimeTrackerSmall positionStatus;
 

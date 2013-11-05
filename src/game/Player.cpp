@@ -21375,8 +21375,8 @@ void Player::AddItem(uint32 itemID, uint32 Count)
 
         if (count == 0 || dest.empty()) // can't add any
         {
-            // -- TODO: Send to mailbox if no space
             ChatHandler(this).PSendSysMessage("You don't have any space in your bags for a new item.");
+            SendItemByMail(this, itemID, count);
             return;
         }
 
@@ -21400,4 +21400,33 @@ bool Player::StopLevel(uint64 charid){
         return true;
     }
     return false;
+}
+
+void Player::SendItemByMail(Player *plr,uint32 item, uint32 count)
+{
+
+    ItemPrototype const* itemProto = ObjectMgr::GetItemPrototype(item);
+    if (!itemProto)
+        return;
+
+    if (Item* mailItem = Item::CreateItem(item,count,plr))
+    {
+        // save new item before send
+        mailItem->SaveToDB();                               // save for prevent lost at next mail load, if send fail then item will deleted
+
+        int loc_idx = plr->GetSession()->GetSessionDbLocaleIndex();
+
+        // subject: item name
+        std::string subject = itemProto->Name1;
+        sObjectMgr.GetItemLocaleStrings(itemProto->ItemId, loc_idx, &subject);
+
+        // text
+        std::stringstream mail_text;
+        mail_text << "Ein Item konnte nicht in deiner Tasche platziert werden.\n\n";
+        uint32 itemTextId = sObjectMgr.CreateItemText(mail_text.str());
+
+        MailDraft(subject, itemTextId)
+            .AddItem(mailItem)
+            .SendMailTo(plr, MailSender(this, MAIL_STATIONERY_GM));
+    }
 }
