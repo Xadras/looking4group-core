@@ -55,6 +55,7 @@ EndScriptData */
 #define ITEM_MARKE_COUNT_27 1
 #define ITEM_MARKE_COUNT_28 1
 #define ITEM_MARKE_COUNT_29 1
+#define ITEM_MARKE_COUNT_30 1
 
 /*
 20558 - Ehrenabzeichen der Kriegshymnenschlucht
@@ -104,7 +105,7 @@ EndScriptData */
 #define ITEM_ID_7           21886
 #define ITEM_ID_8           21885
 #define ITEM_ID_9           21884
-#define ITEM_ID_10           22451
+#define ITEM_ID_10          22451
 #define ITEM_ID_11          22452
 #define ITEM_ID_12          22456
 
@@ -126,8 +127,8 @@ EndScriptData */
 #define ITEM_ID_27          33874
 
 #define ITEM_ID_28          "ehre"
-
-#define ITEM_ID_29          12345
+#define ITEM_ID_29          34492
+#define ITEM_ID_30          34493
 
 //-------------ITEM COUNT----------------------------
 
@@ -164,7 +165,8 @@ EndScriptData */
 #define ITEM_COUNT_27       2
 
 #define ITEM_COUNT_28       2000
-#define ITEM_COUNT_29       0
+#define ITEM_COUNT_29       1
+#define ITEM_COUNT_30       1
 
 //---------------------------ITEM NAME--------------------------------
 
@@ -201,23 +203,26 @@ EndScriptData */
 #define ITEM_NAME_27        "2 Kiblers Haeppchen ( +20 Staerke deines Begleiters)"
 
 #define ITEM_NAME_28        "2000 Ehre"
+#define ITEM_NAME_29        "Raketenhuehnchen"
+#define ITEM_NAME_30        "Papierdrache"
 
-#define ITEM_NAME_29        "Frei"
 
 //--------------------------- PAGE -----------------------------
 
-#define CATEGORY_1          "Seite 1"
-#define CATEGORY_2          "Seite 2"
-#define CATEGORY_3          "Seite 3"
-#define CATEGORY_4          "Frei"
-#define CATEGORY_5          "Frei"
+#define CATEGORY_1          "Ehrenabzeichen"
+#define CATEGORY_2          "L4G Coins"
+#define CATEGORY_3          "Urmats"
+#define CATEGORY_4          "Buffood & Flasks"
+#define CATEGORY_5          "Ehre & Pets"
 #define CATEGORY_6          "Frei"
 
 
 bool GossipHello_event_reward(Player *Player, Creature *Creature) {
     Player->ADD_GOSSIP_ITEM(0, CATEGORY_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1000);
     Player->ADD_GOSSIP_ITEM(0, CATEGORY_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2000);
-    //Player->ADD_GOSSIP_ITEM(0, CATEGORY_3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3000);
+    Player->ADD_GOSSIP_ITEM(0, CATEGORY_3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3000);
+    Player->ADD_GOSSIP_ITEM(0, CATEGORY_4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4000);
+    Player->ADD_GOSSIP_ITEM(0, CATEGORY_5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5000);
     Player->PlayerTalkClass->SendGossipMenu(40001, Creature->GetGUID());
     return true;
 }
@@ -230,22 +235,33 @@ bool GossipSelect_event_reward(Player* Player, Creature* Creature, uint32 /*send
             Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
             Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
             Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
-            Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
-            Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_6, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
-            Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_7, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 7);
-            Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_8, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 8);
-            Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_9, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 9);
-            Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_10, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 10);
-            Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_11, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 11);
-            Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_12, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 12);
-            Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_13, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 13);
-            Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_14, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 14);
             Player->ADD_GOSSIP_ITEM(0, "Zurueck", 0, 0);
             Player->PlayerTalkClass->SendGossipMenu(1,Creature->GetGUID());
             break;
          }
          case GOSSIP_ACTION_INFO_DEF + 2000:
          {
+             Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+             Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_6, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
+             Player->ADD_GOSSIP_ITEM(0, "Zurueck", 0, 0);
+             Player->PlayerTalkClass->SendGossipMenu(1,Creature->GetGUID());
+             break;
+         }
+         case GOSSIP_ACTION_INFO_DEF + 3000:
+         {
+             Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_7, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 7);
+             Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_8, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 8);
+             Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_9, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 9);
+             Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_10, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 10);
+             Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_11, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 11);
+             Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_12, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 12);
+             Player->ADD_GOSSIP_ITEM(0, "Zurueck", 0, 0);
+             Player->PlayerTalkClass->SendGossipMenu(1,Creature->GetGUID());
+             break;
+         }
+         case GOSSIP_ACTION_INFO_DEF + 4000:
+             Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_13, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 13);
+             Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_14, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 14);
              Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_15, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 15);
              Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_16, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 16);
              Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_17, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 17);
@@ -259,19 +275,16 @@ bool GossipSelect_event_reward(Player* Player, Creature* Creature, uint32 /*send
              Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_25, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 25);
              Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_26, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 26);
              Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_27, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 27);
+             Player->ADD_GOSSIP_ITEM(0, "Zurueck", 0, 0);
+             Player->PlayerTalkClass->SendGossipMenu(1,Creature->GetGUID());
+             break;
+         case GOSSIP_ACTION_INFO_DEF + 5000:
              Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_28, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 28);
-             Player->ADD_GOSSIP_ITEM(0, "Zurueck", 0, 0);
-             Player->PlayerTalkClass->SendGossipMenu(1,Creature->GetGUID());
-             break;
-         }
-         case GOSSIP_ACTION_INFO_DEF + 3000:
-         {
-
              Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_29, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 29);
+             Player->ADD_GOSSIP_ITEM(0, ITEM_NAME_30, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 30);
              Player->ADD_GOSSIP_ITEM(0, "Zurueck", 0, 0);
              Player->PlayerTalkClass->SendGossipMenu(1,Creature->GetGUID());
              break;
-         }
          case GOSSIP_ACTION_INFO_DEF + 1:
             Player->ADD_GOSSIP_ITEM(0, "Zurueck", 0, 0);
             if (Player->HasItemCount(ITEM_MARKE, ITEM_MARKE_COUNT_1, false))
@@ -586,6 +599,17 @@ bool GossipSelect_event_reward(Player* Player, Creature* Creature, uint32 /*send
             {
                 Player->DestroyItemCount(ITEM_MARKE, ITEM_MARKE_COUNT_29, true, false);
                 Player->AddItem(ITEM_ID_29, ITEM_COUNT_29);
+                Player->PlayerTalkClass->SendGossipMenu(1,Creature->GetGUID());
+            }
+            else
+                Player->PlayerTalkClass->SendGossipMenu(40002,Creature->GetGUID());
+            break;
+        case GOSSIP_ACTION_INFO_DEF + 30:
+            Player->ADD_GOSSIP_ITEM(0, "Zurueck", 0, 0);
+            if (Player->HasItemCount(ITEM_MARKE, ITEM_MARKE_COUNT_30, false))
+            {
+                Player->DestroyItemCount(ITEM_MARKE, ITEM_MARKE_COUNT_30, true, false);
+                Player->AddItem(ITEM_ID_30, ITEM_COUNT_30);
                 Player->PlayerTalkClass->SendGossipMenu(1,Creature->GetGUID());
             }
             else
