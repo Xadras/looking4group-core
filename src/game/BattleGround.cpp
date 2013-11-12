@@ -353,7 +353,7 @@ void BattleGround::SendPacketToTeam(uint32 TeamID, WorldPacket *packet, Player *
             continue;
 
         uint32 team = itr->second.Team;//GetPlayerTeam(plr->GetGUID());
-        if (!team) team = plr->GetTeam();
+        if (!team) team = plr->GetBGTeam();
 
         if (team == TeamID)
             plr->SendPacketToSelf(packet);
@@ -382,7 +382,7 @@ void BattleGround::PlaySoundToTeam(uint32 SoundID, uint32 TeamID)
         }
 
         uint32 team = itr->second.Team;//GetPlayerTeam(plr->GetGUID());
-        if (!team) team = plr->GetTeam();
+        if (!team) team = plr->GetBGTeam();
 
         if (team == TeamID)
         {
@@ -405,7 +405,7 @@ void BattleGround::CastSpellOnTeam(uint32 SpellID, uint32 TeamID)
         }
 
         uint32 team = itr->second.Team;//GetPlayerTeam(plr->GetGUID());
-        if (!team) team = plr->GetTeam();
+        if (!team) team = plr->GetBGTeam();
 
         if (team == TeamID)
             plr->CastSpell(plr, SpellID, true);
@@ -442,7 +442,7 @@ void BattleGround::RewardHonorToTeam(uint32 Honor, uint32 TeamID)
         }
 
         uint32 team = itr->second.Team;//GetPlayerTeam(plr->GetGUID());
-        if (!team) team = plr->GetTeam();
+        if (!team) team = plr->GetBGTeam();
 
         if (team == TeamID)
             UpdatePlayerScore(plr, SCORE_BONUS_HONOR, Honor);
@@ -467,7 +467,7 @@ void BattleGround::RewardReputationToTeam(uint32 faction_id, uint32 Reputation, 
         }
 
         uint32 team = itr->second.Team;//GetPlayerTeam(plr->GetGUID());
-        if (!team) team = plr->GetTeam();
+        if (!team) team = plr->GetBGTeam();
 
         if (team == TeamID)
         {
@@ -628,7 +628,7 @@ void BattleGround::EndBattleGround(uint32 winner)
         }
 
         uint32 team = itr->second.Team;
-        if (!team) team = plr->GetTeam();
+        if (!team) team = plr->GetBGTeam();
 
         // per player calculation
         if (isArena() && isRated() && winner_arena_team && loser_arena_team)
@@ -671,7 +671,7 @@ void BattleGround::EndBattleGround(uint32 winner)
         plr->SendPacketToSelf(&data);
 
         BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(GetTypeID(), GetArenaType());
-        sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, this, plr->GetTeam(), plr->GetBattleGroundQueueIndex(bgQueueTypeId), STATUS_IN_PROGRESS, TIME_TO_AUTOREMOVE, GetStartTime());
+        sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, this, plr->GetBGTeam(), plr->GetBattleGroundQueueIndex(bgQueueTypeId), STATUS_IN_PROGRESS, TIME_TO_AUTOREMOVE, GetStartTime());
         plr->SendPacketToSelf(&data);
     }
 
@@ -850,6 +850,9 @@ void BattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPac
 
     Player *plr = sObjectMgr.GetPlayer(guid);
 
+    if (plr)
+        MorphCrossfactionPlayer(plr, false);
+
     // should remove spirit of redemption
     if (plr && plr->HasAuraType(SPELL_AURA_SPIRIT_OF_REDEMPTION))
         plr->RemoveSpellsCausingAura(SPELL_AURA_MOD_SHAPESHIFT);
@@ -873,7 +876,7 @@ void BattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPac
 
         if (participant) // if the player was a match participant, remove auras, calc rating, update queue
         {
-            if (!team) team = plr->GetTeam();
+            if (!team) team = plr->GetBGTeam();
 
             BattleGroundTypeId bgTypeId = GetTypeID();
             BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(GetTypeID(), GetArenaType());
@@ -1046,6 +1049,7 @@ void BattleGround::AnnounceBGStart()
 
 void BattleGround::AddPlayer(Player *plr)
 {
+    MorphCrossfactionPlayer(plr, true);
     // remove afk from player
     if (plr->isAFK())
         plr->ToggleAFK();
@@ -1085,14 +1089,14 @@ void BattleGround::AddPlayer(Player *plr)
         plr->RemoveAllEnchantments(TEMP_ENCHANTMENT_SLOT, true);
         if (team == ALLIANCE)                                // gold
         {
-            if (plr->GetTeam() == HORDE)
+            if (plr->GetBGTeam() == HORDE)
                 plr->CastSpell(plr, SPELL_HORDE_GOLD_FLAG,true);
             else
                 plr->CastSpell(plr, SPELL_ALLIANCE_GOLD_FLAG,true);
         }
         else                                                // green
         {
-            if (plr->GetTeam() == HORDE)
+            if (plr->GetBGTeam() == HORDE)
                 plr->CastSpell(plr, SPELL_HORDE_GREEN_FLAG,true);
             else
                 plr->CastSpell(plr, SPELL_ALLIANCE_GREEN_FLAG,true);
@@ -1630,7 +1634,7 @@ bool BattleGround::HandlePlayerUnderMap(Player * plr, float z)
 
     EventPlayerDroppedFlag(plr);
 
-    WorldSafeLocsEntry const *graveyard = GetClosestGraveYard(plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), plr->GetTeam());
+    WorldSafeLocsEntry const *graveyard = GetClosestGraveYard(plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), plr->GetBGTeam());
     if (graveyard)
     {
         plr->NearTeleportTo(graveyard->x, graveyard->y, graveyard->z, plr->GetOrientation());
@@ -1714,7 +1718,7 @@ void BattleGround::HandleKillPlayer(Player *player, Player *killer)
             if (!plr || plr == killer)
                 continue;
 
-            if (plr->GetTeam() == killer->GetTeam() && plr->IsAtGroupRewardDistance(player) && !player->ToUnit()->WorthHonor)
+            if (plr->GetBGTeam() == killer->GetBGTeam() && plr->IsAtGroupRewardDistance(player) && !player->ToUnit()->WorthHonor)
                 UpdatePlayerScore(plr, SCORE_HONORABLE_KILLS, 1);
         }
     }
@@ -1762,7 +1766,7 @@ void BattleGround::PlayerRelogin(uint64 guid)
     sBattleGroundMgr.BuildPvpLogDataPacket(&data, this);
     plr->SendPacketToSelf(&data);
 
-    sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, this, plr->GetTeam(), plr->GetBattleGroundQueueIndex(bgQueueTypeId), STATUS_IN_PROGRESS, TIME_TO_AUTOREMOVE, GetStartTime());
+    sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, this, plr->GetBGTeam(), plr->GetBattleGroundQueueIndex(bgQueueTypeId), STATUS_IN_PROGRESS, TIME_TO_AUTOREMOVE, GetStartTime());
     plr->SendPacketToSelf(&data);
 }
 
@@ -1850,13 +1854,141 @@ void BattleGround::SendObjectiveComplete(uint32 id, uint32 TeamID, float x, floa
         }
 
         uint32 team = itr->second.Team;//GetPlayerTeam(plr->GetGUID());
-        if (!team) team = plr->GetTeam();
+        if (!team) team = plr->GetBGTeam();
 
         if (team == TeamID && plr->IsInWorld())
         {
             float dist = (plr->GetPositionX() - x)*(plr->GetPositionX() - x)+(plr->GetPositionY() - y)*(plr->GetPositionY() - y);
             if (dist < distance)
                 plr->KilledMonster(id, 0);
+        }
+    }
+}
+
+void BattleGroundMgr::HandleCrossfactionSendToBattle(Player* player, BattleGround* bg, uint32 InstanceID, BattleGroundTypeId bgTypeId)
+{
+    if (!player || !bg)
+        return;
+
+    if (sWorld.getConfig(CONFIG_BG_CROSSFRACTION))
+    {
+        Team GrpTeam = TEAM_NONE;
+        if (Group *pGroup = player->GetGroup())
+        {
+            for (GroupReference* itr = pGroup->GetFirstMember(); itr != NULL; itr = itr->next())
+            {
+                Player* pGroupGuy = itr->getSource();
+                if (!pGroupGuy)
+                    continue;
+
+                if (pGroupGuy->GetBattleGround() && pGroupGuy->GetBattleGround()->GetInstanceID() == InstanceID && pGroupGuy->GetBattleGround()->GetTypeID() == bgTypeId)
+                {
+                    if (pGroupGuy->GetBGTeam() == TEAM_ALLIANCE)
+                        GrpTeam = ALLIANCE;
+                    else
+                        GrpTeam = HORDE;
+                    break;
+                }
+            }
+        }
+        if (GrpTeam != TEAM_NONE && bg->GetPlayersCountByTeam(GrpTeam) < bg->GetMaxPlayersPerTeam())
+            player->SetBGTeam(GrpTeam);
+        else
+        {
+            if (bg->GetPlayersCountByTeam(HORDE) < bg->GetMaxPlayersPerTeam() && bg->GetPlayersCountByTeam(HORDE) < bg->GetPlayersCountByTeam(ALLIANCE))
+                player->SetBGTeam(HORDE);
+            else if (bg->GetPlayersCountByTeam(ALLIANCE) < bg->GetMaxPlayersPerTeam() && bg->GetPlayersCountByTeam(ALLIANCE) < bg->GetPlayersCountByTeam(HORDE))
+                player->SetBGTeam(ALLIANCE);
+        }
+        if (player->GetBGTeam() == HORDE)
+            player->setFaction(2); // orc, and generic for horde
+        else if (player->GetBGTeam() == ALLIANCE)
+            player->setFaction(1); // dwarf/gnome, and generic for alliance
+    }
+
+    bg->UpdatePlayersCountByTeam(player->GetBGTeam(), false); // Add here instead of in AddPlayer, because AddPlayer is not made until loading screen is finished. Which can cause unbalance in the system.
+}
+
+void BattleGround::MorphCrossfactionPlayer(Player* player, bool action)
+{
+    if (!player || !player->IsInWorld())
+        return;
+
+    else if (!action)
+    {
+        player->setFactionForRace(player->getRace());
+        PlayerInfo const* info = sObjectMgr.GetPlayerInfo(player->getRace(), player->getClass());
+        if (!info)
+        {
+            sLog.outLog(LOG_DEFAULT, "ERROR: Player have incorrect race/class pair. Can't be loaded.");
+            return;
+        }
+        switch (player->getGender())
+        {
+        case GENDER_FEMALE:
+            player->SetDisplayId(info->displayId_f);
+            player->SetNativeDisplayId(info->displayId_f);
+            break;
+        case GENDER_MALE:
+            player->SetDisplayId(info->displayId_m);
+            player->SetNativeDisplayId(info->displayId_m);
+            break;
+        default:
+            sLog.outLog(LOG_DEFAULT, "ERROR: Invalid gender %u for player",player->getGender());
+            return;
+            break;
+        }
+    }
+    if (player->GetTeam() != player->GetBGTeam() && action)
+    {
+        switch (urand(1,2))
+        {
+        case 1:
+            // Human / Bloodelf
+            if (player->GetBGTeam() == HORDE && player->getGender() == GENDER_MALE)
+            {
+                player->SetDisplayId(19723);
+                player->SetNativeDisplayId(19723);
+            }
+            else if (player->GetBGTeam() == HORDE && player->getGender() == GENDER_FEMALE)
+            {
+                player->SetDisplayId(19724);
+                player->SetNativeDisplayId(19724);
+            }
+            else if (player->GetBGTeam() == ALLIANCE && player->getGender() == GENDER_MALE)
+            {
+                player->SetDisplayId(20578);
+                player->SetNativeDisplayId(20578);
+            }
+            else if (player->GetBGTeam() == ALLIANCE && player->getGender() == GENDER_FEMALE)
+            {
+                player->SetDisplayId(20579);
+                player->SetNativeDisplayId(20579);
+            }
+            break;
+        case 2:
+            // Gnome / Tauren
+            if (player->GetBGTeam() == HORDE && player->getGender() == GENDER_MALE)
+            {
+                player->SetDisplayId(20585);
+                player->SetNativeDisplayId(20585);
+            }
+            else if (player->GetBGTeam() == HORDE && player->getGender() == GENDER_FEMALE)
+            {
+                player->SetDisplayId(20584);
+                player->SetNativeDisplayId(20584);
+            }
+            else if (player->GetBGTeam() == ALLIANCE && player->getGender() == GENDER_MALE)
+            {
+                player->SetDisplayId(20580);
+                player->SetNativeDisplayId(20580);
+            }
+            else if (player->GetBGTeam() == ALLIANCE && player->getGender() == GENDER_FEMALE)
+            {
+                player->SetDisplayId(20581);
+                player->SetNativeDisplayId(20581);
+            }
+            break;
         }
     }
 }

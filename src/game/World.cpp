@@ -604,6 +604,8 @@ void World::LoadConfigSettings(bool reload)
     m_configs[CONFIG_RETURNOLDMAILS_MODE] = sConfig.GetIntDefault("Mail.OldReturnMode", 0);
     m_configs[CONFIG_RETURNOLDMAILS_INTERVAL] = sConfig.GetIntDefault("Mail.OldReturnTimer", 60);
 
+    m_configs[CONFIG_BG_CROSSFRACTION] = sConfig.GetIntDefault ("Battleground.Crossfraction", 1);
+
     m_configs[CONFIG_COMPRESSION] = sConfig.GetIntDefault("Compression", 1);
     if (m_configs[CONFIG_COMPRESSION] < 1 || m_configs[CONFIG_COMPRESSION] > 9)
     {
