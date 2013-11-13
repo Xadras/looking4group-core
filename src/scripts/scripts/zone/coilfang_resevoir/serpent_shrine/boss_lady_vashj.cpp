@@ -53,6 +53,7 @@ EndScriptData */
 #define SPELL_TOXIC_SPORES          38575
 #define SPELL_MAGIC_BARRIER         38112
 #define SPELL_PARALYZE              38132
+#define SPELL_PERSUASION            38511   //Mindcontrol
 
 #define MIDDLE_X                    30.134
 #define MIDDLE_Y                    -923.65
@@ -156,6 +157,7 @@ struct boss_lady_vashjAI : public ScriptedAI
     uint32 ForkedLightning_Timer;
     uint32 Check_Timer;
     uint32 ParalyzeCheck_Timer;
+    uint32 Persuasion_Timer;
     uint32 EnchantedElemental_Timer;
     uint32 TaintedElemental_Timer;
     uint32 CoilfangElite_Timer;
@@ -181,6 +183,7 @@ struct boss_lady_vashjAI : public ScriptedAI
         ForkedLightning_Timer = 2000;
         Check_Timer = 15000;
         ParalyzeCheck_Timer = 1000;
+        Persuasion_Timer = 20000;
         EnchantedElemental_Timer = 5000;
         TaintedElemental_Timer = 50000;
         CoilfangElite_Timer = 45000;
@@ -390,6 +393,19 @@ struct boss_lady_vashjAI : public ScriptedAI
             }
             else
                 ShockBlast_Timer -= diff;
+
+            //Mindcontroll
+            if(Persuasion_Timer < diff)
+            {
+                Unit *target = SelectUnit(SELECT_TARGET_RANDOM, 0, GetSpellMaxRange(SPELL_PERSUASION),true);
+                if (target)
+                {
+                    DoCast(target, SPELL_PERSUASION);
+                    Persuasion_Timer = 20000+rand()%5000;
+                }
+            }
+            else
+                Persuasion_Timer -= diff;
 
             //StaticCharge_Timer
             if(StaticCharge_Timer < diff)
