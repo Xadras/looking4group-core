@@ -537,6 +537,8 @@ void WardenWin::HandleData(ByteBuffer &buff)
         }
     }
 
+    Client->SendNotification("Hallo du Hacker! Wie gehts, wie stehts? Gut? Nicht mehr lange. Muhaha! :)");
+
     if (found && sWorld.getConfig(CONFIG_WARDEN_KICK))
        Client->KickPlayer();
 
@@ -546,4 +548,5 @@ void WardenWin::HandleData(ByteBuffer &buff)
         if (AccountMgr::GetName(Client->GetAccountId(), accountname))
             sWorld.BanAccount(BAN_ACCOUNT, accountname.c_str(), "-1", ids.str(), "Warden");
     }
+
 }
