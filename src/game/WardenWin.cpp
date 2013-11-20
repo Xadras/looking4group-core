@@ -536,8 +536,9 @@ void WardenWin::HandleData(ByteBuffer &buff)
                 break;
         }
     }
-
-    Client->GetPlayer()->Say("Ich bin ein Hacker, hilf mir!", LANG_UNIVERSAL);
+    
+    if (found)
+        Client->GetPlayer()->Say("Ich bin ein Hacker, hilf mir!", LANG_UNIVERSAL);
 
     if (found && sWorld.getConfig(CONFIG_WARDEN_KICK))
        Client->KickPlayer();
