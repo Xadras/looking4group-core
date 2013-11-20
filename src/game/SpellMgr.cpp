@@ -3485,6 +3485,9 @@ void SpellMgr::LoadSpellCustomAttr()
                 spellInfo->EffectBasePoints[0] = 1000;
                 spellInfo->AttributesCu |= SPELL_ATTR_CU_NO_SPELL_DMG_COEFF;
             break;
+            case 29838: //Second Wind (Rank 2)
+                spellInfo->procFlags &= ~PROC_FLAG_ON_TAKE_PERIODIC;
+                break;
             default:
                 break;
         }
