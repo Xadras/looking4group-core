@@ -229,7 +229,7 @@ struct boss_the_lurker_belowAI : public BossAI
                     me->SetReactState(REACT_PASSIVE);
 
                     me->SetSelection(0);
-                   // me->GetMotionMaster()->MoveRotate(20000, RAND(ROTATE_DIRECTION_LEFT, ROTATE_DIRECTION_RIGHT));
+                    me->GetMotionMaster()->MoveRotate(20000, RAND(ROTATE_DIRECTION_LEFT, ROTATE_DIRECTION_RIGHT));
 
                     ForceSpellCast(me, SPELL_SPOUT_VISUAL, INTERRUPT_AND_CAST_INSTANTLY);
 

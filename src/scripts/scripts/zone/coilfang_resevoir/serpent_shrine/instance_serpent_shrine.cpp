@@ -31,6 +31,12 @@ EndScriptData */
 #define TRASHMOB_COILFANG_PRIESTESS 21220  //6*2
 #define TRASHMOB_COILFANG_SHATTERER 21301  //6*3
 
+uint64 consoles[6] = {0,0,0,0,0,0};
+
+bool c1_used = false, c2_used = false, c3_used = false, c4_used = false, c5_used = false;
+
+uint64 ControlConsole = 0;
+
 
 /* Serpentshrine cavern encounters:
 0 - Hydross The Unstable event
@@ -45,10 +51,60 @@ bool GOUse_go_bridge_console(Player *player, GameObject* go)
 {
     ScriptedInstance* pInstance = (ScriptedInstance*)go->GetInstanceData();
 
+    if(!pInstance )
+        return false;
+
+    if (c1_used && c2_used && c3_used && c4_used && c5_used){
+        pInstance->SetData(DATA_CONTROL_CONSOLE, DONE);
+        return true;
+    }
+
+    return false;
+}
+
+bool GOUse_go_vashj_console_access_panel(Player *player, GameObject* go)
+{
+    ScriptedInstance* pInstance = (ScriptedInstance*)go->GetInstanceData();
+
     if(!pInstance)
         return false;
 
-    pInstance->SetData(DATA_CONTROL_CONSOLE, DONE);
+    if (go->GetGUID() == consoles[1])
+        if (!c1_used && (pInstance->GetData(DATA_HYDROSSTHEUNSTABLEEVENT) == DONE)){
+            c1_used = true;
+            go->Say("c1_activated", LANG_UNIVERSAL,player->GetGUID());
+        }
+
+    if (go->GetGUID() == consoles[2])
+        if (!c2_used && (pInstance->GetData(DATA_THELURKERBELOWEVENT) == DONE)){
+            c2_used = true;
+            go->Say("c2_activated", LANG_UNIVERSAL,player->GetGUID());
+        }
+
+    if (go->GetGUID() == consoles[3])
+        if (!c3_used && (pInstance->GetData(DATA_LEOTHERASTHEBLINDEVENT) == DONE)){
+            c3_used = true;
+            go->Say("c3_activated", LANG_UNIVERSAL,player->GetGUID());
+        }
+
+    if (go->GetGUID() == consoles[4])
+        if (!c4_used && (pInstance->GetData(DATA_KARATHRESSEVENT) == DONE)){
+            c4_used = true;
+            go->Say("c4_activated", LANG_UNIVERSAL,player->GetGUID());
+        }
+
+    if (go->GetGUID() == consoles[5])
+        if (!c5_used && (pInstance->GetData(DATA_MOROGRIMTIDEWALKEREVENT) == DONE)){
+            c5_used = true;
+            go->Say("c5_activated", LANG_UNIVERSAL,player->GetGUID());
+        }
+
+    if (c1_used && c2_used && c3_used && c4_used && c5_used){
+        if(ControlConsole)
+            if (player && ControlConsole)
+                if (GameObject *go_console = GameObject::GetGameObject(*player,ControlConsole))
+                    go_console->setActive(true);
+    }
 
     return true;
 }
@@ -100,6 +156,7 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
         BridgePart[0] = 0;
         BridgePart[1] = 0;
         BridgePart[2] = 0;
+
         StrangePool = 0;
         Water = WATERSTATE_FRENZY;
 
@@ -134,7 +191,7 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
         {
             case 184568:
                 ControlConsole = go->GetGUID();
-                go->setActive(true);
+                go->setActive(false);
             break;
 
             case 184203:
@@ -170,6 +227,30 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
                 }
                 break;
 
+            case 185114:
+                consoles[1] = go->GetGUID();
+                go->setActive(true);
+            break;
+
+            case 185118:
+                consoles[5] = go->GetGUID();
+                go->setActive(true);
+            break;
+
+            case 185115:
+                consoles[2] = go->GetGUID();
+                go->setActive(true);
+            break;
+
+            case 185116:
+                consoles[3] = go->GetGUID();
+                go->setActive(true);
+            break;
+
+            case 185117:
+                consoles[4] = go->GetGUID();
+                go->setActive(true);
+            break;
         }
     }
 
@@ -470,7 +551,7 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
         if (FrenzySpawnTimer < diff)
         {
             DoSpawnFrenzy = true;
-            FrenzySpawnTimer = 500;
+            FrenzySpawnTimer = 2000;
         }
         else
             FrenzySpawnTimer -= diff;
@@ -494,5 +575,10 @@ void AddSC_instance_serpentshrine_cavern()
     newscript = new Script;
     newscript->Name="go_bridge_console";
     newscript->pGOUse = &GOUse_go_bridge_console;
+    newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name="GOUse_go_vashj_console_access_panel";
+    newscript->pGOUse = &GOUse_go_vashj_console_access_panel;
     newscript->RegisterSelf();
 }
