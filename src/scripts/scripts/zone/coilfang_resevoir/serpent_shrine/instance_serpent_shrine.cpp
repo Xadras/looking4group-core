@@ -1,18 +1,18 @@
 /* Copyright (C) 2006 - 2008 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
 
 /* ScriptData
 SDName: Instance_Serpent_Shrine
@@ -75,38 +75,38 @@ bool GOUse_go_vashj_console_access_panel(Player *player, GameObject* go)
             go->Say("c1_activated", LANG_UNIVERSAL,player->GetGUID());
         }
 
-    if (go->GetGUID() == consoles[2])
-        if (!c2_used && (pInstance->GetData(DATA_THELURKERBELOWEVENT) == DONE)){
-            c2_used = true;
-            go->Say("c2_activated", LANG_UNIVERSAL,player->GetGUID());
-        }
+        if (go->GetGUID() == consoles[2])
+            if (!c2_used && (pInstance->GetData(DATA_THELURKERBELOWEVENT) == DONE)){
+                c2_used = true;
+                go->Say("c2_activated", LANG_UNIVERSAL,player->GetGUID());
+            }
 
-    if (go->GetGUID() == consoles[3])
-        if (!c3_used && (pInstance->GetData(DATA_LEOTHERASTHEBLINDEVENT) == DONE)){
-            c3_used = true;
-            go->Say("c3_activated", LANG_UNIVERSAL,player->GetGUID());
-        }
+            if (go->GetGUID() == consoles[3])
+                if (!c3_used && (pInstance->GetData(DATA_LEOTHERASTHEBLINDEVENT) == DONE)){
+                    c3_used = true;
+                    go->Say("c3_activated", LANG_UNIVERSAL,player->GetGUID());
+                }
 
-    if (go->GetGUID() == consoles[4])
-        if (!c4_used && (pInstance->GetData(DATA_KARATHRESSEVENT) == DONE)){
-            c4_used = true;
-            go->Say("c4_activated", LANG_UNIVERSAL,player->GetGUID());
-        }
+                if (go->GetGUID() == consoles[4])
+                    if (!c4_used && (pInstance->GetData(DATA_KARATHRESSEVENT) == DONE)){
+                        c4_used = true;
+                        go->Say("c4_activated", LANG_UNIVERSAL,player->GetGUID());
+                    }
 
-    if (go->GetGUID() == consoles[5])
-        if (!c5_used && (pInstance->GetData(DATA_MOROGRIMTIDEWALKEREVENT) == DONE)){
-            c5_used = true;
-            go->Say("c5_activated", LANG_UNIVERSAL,player->GetGUID());
-        }
+                    if (go->GetGUID() == consoles[5])
+                        if (!c5_used && (pInstance->GetData(DATA_MOROGRIMTIDEWALKEREVENT) == DONE)){
+                            c5_used = true;
+                            go->Say("c5_activated", LANG_UNIVERSAL,player->GetGUID());
+                        }
 
-    if (c1_used && c2_used && c3_used && c4_used && c5_used){
-        if(ControlConsole)
-            if (player && ControlConsole)
-                if (GameObject *go_console = GameObject::GetGameObject(*player,ControlConsole))
-                    go_console->setActive(true);
-    }
+                        if (c1_used && c2_used && c3_used && c4_used && c5_used){
+                            if(ControlConsole)
+                                if (player && ControlConsole)
+                                    if (GameObject *go_console = GameObject::GetGameObject(*player,ControlConsole))
+                                        go_console->setActive(true);
+                        }
 
-    return true;
+                        return true;
 }
 
 struct instance_serpentshrine_cavern : public ScriptedInstance
@@ -189,67 +189,67 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
     {
         switch(go->GetEntry())
         {
-            case 184568:
-                ControlConsole = go->GetGUID();
-                go->setActive(false);
+        case 184568:
+            ControlConsole = go->GetGUID();
+            go->setActive(false);
             break;
 
-            case 184203:
-                BridgePart[0] = go->GetGUID();
-                go->setActive(true);
+        case 184203:
+            BridgePart[0] = go->GetGUID();
+            go->setActive(true);
             break;
 
-            case 184204:
-                BridgePart[1] = go->GetGUID();
-                go->setActive(true);
+        case 184204:
+            BridgePart[1] = go->GetGUID();
+            go->setActive(true);
             break;
 
-            case 184205:
-                BridgePart[2] = go->GetGUID();
-                go->setActive(true);
+        case 184205:
+            BridgePart[2] = go->GetGUID();
+            go->setActive(true);
             break;
-            case 184956:
-                StrangePool = go->GetGUID();
-                if(go->isActiveObject())
-                    SetData(DATA_STRANGE_POOL, DONE);
-                break;
-            case GAMEOBJECT_FISHINGNODE_ENTRY:
-                if(LurkerSubEvent == LURKER_NOT_STARTED)
+        case 184956:
+            StrangePool = go->GetGUID();
+            if(go->isActiveObject())
+                SetData(DATA_STRANGE_POOL, DONE);
+            break;
+        case GAMEOBJECT_FISHINGNODE_ENTRY:
+            if(LurkerSubEvent == LURKER_NOT_STARTED)
+            {
+                if (Unit *pTemp = instance->GetCreature(LurkerBelow))
                 {
-                    if (Unit *pTemp = instance->GetCreature(LurkerBelow))
-                    {
-                        if (go->GetDistance2d(pTemp) > 16.0f)
-                            return;
+                    if (go->GetDistance2d(pTemp) > 16.0f)
+                        return;
 
-                        FishingTimer = 10000+rand()%30000;//random time before lurker emerges
-                        LurkerSubEvent = LURKER_FISHING;
-                    }
+                    FishingTimer = 10000+rand()%30000;//random time before lurker emerges
+                    LurkerSubEvent = LURKER_FISHING;
                 }
-                break;
-
-            case 185114:
-                consoles[1] = go->GetGUID();
-                go->setActive(true);
+            }
             break;
 
-            case 185118:
-                consoles[5] = go->GetGUID();
-                go->setActive(true);
+        case 185114:
+            consoles[1] = go->GetGUID();
+            go->setActive(true);
             break;
 
-            case 185115:
-                consoles[2] = go->GetGUID();
-                go->setActive(true);
+        case 185118:
+            consoles[5] = go->GetGUID();
+            go->setActive(true);
             break;
 
-            case 185116:
-                consoles[3] = go->GetGUID();
-                go->setActive(true);
+        case 185115:
+            consoles[2] = go->GetGUID();
+            go->setActive(true);
             break;
 
-            case 185117:
-                consoles[4] = go->GetGUID();
-                go->setActive(true);
+        case 185116:
+            consoles[3] = go->GetGUID();
+            go->setActive(true);
+            break;
+
+        case 185117:
+            consoles[4] = go->GetGUID();
+            go->setActive(true);
             break;
         }
     }
@@ -264,20 +264,20 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
     {
         switch(entry)
         {
-            case 21212:
-                return DATA_LADYVASHJEVENT;
-            case 21214:
-                return DATA_KARATHRESSEVENT;
-            case 21217:
-                return DATA_THELURKERBELOWEVENT;
-            case 21215:
-                return DATA_LEOTHERASTHEBLINDEVENT;
-            case 21213:
-                return DATA_MOROGRIMTIDEWALKEREVENT;
-            case 21216:
-                return DATA_HYDROSSTHEUNSTABLEEVENT;
-            default:
-                return 0;
+        case 21212:
+            return DATA_LADYVASHJEVENT;
+        case 21214:
+            return DATA_KARATHRESSEVENT;
+        case 21217:
+            return DATA_THELURKERBELOWEVENT;
+        case 21215:
+            return DATA_LEOTHERASTHEBLINDEVENT;
+        case 21213:
+            return DATA_MOROGRIMTIDEWALKEREVENT;
+        case 21216:
+            return DATA_HYDROSSTHEUNSTABLEEVENT;
+        default:
+            return 0;
         }
     }
 
@@ -285,27 +285,27 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
     {
         switch(creature_entry)
         {
-            case 21212:
-                LadyVashj = creature->GetGUID();
-                break;
-            case 21214:
-                Karathress = creature->GetGUID();
-                break;
-            case 21966:
-                Sharkkis = creature->GetGUID();
-                break;
-            case 21217:
-                LurkerBelow = creature->GetGUID();
-                break;
-            case 21965:
-                Tidalvess = creature->GetGUID();
-                break;
-            case 21964:
-                Caribdis = creature->GetGUID();
-                break;
-            case 21215:
-                LeotherasTheBlind = creature->GetGUID();
-                break;
+        case 21212:
+            LadyVashj = creature->GetGUID();
+            break;
+        case 21214:
+            Karathress = creature->GetGUID();
+            break;
+        case 21966:
+            Sharkkis = creature->GetGUID();
+            break;
+        case 21217:
+            LurkerBelow = creature->GetGUID();
+            break;
+        case 21965:
+            Tidalvess = creature->GetGUID();
+            break;
+        case 21964:
+            Caribdis = creature->GetGUID();
+            break;
+        case 21215:
+            LeotherasTheBlind = creature->GetGUID();
+            break;
         }
 
         HandleInitCreatureState(creature);
@@ -325,16 +325,16 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
     {
         switch(identifier)
         {
-            case DATA_THELURKERBELOW:           return LurkerBelow;
-            case DATA_SHARKKIS:                 return Sharkkis;
-            case DATA_SHARKKIS_PET:             return SharkkisPet;
-            case DATA_TIDALVESS:                return Tidalvess;
-            case DATA_CARIBDIS:                 return Caribdis;
-            case DATA_LADYVASHJ:                return LadyVashj;
-            case DATA_KARATHRESS:               return Karathress;
-            case DATA_KARATHRESSEVENT_STARTER:  return KarathressEvent_Starter;
-            case DATA_LEOTHERAS:                return LeotherasTheBlind;
-            case DATA_LEOTHERAS_EVENT_STARTER:  return LeotherasEventStarter;
+        case DATA_THELURKERBELOW:           return LurkerBelow;
+        case DATA_SHARKKIS:                 return Sharkkis;
+        case DATA_SHARKKIS_PET:             return SharkkisPet;
+        case DATA_TIDALVESS:                return Tidalvess;
+        case DATA_CARIBDIS:                 return Caribdis;
+        case DATA_LADYVASHJ:                return LadyVashj;
+        case DATA_KARATHRESS:               return Karathress;
+        case DATA_KARATHRESSEVENT_STARTER:  return KarathressEvent_Starter;
+        case DATA_LEOTHERAS:                return LeotherasTheBlind;
+        case DATA_LEOTHERAS_EVENT_STARTER:  return LeotherasEventStarter;
         }
         return 0;
     }
@@ -343,59 +343,59 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
     {
         switch(type)
         {
-            case DATA_STRANGE_POOL:
-                {
-                    StrangePool = data;
-                    if(data == NOT_STARTED)
-                        LurkerSubEvent = LURKER_NOT_STARTED;
-                }
-                break;
-            case DATA_WATER : Water = data; break;
-            case DATA_CONTROL_CONSOLE:
-                if(data == DONE)
-                {
-                    OpenDoor(BridgePart[0], true);
-                    OpenDoor(BridgePart[1], true);
-                    OpenDoor(BridgePart[2], true);
-                }
-                ControlConsole = data;
-                break;
-            case DATA_HYDROSSTHEUNSTABLEEVENT:
-                if(Encounters[0] != DONE)
-                    Encounters[0] = data;
-                break;
-            case DATA_LEOTHERASTHEBLINDEVENT:
-                if(Encounters[1] != DONE)
-                    Encounters[1] = data;
-                break;
-            case DATA_THELURKERBELOWEVENT:
-                if(Encounters[2] != DONE)
-                    Encounters[2] = data;
-                break;
-            case DATA_KARATHRESSEVENT:
-                if(Encounters[3] != DONE)
-                    Encounters[3] = data;
-                break;
-            case DATA_MOROGRIMTIDEWALKEREVENT:
-                if(Encounters[4] != DONE)
-                    Encounters[4] = data;
-                break;
-                //Lady Vashj
-            case DATA_LADYVASHJEVENT:
+        case DATA_STRANGE_POOL:
+            {
+                StrangePool = data;
                 if(data == NOT_STARTED)
-                {
-                    ShieldGeneratorDeactivated[0] = false;
-                    ShieldGeneratorDeactivated[1] = false;
-                    ShieldGeneratorDeactivated[2] = false;
-                    ShieldGeneratorDeactivated[3] = false;
-                }
-                if (Encounters[5] != DONE)
-                    Encounters[5] = data;
-                break;
-            case DATA_SHIELDGENERATOR1:ShieldGeneratorDeactivated[0] = (data) ? true : false;   break;
-            case DATA_SHIELDGENERATOR2:ShieldGeneratorDeactivated[1] = (data) ? true : false;   break;
-            case DATA_SHIELDGENERATOR3:ShieldGeneratorDeactivated[2] = (data) ? true : false;   break;
-            case DATA_SHIELDGENERATOR4:ShieldGeneratorDeactivated[3] = (data) ? true : false;   break;
+                    LurkerSubEvent = LURKER_NOT_STARTED;
+            }
+            break;
+        case DATA_WATER : Water = data; break;
+        case DATA_CONTROL_CONSOLE:
+            if(data == DONE)
+            {
+                OpenDoor(BridgePart[0], true);
+                OpenDoor(BridgePart[1], true);
+                OpenDoor(BridgePart[2], true);
+            }
+            ControlConsole = data;
+            break;
+        case DATA_HYDROSSTHEUNSTABLEEVENT:
+            if(Encounters[0] != DONE)
+                Encounters[0] = data;
+            break;
+        case DATA_LEOTHERASTHEBLINDEVENT:
+            if(Encounters[1] != DONE)
+                Encounters[1] = data;
+            break;
+        case DATA_THELURKERBELOWEVENT:
+            if(Encounters[2] != DONE)
+                Encounters[2] = data;
+            break;
+        case DATA_KARATHRESSEVENT:
+            if(Encounters[3] != DONE)
+                Encounters[3] = data;
+            break;
+        case DATA_MOROGRIMTIDEWALKEREVENT:
+            if(Encounters[4] != DONE)
+                Encounters[4] = data;
+            break;
+            //Lady Vashj
+        case DATA_LADYVASHJEVENT:
+            if(data == NOT_STARTED)
+            {
+                ShieldGeneratorDeactivated[0] = false;
+                ShieldGeneratorDeactivated[1] = false;
+                ShieldGeneratorDeactivated[2] = false;
+                ShieldGeneratorDeactivated[3] = false;
+            }
+            if (Encounters[5] != DONE)
+                Encounters[5] = data;
+            break;
+        case DATA_SHIELDGENERATOR1:ShieldGeneratorDeactivated[0] = (data) ? true : false;   break;
+        case DATA_SHIELDGENERATOR2:ShieldGeneratorDeactivated[1] = (data) ? true : false;   break;
+        case DATA_SHIELDGENERATOR3:ShieldGeneratorDeactivated[2] = (data) ? true : false;   break;
+        case DATA_SHIELDGENERATOR4:ShieldGeneratorDeactivated[3] = (data) ? true : false;   break;
         }
 
         if (data == DONE)
@@ -406,23 +406,23 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
     {
         switch(type)
         {
-            case DATA_HYDROSSTHEUNSTABLEEVENT:  return Encounters[0];
-            case DATA_LEOTHERASTHEBLINDEVENT:   return Encounters[1];
-            case DATA_THELURKERBELOWEVENT:      return Encounters[2];
-            case DATA_KARATHRESSEVENT:          return Encounters[3];
-            case DATA_MOROGRIMTIDEWALKEREVENT:  return Encounters[4];
-                //Lady Vashj
-            case DATA_LADYVASHJEVENT:           return Encounters[5];
-            case DATA_SHIELDGENERATOR1:         return ShieldGeneratorDeactivated[0];
-            case DATA_SHIELDGENERATOR2:         return ShieldGeneratorDeactivated[1];
-            case DATA_SHIELDGENERATOR3:         return ShieldGeneratorDeactivated[2];
-            case DATA_SHIELDGENERATOR4:         return ShieldGeneratorDeactivated[3];
-            case DATA_CANSTARTPHASE3:
-                if (ShieldGeneratorDeactivated[0] && ShieldGeneratorDeactivated[1] && ShieldGeneratorDeactivated[2] && ShieldGeneratorDeactivated[3])
-                    return 1;
-                break;
-            case DATA_STRANGE_POOL:             return StrangePool;
-            case DATA_WATER:                    return Water;
+        case DATA_HYDROSSTHEUNSTABLEEVENT:  return Encounters[0];
+        case DATA_LEOTHERASTHEBLINDEVENT:   return Encounters[1];
+        case DATA_THELURKERBELOWEVENT:      return Encounters[2];
+        case DATA_KARATHRESSEVENT:          return Encounters[3];
+        case DATA_MOROGRIMTIDEWALKEREVENT:  return Encounters[4];
+            //Lady Vashj
+        case DATA_LADYVASHJEVENT:           return Encounters[5];
+        case DATA_SHIELDGENERATOR1:         return ShieldGeneratorDeactivated[0];
+        case DATA_SHIELDGENERATOR2:         return ShieldGeneratorDeactivated[1];
+        case DATA_SHIELDGENERATOR3:         return ShieldGeneratorDeactivated[2];
+        case DATA_SHIELDGENERATOR4:         return ShieldGeneratorDeactivated[3];
+        case DATA_CANSTARTPHASE3:
+            if (ShieldGeneratorDeactivated[0] && ShieldGeneratorDeactivated[1] && ShieldGeneratorDeactivated[2] && ShieldGeneratorDeactivated[3])
+                return 1;
+            break;
+        case DATA_STRANGE_POOL:             return StrangePool;
+        case DATA_WATER:                    return Water;
         }
         return 0;
     }
@@ -504,7 +504,7 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
             {
                 if(Player* pPlayer = i->getSource())
                 {
-                    if (pPlayer->isAlive() && (pPlayer->GetPositionZ() < 19.9f) && pPlayer->IsInWater())
+                    if (pPlayer->isAlive() && (pPlayer->GetPositionZ() < -19.9f) && pPlayer->IsInWater())
                     {
                         PlayerInWater = true;
                         if (Water == WATERSTATE_SCALDING)

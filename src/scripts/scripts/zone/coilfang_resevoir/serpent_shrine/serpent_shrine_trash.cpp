@@ -244,8 +244,8 @@ struct mob_underbog_colossusAI : public ScriptedAI
             float x, y, z;
             me->GetPosition(x, y, z);
             // FIXME: ponizsze nie dziala, chociaz mialoby lepszy efekt
-//            me->GetRandomPoint(x, y, z, frand(5, 10), x, y, z);
-//            me->GetValidPointInAngle(dest, 10.0f, frand(0, 2*M_PI), true);
+            //            me->GetRandomPoint(x, y, z, frand(5, 10), x, y, z);
+            //            me->GetValidPointInAngle(dest, 10.0f, frand(0, 2*M_PI), true);
             me->SummonCreature(entry, x, y, z, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 20000);
         }
     }
@@ -281,7 +281,7 @@ struct mob_underbog_colossusAI : public ScriptedAI
                 Geyser_Timer = urand(30000, 60000);
             }
             else
-               Geyser_Timer -= diff;
+                Geyser_Timer -= diff;
 
             if (Parasite_Timer < diff)
             {
