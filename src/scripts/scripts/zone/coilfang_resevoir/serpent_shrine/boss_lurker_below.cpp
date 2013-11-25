@@ -143,7 +143,7 @@ struct boss_the_lurker_belowAI : public BossAI
              me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
              SpoutAngle += (double)diff/20000*(double)M_PI*2;
              if (SpoutAngle >= M_PI*2)SpoutAngle = 0;
-             me->SetOrientation(SpoutAngle);
+             me->SetFacingTo(SpoutAngle);
              me->StopMoving();
              Spout = true;
              break;
@@ -152,7 +152,7 @@ struct boss_the_lurker_belowAI : public BossAI
              me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
              SpoutAngle -= (double)diff/20000*(double)M_PI*2;
              if (SpoutAngle <= 0)SpoutAngle = M_PI*2;
-             me->SetOrientation(SpoutAngle);
+             me->SetFacingTo(SpoutAngle);
              me->StopMoving();
              Spout = true;
              break;
@@ -164,6 +164,7 @@ struct boss_the_lurker_belowAI : public BossAI
          if(RotTimer<diff)//end rotate
          {
              RotType = NOROTATE;//set norotate state
+			 me->clearUnitState(UNIT_STAT_ROTATING);
              RotTimer=20000;
              me->InterruptNonMeleeSpells(false);
              events.ScheduleEvent(LURKER_EVENT_WHIRL, 4000); //whirl directly after spout ends
@@ -200,6 +201,9 @@ struct boss_the_lurker_belowAI : public BossAI
 
          if(victim)
              SpoutAngle = me->GetAngle(victim);
+
+		 me->StopMoving();
+		 me->addUnitState(UNIT_STAT_ROTATING);
 
          me->MonsterTextEmote(EMOTE_SPOUT,0,true);
          //DoCast(me,SPELL_SPOUT_BREATH);//take breath anim
