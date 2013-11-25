@@ -140,20 +140,20 @@ struct boss_the_lurker_belowAI : public BossAI
              return;
          case CLOCKWISE://20secs for 360turn
              //no target if rotating!
-             m_creature->SetUInt64Value(UNIT_FIELD_TARGET, 0);
+             me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
              SpoutAngle += (double)diff/20000*(double)M_PI*2;
              if (SpoutAngle >= M_PI*2)SpoutAngle = 0;
-             m_creature->SetOrientation(SpoutAngle);
-             m_creature->StopMoving();
+             me->SetOrientation(SpoutAngle);
+             me->StopMoving();
              Spout = true;
              break;
          case COUNTERCLOCKWISE://20secs for 360turn
              //no target if rotating!
-             m_creature->SetUInt64Value(UNIT_FIELD_TARGET, 0);
+             me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
              SpoutAngle -= (double)diff/20000*(double)M_PI*2;
              if (SpoutAngle <= 0)SpoutAngle = M_PI*2;
-             m_creature->SetOrientation(SpoutAngle);
-             m_creature->StopMoving();
+             me->SetOrientation(SpoutAngle);
+             me->StopMoving();
              Spout = true;
              break;
          }
@@ -165,25 +165,25 @@ struct boss_the_lurker_belowAI : public BossAI
          {
              RotType = NOROTATE;//set norotate state
              RotTimer=20000;
-             m_creature->InterruptNonMeleeSpells(false);
+             me->InterruptNonMeleeSpells(false);
              events.ScheduleEvent(LURKER_EVENT_WHIRL, 4000); //whirl directly after spout ends
              return;
          }else RotTimer-=diff;
 
          if(SpoutAnimTimer<diff)
          {
-             DoCast(m_creature,SPELL_SPOUT_ANIM,true);
+             DoCast(me,SPELL_SPOUT_ANIM,true);
              SpoutAnimTimer = 1000;
          }else SpoutAnimTimer-=diff;
 
-         Map *map = m_creature->GetMap();
+         Map *map = me->GetMap();
          if (map->IsDungeon() && instance->GetData(DATA_THELURKERBELOWEVENT) == IN_PROGRESS)
          {
              Map::PlayerList const &PlayerList = map->GetPlayers();
              for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
              {
                  Player *target = i->getSource();
-                 if(target && target->isAlive() && m_creature->HasInArc((double)diff/20000*(double)M_PI*2,target) && m_creature->GetDistance(target) <= SPOUT_DIST && !target->IsInWater())
+                 if(target && target->isAlive() && me->HasInArc((double)diff/20000*(double)M_PI*2,target) && me->GetDistance(target) <= SPOUT_DIST && !target->IsInWater())
                      DoCast(target,SPELL_SPOUT,true);//only knock back palyers in arc, in 100yards, not in water
              }
          }
@@ -199,10 +199,10 @@ struct boss_the_lurker_belowAI : public BossAI
          RotTimer=20000;
 
          if(victim)
-             SpoutAngle = m_creature->GetAngle(victim);
+             SpoutAngle = me->GetAngle(victim);
 
-         m_creature->MonsterTextEmote(EMOTE_SPOUT,0,true);
-         //DoCast(m_creature,SPELL_SPOUT_BREATH);//take breath anim
+         me->MonsterTextEmote(EMOTE_SPOUT,0,true);
+         //DoCast(me,SPELL_SPOUT_BREATH);//take breath anim
      }
 
     void EnterCombat(Unit *who)
@@ -317,8 +317,8 @@ struct boss_the_lurker_belowAI : public BossAI
         {
             if(SpoutTimer < diff)
             {
-                if(m_creature->getVictim() && RotType == NOROTATE)
-                    StartRotate(m_creature->getVictim());//start spout and random rotate
+                if(me->getVictim() && RotType == NOROTATE)
+                    StartRotate(me->getVictim());//start spout and random rotate
 				
 				SpoutTimer= 35000;
                 return;
