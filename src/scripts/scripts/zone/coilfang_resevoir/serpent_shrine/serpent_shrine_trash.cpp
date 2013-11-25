@@ -414,7 +414,7 @@ struct mob_coilfang_frenzyAI : public ScriptedAI
         Unit *victim = me->getVictim();
 
         victim->GetPosition(x, y, z);
-        if(z - 5 > WATER_Z)
+        if(z - 0.5f > WATER_Z)
         {
             EnterEvadeMode();
             return;

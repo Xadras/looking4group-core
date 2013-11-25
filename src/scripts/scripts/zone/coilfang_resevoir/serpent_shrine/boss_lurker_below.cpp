@@ -143,7 +143,8 @@ struct boss_the_lurker_belowAI : public BossAI
              me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
              SpoutAngle += (double)diff/20000*(double)M_PI*2;
              if (SpoutAngle >= M_PI*2)SpoutAngle = 0;
-             me->SetFacingTo(SpoutAngle);
+             me->SetOrientation(SpoutAngle);
+	         me->SendHeartBeat();
              me->StopMoving();
              Spout = true;
              break;
@@ -152,7 +153,8 @@ struct boss_the_lurker_belowAI : public BossAI
              me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
              SpoutAngle -= (double)diff/20000*(double)M_PI*2;
              if (SpoutAngle <= 0)SpoutAngle = M_PI*2;
-             me->SetFacingTo(SpoutAngle);
+             me->SetOrientation(SpoutAngle);
+	         me->SendHeartBeat();
              me->StopMoving();
              Spout = true;
              break;
@@ -166,6 +168,8 @@ struct boss_the_lurker_belowAI : public BossAI
              RotType = NOROTATE;//set norotate state
 			 me->clearUnitState(UNIT_STAT_ROTATING);
              RotTimer=20000;
+             me->SetReactState(REACT_AGGRESSIVE);
+             m_rotating = false;
              me->InterruptNonMeleeSpells(false);
              events.ScheduleEvent(LURKER_EVENT_WHIRL, 4000); //whirl directly after spout ends
              return;
@@ -204,6 +208,8 @@ struct boss_the_lurker_belowAI : public BossAI
 
 		 me->StopMoving();
 		 me->addUnitState(UNIT_STAT_ROTATING);
+         me->SetReactState(REACT_PASSIVE);
+         m_rotating = true;
 
          me->MonsterTextEmote(EMOTE_SPOUT,0,true);
          //DoCast(me,SPELL_SPOUT_BREATH);//take breath anim
@@ -245,21 +251,7 @@ struct boss_the_lurker_belowAI : public BossAI
             Creature *pSummon = me->SummonCreature(addPos[i][0], addPos[i][1], addPos[i][2], addPos[i][3], 0, TEMPSUMMON_DEAD_DESPAWN, 2000);
     }
 
-    void MovementInform(uint32 type, uint32 data)
-    {
-        // data: 0 = FINALIZE
-        // data: 1 = UPDATE
-        if (type == ROTATE_MOTION_TYPE)
-        {
-            if (data == 0) //Rotate movegen finalize
-            {
-                me->RemoveAurasDueToSpell(SPELL_SPOUT_VISUAL);
-                me->SetReactState(REACT_AGGRESSIVE);
-                m_rotating = false;
-            }
-        }
-    }
-
+ 
     void DoMeleeAttackIfReady()
     {
         if (me->hasUnitState(UNIT_STAT_CASTING) || m_submerged || m_rotating)
