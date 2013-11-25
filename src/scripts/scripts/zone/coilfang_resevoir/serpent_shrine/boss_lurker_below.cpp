@@ -21,6 +21,17 @@
 
 #define EMOTE_SPOUT "takes a deep breath."
 
+#define SPELL_SPOUT_ANIM    42835
+#define SPELL_SPOUT         37433
+#define SPOUT_DIST  100
+
+enum RotationType
+{
+    NOROTATE = 0,
+    CLOCKWISE = 1,
+    COUNTERCLOCKWISE = 2,
+};
+
 enum lurkerAdds
 {
     MOB_COILFANG_GUARDIAN = 21873,
@@ -67,6 +78,12 @@ struct boss_the_lurker_belowAI : public BossAI
 {
     boss_the_lurker_belowAI(Creature *c) : BossAI(c, DATA_THELURKERBELOW) { }
 
+    double SpoutAngle;
+    uint8 RotType;
+    uint32 RotTimer;
+    uint32 SpoutAnimTimer;
+    uint32 SpoutTimer;
+
     bool m_rotating;
     bool m_submerged;
     bool m_emoteDone;
@@ -97,6 +114,12 @@ struct boss_the_lurker_belowAI : public BossAI
         events.ScheduleEvent(LURKER_EVENT_GEYSER, 0);
         events.ScheduleEvent(LURKER_EVENT_SUBMERGE, 90000);
 
+        RotType = NOROTATE;
+        SpoutAngle = 0;
+        SpoutAnimTimer = 1000;
+        RotTimer = 20000;
+        SpoutTimer = 15000;
+
         // Timers
         m_checkTimer = 3000;
 
@@ -107,6 +130,80 @@ struct boss_the_lurker_belowAI : public BossAI
         summons.DespawnAll();
         me->CastSpell(me, SPELL_SUBMERGE, false);
     }
+
+     void Rotate(const uint32 diff)
+     {
+         bool Spout = false;
+         switch (RotType)
+         {
+         case NOROTATE:
+             return;
+         case CLOCKWISE://20secs for 360turn
+             //no target if rotating!
+             m_creature->SetUInt64Value(UNIT_FIELD_TARGET, 0);
+             SpoutAngle += (double)diff/20000*(double)M_PI*2;
+             if (SpoutAngle >= M_PI*2)SpoutAngle = 0;
+             m_creature->SetOrientation(SpoutAngle);
+             m_creature->StopMoving();
+             Spout = true;
+             break;
+         case COUNTERCLOCKWISE://20secs for 360turn
+             //no target if rotating!
+             m_creature->SetUInt64Value(UNIT_FIELD_TARGET, 0);
+             SpoutAngle -= (double)diff/20000*(double)M_PI*2;
+             if (SpoutAngle <= 0)SpoutAngle = M_PI*2;
+             m_creature->SetOrientation(SpoutAngle);
+             m_creature->StopMoving();
+             Spout = true;
+             break;
+         }
+
+         if(!Spout)
+             return;
+
+         if(RotTimer<diff)//end rotate
+         {
+             RotType = NOROTATE;//set norotate state
+             RotTimer=20000;
+             m_creature->InterruptNonMeleeSpells(false);
+             events.ScheduleEvent(LURKER_EVENT_WHIRL, 4000); //whirl directly after spout ends
+             return;
+         }else RotTimer-=diff;
+
+         if(SpoutAnimTimer<diff)
+         {
+             DoCast(m_creature,SPELL_SPOUT_ANIM,true);
+             SpoutAnimTimer = 1000;
+         }else SpoutAnimTimer-=diff;
+
+         Map *map = m_creature->GetMap();
+         if (map->IsDungeon() && instance->GetData(DATA_THELURKERBELOWEVENT) == IN_PROGRESS)
+         {
+             Map::PlayerList const &PlayerList = map->GetPlayers();
+             for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+             {
+                 Player *target = i->getSource();
+                 if(target && target->isAlive() && m_creature->HasInArc((double)diff/20000*(double)M_PI*2,target) && m_creature->GetDistance(target) <= SPOUT_DIST && !target->IsInWater())
+                     DoCast(target,SPELL_SPOUT,true);//only knock back palyers in arc, in 100yards, not in water
+             }
+         }
+     }
+
+     void StartRotate(Unit* victim)
+     {
+         switch (rand()%2)
+         {
+         case 0: RotType = CLOCKWISE; break;
+         case 1: RotType = COUNTERCLOCKWISE; break;
+         }
+         RotTimer=20000;
+
+         if(victim)
+             SpoutAngle = m_creature->GetAngle(victim);
+
+         m_creature->MonsterTextEmote(EMOTE_SPOUT,0,true);
+         //DoCast(m_creature,SPELL_SPOUT_BREATH);//take breath anim
+     }
 
     void EnterCombat(Unit *who)
     {
@@ -212,12 +309,27 @@ struct boss_the_lurker_belowAI : public BossAI
 
         DoSpecialThings(diff, DO_PULSE_COMBAT);
 
+		Rotate(diff);//always check rotate things
+
         events.Update(diff);
+
+		if(!m_submerged && RotType == NOROTATE)//is not spouting and not submerged
+        {
+            if(SpoutTimer < diff)
+            {
+                if(m_creature->getVictim() && RotType == NOROTATE)
+                    StartRotate(m_creature->getVictim());//start spout and random rotate
+				
+				SpoutTimer= 35000;
+                return;
+            } else SpoutTimer -= diff;
+		}
+
         while (uint32 eventId = events.ExecuteEvent())
         {
             switch (eventId)
-            {
-                case LURKER_EVENT_SPOUT_EMOTE:
+            {    
+			    /*case LURKER_EVENT_SPOUT_EMOTE:
                 {
                     me->MonsterTextEmote(EMOTE_SPOUT, 0, true);
                     ForceSpellCast(me, SPELL_SPOUT_BREATH);
@@ -239,7 +351,7 @@ struct boss_the_lurker_belowAI : public BossAI
                     events.ScheduleEvent(LURKER_EVENT_SPOUT_EMOTE, 45000);
                     events.RescheduleEvent(LURKER_EVENT_WHIRL, 21000);
                     break;
-                }
+                }*/
                 case LURKER_EVENT_WHIRL:
                 {
                     AddSpellToCast(me, SPELL_WHIRL);
@@ -263,7 +375,8 @@ struct boss_the_lurker_belowAI : public BossAI
                     m_submerged = true;
 
                     events.CancelEvent(LURKER_EVENT_SPOUT_EMOTE);
-                    events.CancelEvent(LURKER_EVENT_SPOUT);
+					SpoutTimer = 4000; // directly cast Spout after emerging!
+                    // events.CancelEvent(LURKER_EVENT_SPOUT);
                     events.CancelEvent(LURKER_EVENT_WHIRL);
                     events.CancelEvent(LURKER_EVENT_GEYSER);
                     events.ScheduleEvent(LURKER_EVENT_REEMERGE, 60000);
