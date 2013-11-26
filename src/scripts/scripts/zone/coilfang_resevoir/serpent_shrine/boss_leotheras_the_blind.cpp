@@ -196,8 +196,8 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
         PulseCombat_Timer = 5000;
         Whirlwind_Timer = 15000;
         ChaosBlast_Timer = 1000;
-        SwitchToDemon_Timer = 45000;
-        SwitchToHuman_Timer = 60000;
+        SwitchToDemon_Timer = 55000;
+        SwitchToHuman_Timer = 45000;
         Berserk_Timer = 600000;
         InnerDemons_Timer = 30000;
         m_creature->SetCanDualWield(true);
@@ -218,6 +218,7 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
 
         m_creature->SetReactState(REACT_AGGRESSIVE);
         m_creature->SetMeleeDamageSchool(SPELL_SCHOOL_NORMAL);
+        DespawnDemon();
     }
 
     void CheckChannelers(bool DoEvade = true)
@@ -498,7 +499,7 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
                     m_creature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_DISPLAY+1, 0);
                     DemonForm = true;
                     NeedThreatReset = true;
-                    SwitchToDemon_Timer = 45000;
+                    SwitchToDemon_Timer = 55000;
                     m_creature->SetReactState(REACT_AGGRESSIVE);
                     m_creature->SetMeleeDamageSchool(SPELL_SCHOOL_FIRE);
                 }
@@ -590,7 +591,7 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
                 DemonForm = false;
                 NeedThreatReset = true;
 
-                SwitchToHuman_Timer = 60000;
+                SwitchToHuman_Timer = 45000;
                 m_creature->SetMeleeDamageSchool(SPELL_SCHOOL_NORMAL);
             }
             else
