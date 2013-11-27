@@ -3492,6 +3492,9 @@ void SpellMgr::LoadSpellCustomAttr()
             case 38971: //acid geysir - spell of ssc colosses
                 spellInfo->EffectBasePoints[0] = 2478;
                 break;
+            case 39045: //SPELL_SUMMON_SERPENTSHRINE_PARASITE
+                spellInfo->AreaId = 3607;
+                break;
             default:
                 break;
         }
