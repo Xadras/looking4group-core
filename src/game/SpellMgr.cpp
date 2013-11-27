@@ -3489,6 +3489,9 @@ void SpellMgr::LoadSpellCustomAttr()
             case 29838: //Second Wind (Rank 2)
                 spellInfo->procFlags &= ~PROC_FLAG_ON_TAKE_PERIODIC;
                 break;
+            case 38971: //acid geysir - spell of ssc colosses
+                spellInfo->EffectBasePoints[0] = 2478;
+                break;
             default:
                 break;
         }
