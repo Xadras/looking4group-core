@@ -442,14 +442,13 @@ struct mob_serpent_shrine_priestressAI : public ScriptedAI
         twenty, fifty = false;
     }
 
-    void JustDied()
-    {
-        me->Respawn();
-        me->CastSpell(me, 27827, false);
-    }
+    void JustDied(){}
 
     void UpdateAI(const uint32 diff)
     {
+        if(!UpdateVictim())
+            return;
+
         if (!fifty && (m_creature->GetHealth()*100 / m_creature->GetMaxHealth()) < 50)
         {
             me->CastSpell(me, 38580, false);
@@ -460,6 +459,11 @@ struct mob_serpent_shrine_priestressAI : public ScriptedAI
         {
             me->CastSpell(me, 38580, false);
             twenty = true;
+        }
+
+        if ((m_creature->GetHealth()*100 / m_creature->GetMaxHealth()) < 5)
+        {
+            me->CastSpell(me, 27827, false);
         }
 
         if (holy_fire_timer <= diff)
@@ -497,10 +501,11 @@ struct mob_coilfang_serpentguardAI : public ScriptedAI
         me->CastSpell(me, 38603, false);
     }
 
-    void EnterEvadeMode() {}
-
     void UpdateAI(const uint32 diff)
     {
+        if(!UpdateVictim())
+            return;
+
         if (melee_timer <= diff)
         {
             me->CastSpell(me->getVictim(), 31345, false);
@@ -542,10 +547,11 @@ struct mob_greyheart_tidecallerAI : public ScriptedAI
         totem, elemental = false;
     }
 
-    void EnterEvadeMode() {}
-
     void UpdateAI(const uint32 diff)
     {
+        if(!UpdateVictim())
+            return;
+
         if (!elemental && elemental_timer <= diff)
         {
             me->CastSpell(me, 39027, false);
@@ -616,17 +622,17 @@ void AddSC_serpent_shrine_trash()
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name = "mob_serpent_shrine_priestressAI";
+    newscript->Name = "mob_serpent_shrine_priestress";
     newscript->GetAI = &GetAI_mob_coilfang_frenzy;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name = "mob_coilfang_serpentguardAI";
+    newscript->Name = "mob_coilfang_serpentguard";
     newscript->GetAI = &GetAI_mob_coilfang_frenzy;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name = "mob_greyheart_tidecallerAI";
+    newscript->Name = "mob_greyheart_tidecaller";
     newscript->GetAI = &GetAI_mob_greyheart_tidecaller;
     newscript->RegisterSelf();
 
