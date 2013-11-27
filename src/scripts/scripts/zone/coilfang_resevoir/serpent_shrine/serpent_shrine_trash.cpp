@@ -443,6 +443,7 @@ struct mob_serpent_shrine_priestressAI : public ScriptedAI
 
     void JustDied()
     {
+        me->Respawn();
         me->CastSpell(me, 27827, false);
     }
 
@@ -477,8 +478,6 @@ struct mob_serpent_shrine_priestressAI : public ScriptedAI
             smite_timer = 12500;
         }
         else smite_timer -= diff;
-
-        DoMeleeAttackIfReady();
     }
 };
 
