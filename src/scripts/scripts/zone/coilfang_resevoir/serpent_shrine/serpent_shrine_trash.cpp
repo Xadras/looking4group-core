@@ -300,16 +300,13 @@ struct mob_underbog_colossusAI : public ScriptedAI
             else
                 Enrage_Timer -= diff;
 
-            if (me->HasAura(SPELL_FRENZY, 0))
+            if (Blow_Timer < diff)
             {
-                if (Blow_Timer < diff)
-                {
-                    AddSpellToCast(SPELL_ATHROPIC_BLOW, CAST_TANK);
-                    Blow_Timer = 1500;
-                }
-                else
-                    Blow_Timer -= diff;
+                AddSpellToCast(SPELL_ATHROPIC_BLOW, CAST_TANK);
+                Blow_Timer = 1500;
             }
+            else
+                Blow_Timer -= diff;
             break;
         }
 
