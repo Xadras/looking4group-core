@@ -539,7 +539,7 @@ struct mob_greyheart_tidecallerAI : public ScriptedAI
         elemental_timer = 15000;
         totem_timer = 7000;
         check_timer = 1000;
-        totem, elemetal = false;
+        totem, elemental = false;
     }
 
     void EnterEvadeMode() {}
