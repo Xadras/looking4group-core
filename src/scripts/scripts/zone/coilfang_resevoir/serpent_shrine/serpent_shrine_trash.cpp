@@ -426,6 +426,173 @@ CreatureAI* GetAI_mob_coilfang_frenzy(Creature *_Creature)
     return new mob_coilfang_frenzyAI(_Creature);
 }
 
+
+struct mob_serpent_shrine_priestressAI : public ScriptedAI
+{
+    mob_serpent_shrine_priestressAI(Creature *c) : ScriptedAI(c) {}
+
+    uint32 smite_timer;
+    uint32 holy_fire_timer;
+    bool twenty, fifty;
+
+    void Reset()
+    {
+        smite_timer = 12500;
+        holy_fire_timer = 7000;
+    }
+
+    void JustDied()
+    {
+        me->CastSpell(me, 27827, false);
+    }
+
+    void EnterEvadeMode()
+    {
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!fifty && (m_creature->GetHealth()*100 / m_creature->GetMaxHealth()) < 50)
+        {
+            me->CastSpell(me, 38580, false);
+            fifty = true;
+        }
+
+        if (!twenty && (m_creature->GetHealth()*100 / m_creature->GetMaxHealth()) < 20)
+        {
+            me->CastSpell(me, 38580, false);
+            twenty = true;
+        }
+
+        if (holy_fire_timer <= diff)
+        {
+            me->CastSpell(me->getVictim(), 38585, false);
+            holy_fire_timer = 7000;
+        }
+        else holy_fire_timer -= diff;
+
+        if (smite_timer <= diff)
+        {
+            me->CastSpell(me->getVictim(), 38585, false);
+            smite_timer = 12500;
+        }
+        else smite_timer -= diff;
+
+        DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_mob_serpent_shrine_priestress(Creature *_Creature)
+{
+    return new mob_serpent_shrine_priestressAI(_Creature);
+}
+
+struct mob_coilfang_serpentguardAI : public ScriptedAI
+{
+    mob_coilfang_serpentguardAI(Creature *c) : ScriptedAI(c) {}
+
+    uint32 reflect_timer;
+    uint32 melee_timer;
+
+    void Reset()
+    {
+        reflect_timer = 15000;
+        melee_timer = 7000;
+        me->CastSpell(me, 38603, false);
+    }
+
+    void EnterEvadeMode() {}
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (melee_timer <= diff)
+        {
+            me->CastSpell(me->getVictim(), 31345, false);
+            melee_timer = 7000;
+        }
+        else melee_timer -= diff;
+
+        if (reflect_timer <= diff)
+        {
+            me->CastSpell(me->getVictim(), 38599, false);
+            reflect_timer = 15000;
+        }
+        else reflect_timer -= diff;
+
+        DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_mob_coilfang_serpentguard(Creature *_Creature)
+{
+    return new mob_coilfang_serpentguardAI(_Creature);
+}
+
+
+struct mob_greyheart_tidecallerAI : public ScriptedAI
+{
+    mob_greyheart_tidecallerAI(Creature *c) : ScriptedAI(c) {}
+
+    uint32 elemental_timer;
+    uint32 totem_timer;
+    uint32 check_timer;
+
+    void Reset()
+    {
+        elemental_timer = 15000;
+        totem_timer = 7000;
+        check_timer = 1000;
+    }
+
+    void EnterEvadeMode() {}
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (elemental_timer <= diff)
+        {
+            me->CastSpell(me, 39027, false);
+            elemental_timer = 0;
+        }
+        else elemental_timer -= diff;
+
+        if (totem_timer <= diff)
+        {
+            me->CastSpell(me->getVictim(), 38624, false);
+            totem_timer  = 0;
+        }
+        else totem_timer -= diff;
+
+        if (check_timer <= diff)
+        {
+            if (!FindCreature(22236, 50, me) && FindCreature(22238, 50, me))
+                if (Creature *Ele = (Creature *)FindCreature(22238, 50, me))
+                    Ele->DisappearAndDie();
+
+            if (FindCreature(22236, 50, me) && FindCreature(22238, 50, me))
+                if (Creature *Totem = (Creature *)FindCreature(22236, 50, me))
+                    if (Totem->isDead())
+                        if (Creature *Ele = (Creature *)FindCreature(22238, 50, me))
+                            Ele->DisappearAndDie();
+
+            if (Creature *Ele = (Creature *)FindCreature(22238, 50, me))
+            {
+                Unit *target = SelectUnit(SELECT_TARGET_RANDOM, 0, 30.0f, true);
+                Ele->Attack(target, false);
+            }
+
+            check_timer = 1000;
+        }
+        else check_timer -= diff;
+
+        DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_mob_greyheart_tidecaller(Creature *_Creature)
+{
+    return new mob_greyheart_tidecallerAI(_Creature);
+}
+
 void AddSC_serpent_shrine_trash()
 {
     Script *newscript;
@@ -448,6 +615,21 @@ void AddSC_serpent_shrine_trash()
     newscript = new Script;
     newscript->Name = "mob_coilfang_frenzy";
     newscript->GetAI = &GetAI_mob_coilfang_frenzy;
+    newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name = "mob_serpent_shrine_priestressAI";
+    newscript->GetAI = &GetAI_mob_coilfang_frenzy;
+    newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name = "mob_coilfang_serpentguardAI";
+    newscript->GetAI = &GetAI_mob_coilfang_frenzy;
+    newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name = "mob_greyheart_tidecallerAI";
+    newscript->GetAI = &GetAI_mob_greyheart_tidecaller;
     newscript->RegisterSelf();
 
 }
