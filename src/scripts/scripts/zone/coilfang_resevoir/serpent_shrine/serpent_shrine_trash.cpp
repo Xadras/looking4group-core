@@ -439,16 +439,13 @@ struct mob_serpent_shrine_priestressAI : public ScriptedAI
     {
         smite_timer = 12500;
         holy_fire_timer = 7000;
+        twenty, fifty = false;
     }
 
     void JustDied()
     {
         me->Respawn();
         me->CastSpell(me, 27827, false);
-    }
-
-    void EnterEvadeMode()
-    {
     }
 
     void UpdateAI(const uint32 diff)
@@ -535,29 +532,31 @@ struct mob_greyheart_tidecallerAI : public ScriptedAI
     uint32 elemental_timer;
     uint32 totem_timer;
     uint32 check_timer;
+    bool totem, elemental;
 
     void Reset()
     {
         elemental_timer = 15000;
         totem_timer = 7000;
         check_timer = 1000;
+        totem, elemetal = false;
     }
 
     void EnterEvadeMode() {}
 
     void UpdateAI(const uint32 diff)
     {
-        if (elemental_timer <= diff)
+        if (!elemental && elemental_timer <= diff)
         {
             me->CastSpell(me, 39027, false);
-            elemental_timer = 0;
+            elemental = true;
         }
         else elemental_timer -= diff;
 
-        if (totem_timer <= diff)
+        if (!totem && totem_timer <= diff)
         {
             me->CastSpell(me->getVictim(), 38624, false);
-            totem_timer  = 0;
+            totem = true;
         }
         else totem_timer -= diff;
 
