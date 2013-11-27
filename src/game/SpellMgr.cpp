@@ -3499,6 +3499,9 @@ void SpellMgr::LoadSpellCustomAttr()
                 spellInfo->EffectBasePoints[0] = 1867;
                 spellInfo->EffectBasePoints[1] = 1376;
                 break;
+            case 38599:  //spellreflect coilfang serpentguard
+                spellInfo->procFlags = 0x222A0;
+                break;
             default:
                 break;
         }
