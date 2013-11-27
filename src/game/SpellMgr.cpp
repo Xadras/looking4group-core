@@ -3495,6 +3495,10 @@ void SpellMgr::LoadSpellCustomAttr()
             case 39045: //SPELL_SUMMON_SERPENTSHRINE_PARASITE
                 spellInfo->AreaId = 3607;
                 break;
+            case 38924: //Spore Burst
+                spellInfo->EffectBasePoints[0] = 1867;
+                spellInfo->EffectBasePoints[1] = 1376;
+                break;
             default:
                 break;
         }
