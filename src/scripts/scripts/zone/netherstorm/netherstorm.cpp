@@ -1200,11 +1200,11 @@ struct mob_epextractionAI : public ScriptedAI
 
     void JustDied(Unit* killer)
     {
-        if (me->GetEntry() == ENTRY_RUMBLER)
-           me->CastSpell(me, SPELL_SUMMON_SHARD, true);
-
         if (PowerExtracted)
             me->CastSpell(me, SPELL_CREATE_EPOWER, true);
+
+        if (me->GetEntry() == ENTRY_RUMBLER)
+           me->CastSpell(me, SPELL_SUMMON_SHARD, true);
 
         me->RemoveCorpse();
     }
