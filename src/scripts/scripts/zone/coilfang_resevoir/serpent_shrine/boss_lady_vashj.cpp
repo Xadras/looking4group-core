@@ -212,6 +212,41 @@ struct boss_lady_vashjAI : public ScriptedAI
         me->SetCorpseDelay(1000*60*60);
     }
 
+    void MindcontrolEffect()
+    {
+
+        std::list<HostilReference *> t_list = m_creature->getThreatManager().getThreatList();
+        std::vector<Unit *> targets;
+
+        if(!t_list.size())
+            return;
+
+        //begin + 1 , so we don't target the one with the highest threat
+        std::list<HostilReference *>::iterator itr = t_list.begin();
+        std::advance(itr, 1);
+        for( ; itr!= t_list.end(); ++itr)                   //store the threat list in a different container
+        {
+            Unit *target = Unit::GetUnit(*m_creature, (*itr)->getUnitGuid());
+                                                            //only on alive players
+            if(target && target->isAlive() && target->GetTypeId() == TYPEID_PLAYER )
+                targets.push_back( target);
+        }
+
+        //cut down to size if we have more than 5 targets
+        while(targets.size() > 5)
+            targets.erase(targets.begin()+rand()%targets.size());
+
+        int i = 0;
+        for(std::vector<Unit *>::iterator itr = targets.begin(); itr!= targets.end(); ++itr, ++i)
+        {
+            Unit *target = *itr;
+            if(target)
+            {
+                m_creature->AddAura(SPELL_PERSUASION, target);
+            }
+        }
+    }
+
     void Paralyze(bool apply)
     {
         Map *map = me->GetMap();
@@ -397,12 +432,8 @@ struct boss_lady_vashjAI : public ScriptedAI
             //Mindcontroll
             if(Persuasion_Timer < diff)
             {
-                Unit *target = SelectUnit(SELECT_TARGET_RANDOM, 0, GetSpellMaxRange(SPELL_PERSUASION),true);
-                if (target)
-                {
-                    DoCast(target, SPELL_PERSUASION);
-                    Persuasion_Timer = 20000+rand()%5000;
-                }
+                MindcontrolEffect();
+                Persuasion_Timer = 30000+rand()%15000;
             }
             else
                 Persuasion_Timer -= diff;
