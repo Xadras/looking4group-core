@@ -46,7 +46,7 @@ uint64 ControlConsole = 0;
 4 - Morogrim Tidewalker Event
 5 - Lady Vashj Event
 */
-
+/*
 bool GOUse_go_bridge_console(Player *player, GameObject* go)
 {
     ScriptedInstance* pInstance = (ScriptedInstance*)go->GetInstanceData();
@@ -60,7 +60,7 @@ bool GOUse_go_bridge_console(Player *player, GameObject* go)
     }
 
     return false;
-}
+}*/
 
 bool GOUse_go_vashj_console_access_panel(Player *player, GameObject* go)
 {
@@ -100,10 +100,12 @@ bool GOUse_go_vashj_console_access_panel(Player *player, GameObject* go)
                         }
 
                         if (c1_used && c2_used && c3_used && c4_used && c5_used){
-                            if(ControlConsole)
-                                if (player && ControlConsole)
-                                    if (GameObject *go_console = GameObject::GetGameObject(*player,ControlConsole))
-                                        go_console->setActive(true);
+                            if (player && ControlConsole)
+                                if (GameObject *go_console = GameObject::GetGameObject(*player,ControlConsole)){
+                                    go_console->SetGoState(GOState(0));
+                                    go->Say("all_activated", LANG_UNIVERSAL,player->GetGUID());
+                                    pInstance->SetData(DATA_CONTROL_CONSOLE, DONE);
+                                }
                         }
 
                         return true;
@@ -124,7 +126,6 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
     uint64 LeotherasTheBlind;
     uint64 LeotherasEventStarter;
 
-    uint64 ControlConsole;
     uint64 BridgePart[3];
     uint32 StrangePool;
     uint32 FishingTimer;
@@ -191,7 +192,8 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
         {
         case 184568:
             ControlConsole = go->GetGUID();
-            go->setActive(false);
+            if (c1_used && c2_used && c3_used && c4_used && c5_used)
+                HandleGameObject(ControlConsole, 0);
             break;
 
         case 184203:
@@ -479,9 +481,9 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
         {
             if (Encounters[2] == NOT_STARTED)   // check and change water state only if lurker event is not started
             {
-                uint64 tmpPriestessGuid = instance->GetCreatureGUID(TRASHMOB_COILFANG_PRIESTESS, GET_ALIVE_CREATURE_GUID);
+                //uint64 tmpPriestessGuid = instance->GetCreatureGUID(TRASHMOB_COILFANG_PRIESTESS, GET_ALIVE_CREATURE_GUID);
                 uint64 tmpShattererGuid = instance->GetCreatureGUID(TRASHMOB_COILFANG_SHATTERER, GET_ALIVE_CREATURE_GUID);
-                if (!tmpPriestessGuid && !tmpShattererGuid)
+                if (/*!tmpPriestessGuid && */!tmpShattererGuid)
                     Water = WATERSTATE_SCALDING;
                 else
                     Water = WATERSTATE_FRENZY;
@@ -571,12 +573,12 @@ void AddSC_instance_serpentshrine_cavern()
     newscript->Name = "instance_serpent_shrine";
     newscript->GetInstanceData = &GetInstanceData_instance_serpentshrine_cavern;
     newscript->RegisterSelf();
-
+    /*
     newscript = new Script;
     newscript->Name="go_bridge_console";
     newscript->pGOUse = &GOUse_go_bridge_console;
     newscript->RegisterSelf();
-
+    */
     newscript = new Script;
     newscript->Name="GOUse_go_vashj_console_access_panel";
     newscript->pGOUse = &GOUse_go_vashj_console_access_panel;
