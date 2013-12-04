@@ -22,10 +22,6 @@ SDCategory: Shadowmoon Valley
 EndScriptData */
 
 #include "precompiled.h"
-#include "InstanceData.h"
-#include "Database/DatabaseEnv.h"
-#include <time.h>
-#include <string>
 
 #define SAY_AGGRO                   -1000387
 #define SAY_EARTHQUAKE_1            -1000388
