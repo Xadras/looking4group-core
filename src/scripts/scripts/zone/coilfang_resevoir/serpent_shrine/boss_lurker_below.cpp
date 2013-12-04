@@ -184,16 +184,16 @@ struct boss_the_lurker_belowAI : public BossAI
         }else SpoutAnimTimer-=diff;
 
         Map *map = me->GetMap();
-        if (map->IsDungeon() && instance->GetData(DATA_THELURKERBELOWEVENT) == IN_PROGRESS)
-        {
             Map::PlayerList const &PlayerList = map->GetPlayers();
             for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
             {
-                Player *target = i->getSource();
-                if(target && target->isAlive() && me->HasInArc((double)diff/20000*(double)M_PI*2,target) && me->GetDistance(target) <= SPOUT_DIST && !target->IsInWater())
-                    DoCast(target,SPELL_SPOUT,true);//only knock back palyers in arc, in 100yards, not in water
+                //Player *target = i->getSource();
+                if(i->getSource() && i->getSource()->isAlive() && me->HasInArc((double)diff/20000*(double)M_PI*2,i->getSource()) && me->GetDistance(i->getSource()) <= SPOUT_DIST && !i->getSource()->IsInWater()){
+                    DoCast(i->getSource(),SPELL_SPOUT,true);//only knock back palyers in arc, in 100yards, not in water
+                me->Say("Spout casted", LANG_UNIVERSAL, 0);
+                }
             }
-        }
+        
     }
 
     void StartRotate(Unit* victim)
@@ -245,6 +245,7 @@ struct boss_the_lurker_belowAI : public BossAI
     void JustDied(Unit* Killer)
     {
         instance->SetData(DATA_THELURKERBELOWEVENT, DONE);
+        me->RemoveAurasDueToSpell(SPELL_SUBMERGE);
     }
 
     void SummonAdds()

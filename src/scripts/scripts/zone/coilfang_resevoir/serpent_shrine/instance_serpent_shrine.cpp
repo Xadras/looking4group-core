@@ -48,17 +48,17 @@ uint64 ControlConsole = 0;
 /*
 bool GOUse_go_bridge_console(Player *player, GameObject* go)
 {
-    ScriptedInstance* pInstance = (ScriptedInstance*)go->GetInstanceData();
+ScriptedInstance* pInstance = (ScriptedInstance*)go->GetInstanceData();
 
-    if(!pInstance )
-        return false;
+if(!pInstance )
+return false;
 
-    if (c1_used && c2_used && c3_used && c4_used && c5_used){
-        pInstance->SetData(DATA_CONTROL_CONSOLE, DONE);
-        return true;
-    }
+if (c1_used && c2_used && c3_used && c4_used && c5_used){
+pInstance->SetData(DATA_CONTROL_CONSOLE, DONE);
+return true;
+}
 
-    return false;
+return false;
 }*/
 
 bool GOUse_go_vashj_console_access_panel(Player *player, GameObject* go)
@@ -130,14 +130,11 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
     uint32 FishingTimer;
     uint32 LurkerSubEvent;
     uint32 WaterCheckTimer;
-    uint32 FrenzySpawnTimer;
-    uint32 PlayerInWaterTimer;
     uint32 Water;
     uint32 trashCheckTimer;
 
     bool ShieldGeneratorDeactivated[4];
     uint32 Encounters[ENCOUNTERS];
-    bool DoSpawnFrenzy;
 
     void Initialize()
     {
@@ -167,9 +164,6 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
         FishingTimer = 1000;
         LurkerSubEvent = 0;
         WaterCheckTimer = 500;
-        FrenzySpawnTimer = 2000;
-        PlayerInWaterTimer = 0;
-        DoSpawnFrenzy = false;
         trashCheckTimer = 10000;
 
         for(uint8 i = 0; i < ENCOUNTERS; i++)
@@ -478,17 +472,14 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
 
         if (trashCheckTimer < diff)
         {
-            if (Encounters[2] == NOT_STARTED)   // check and change water state only if lurker event is not started
-            {
-                //uint64 tmpPriestessGuid = instance->GetCreatureGUID(TRASHMOB_COILFANG_PRIESTESS, GET_ALIVE_CREATURE_GUID);
-                uint64 tmpTechniGuid = instance->GetCreatureGUID(TRASHMOB_COILFANG_TECHNI, GET_ALIVE_CREATURE_GUID);
-                if (/*!tmpPriestessGuid && */!tmpTechniGuid)
-                    Water = WATERSTATE_SCALDING;
-                else
-                    Water = WATERSTATE_FRENZY;
-            }
+            //uint64 tmpPriestessGuid = instance->GetCreatureGUID(TRASHMOB_COILFANG_PRIESTESS, GET_ALIVE_CREATURE_GUID);
+            uint64 tmpTechniGuid = instance->GetCreatureGUID(TRASHMOB_COILFANG_TECHNI, GET_ALIVE_CREATURE_GUID);
+            if (/*!tmpPriestessGuid && */!tmpTechniGuid)
+                Water = WATERSTATE_SCALDING;
+            else
+                Water = WATERSTATE_FRENZY;
 
-            trashCheckTimer = 10000;
+            trashCheckTimer = 2000;
         }
         else
             trashCheckTimer -= diff;
