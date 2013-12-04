@@ -140,6 +140,7 @@ struct boss_the_lurker_belowAI : public BossAI
             return;
         case CLOCKWISE://20secs for 360turn
             //no target if rotating!
+            m_rotating = true;
             me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
             SpoutAngle += (double)diff/20000*(double)M_PI*2;
             if (SpoutAngle >= M_PI*2)SpoutAngle = 0;
@@ -150,6 +151,7 @@ struct boss_the_lurker_belowAI : public BossAI
             break;
         case COUNTERCLOCKWISE://20secs for 360turn
             //no target if rotating!
+            m_rotating = true;
             me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
             SpoutAngle -= (double)diff/20000*(double)M_PI*2;
             if (SpoutAngle <= 0)SpoutAngle = M_PI*2;
@@ -254,7 +256,7 @@ struct boss_the_lurker_belowAI : public BossAI
 
     void DoMeleeAttackIfReady()
     {
-        if (me->hasUnitState(UNIT_STAT_CASTING) || m_submerged || m_rotating)
+        if (me->hasUnitState(UNIT_STAT_CASTING) || m_submerged || m_rotating  || RotType)
             return;
 
         //Make sure our attack is ready and we aren't currently casting before checking distance
