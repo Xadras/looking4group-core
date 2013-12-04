@@ -500,14 +500,12 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
             if (PlayerList.isEmpty())
                 return;
 
-            bool PlayerInWater = false;
             for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
             {
                 if(Player* pPlayer = i->getSource())
                 {
                     if (pPlayer->isAlive() && (pPlayer->GetPositionZ() < -20.6f) && pPlayer->IsInWater())
                     {
-                        PlayerInWater = true;
                         if (Water == WATERSTATE_SCALDING)
                         {
                             if (!pPlayer->HasAura(SPELL_SCALDINGWATER))
@@ -516,7 +514,6 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
                         else if (Water == WATERSTATE_FRENZY)
                         {
                             //spawn frenzy
-                            if (DoSpawnFrenzy)
                             {
                                 if (Creature* frenzy = pPlayer->SummonCreature(MOB_COILFANG_FRENZY,pPlayer->GetPositionX(),pPlayer->GetPositionY(),pPlayer->GetPositionZ(),pPlayer->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT,5000))
                                 {
@@ -524,38 +521,15 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
                                     frenzy->SetLevitate(true);
                                     frenzy->AI()->AttackStart(pPlayer);
                                 }
-                                DoSpawnFrenzy = false;
                             }
                         }
                     }
                 }
             }
-
-            if (PlayerInWater)
-                PlayerInWaterTimer = 5000;
-            else
-            {
-                if (PlayerInWaterTimer <= diff)
-                    PlayerInWaterTimer = 0;
-                else
-                    PlayerInWaterTimer -= diff;
-            }
-
-            if (PlayerInWaterTimer)
-                WaterCheckTimer = 1;
-            else
-                WaterCheckTimer = 500; //remove stress from core
+            WaterCheckTimer = 2000;
         }
         else
             WaterCheckTimer -= diff;
-
-        if (FrenzySpawnTimer < diff)
-        {
-            DoSpawnFrenzy = true;
-            FrenzySpawnTimer = 2000;
-        }
-        else
-            FrenzySpawnTimer -= diff;
     }
 };
 
