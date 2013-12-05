@@ -183,7 +183,7 @@ struct boss_lady_vashjAI : public ScriptedAI
         ForkedLightning_Timer = 2000;
         Check_Timer = 15000;
         ParalyzeCheck_Timer = 1000;
-        Persuasion_Timer = 20000;
+        Persuasion_Timer = 30000;
         EnchantedElemental_Timer = 5000;
         TaintedElemental_Timer = 50000;
         CoilfangElite_Timer = 45000;
@@ -429,15 +429,6 @@ struct boss_lady_vashjAI : public ScriptedAI
             else
                 ShockBlast_Timer -= diff;
 
-            //Mindcontroll
-            if(Persuasion_Timer < diff)
-            {
-                MindcontrolEffect();
-                Persuasion_Timer = 30000+rand()%15000;
-            }
-            else
-                Persuasion_Timer -= diff;
-
             //StaticCharge_Timer
             if(StaticCharge_Timer < diff)
             {
@@ -525,6 +516,15 @@ struct boss_lady_vashjAI : public ScriptedAI
                 }
                 else
                     SummonSporebat_Timer -= diff;
+
+                //Mindcontroll
+                if(Persuasion_Timer < diff)
+                {
+                    MindcontrolEffect();
+                    Persuasion_Timer = 90000+rand()%30000;
+                }
+                else
+                    Persuasion_Timer -= diff;
             }
 
             //Melee attack
