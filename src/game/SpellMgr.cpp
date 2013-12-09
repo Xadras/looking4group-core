@@ -3502,6 +3502,9 @@ void SpellMgr::LoadSpellCustomAttr()
             case 38599:  //spellreflect coilfang serpentguard
                 spellInfo->procFlags = 0x222A0;
                 break;
+            case 37770:
+                spellInfo->Effect[0] = 2;
+                break;
             default:
                 break;
         }
