@@ -521,7 +521,7 @@ struct boss_lady_vashjAI : public ScriptedAI
                 if(Persuasion_Timer < diff)
                 {
                     MindcontrolEffect();
-                    Persuasion_Timer = 90000+rand()%30000;
+                    Persuasion_Timer = 120000;
                 }
                 else
                     Persuasion_Timer -= diff;
@@ -885,13 +885,18 @@ struct mob_toxic_sporebatAI : public ScriptedAI
         //toxic spores
         if(bolt_timer < diff)
         {
-            if(Unit *target = SelectUnit(SELECT_TARGET_RANDOM, 0, 300, true))
+            Unit *Vashj = Unit::GetUnit((*me), instance->GetData64(DATA_LADYVASHJ));
+            if (Vashj)
             {
-                if(Creature* trig = me->SummonCreature(TOXIC_SPORES_TRIGGER,target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN,30000))
-                {
-                    trig->setFaction(14);
-                    trig->CastSpell(trig, SPELL_TOXIC_SPORES,true);
-                }
+
+                Unit *tar = ((boss_lady_vashjAI*)((Creature*)Vashj)->AI())->SelectUnit(SELECT_TARGET_RANDOM,0,300,true);
+                if (tar)
+                    if (Creature *tempsum = tar->SummonCreature(TOXIC_SPORES_TRIGGER,tar->GetPositionX(), tar->GetPositionY(), tar->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN, 30000))
+                    {   
+                        tempsum->setFaction(14); 
+                        tempsum->CastSpell(tar, SPELL_TOXIC_SPORES,true);
+                    }
+
             }
             bolt_timer = 10000+rand()%5000;
         }
