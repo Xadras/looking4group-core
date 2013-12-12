@@ -20600,6 +20600,10 @@ void Player::HandleFallDamage(MovementInfo& movementInfo)
 
 void Player::HandleFallUnderMap(float z)
 {
+    //Hacky - this fixes movement if player died in an instance .i.e. zangarmarsh TODO: Find better solution
+    if (m_deathState != ALIVE)
+        SetMovement(MOVE_WATER_WALK);
+
     if (InBattleGround() && GetBattleGround())
         GetBattleGround()->HandlePlayerUnderMap(this, z);
     else
