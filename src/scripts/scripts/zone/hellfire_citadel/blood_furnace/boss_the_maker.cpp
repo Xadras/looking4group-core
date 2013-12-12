@@ -34,7 +34,7 @@ EndScriptData */
 #define SPELL_ACID_SPRAY            38153
 #define SPELL_EXPLODING_BREAKER     (HeroicMode ? 40059 : 30925)
 #define SPELL_KNOCKDOWN             20276
-#define SPELL_DOMINATION            25772
+#define SPELL_DOMINATION            30923
 
 struct boss_the_makerAI : public ScriptedAI
 {
