@@ -475,8 +475,11 @@ struct boss_illidan_stormrageAI : public BossAI
                 }
                 case EVENT_ILLIDAN_PARASITIC_SHADOWFIEND:
                 {
-                    if (Unit *pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0, 250.0f, true, me->getVictimGUID()))
-                        AddSpellToCast(pTarget, SPELL_ILLIDAN_PARASITIC_SHADOWFIEND, false, true);
+                    Unit *pTarget = SelectUnit(SELECT_TARGET_TOPAGGRO, 0, 999, true);
+                    if(!pTarget || pTarget->HasAura(41917, 0) || pTarget->HasAura(41914, 0))
+                        pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0, 250.0f, true, me->getVictimGUID());
+
+                    AddSpellToCast(pTarget, SPELL_ILLIDAN_PARASITIC_SHADOWFIEND, false, true);
 
                     events.ScheduleEvent(EVENT_ILLIDAN_PARASITIC_SHADOWFIEND, 30000, m_phase);
                     break;
