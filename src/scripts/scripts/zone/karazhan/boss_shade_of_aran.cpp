@@ -175,6 +175,10 @@ struct boss_aranAI : public ScriptedAI
 
         if(pInstance)
             pInstance->SetData(DATA_SHADEOFARAN_EVENT, DONE);
+        
+        Unit *Blizzard = FindCreature(17161, 40, me);
+        if (Blizzard)
+            Blizzard->ToCreature()->DisappearAndDie();
     }
 
     bool PlayerHaveAtiesh()
