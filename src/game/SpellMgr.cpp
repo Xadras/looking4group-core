@@ -2793,16 +2793,18 @@ void SpellMgr::LoadSpellCustomAttr()
         {
             case SPELLFAMILY_GENERIC:
             {
-                 // Goblin Rocket Launcher
-                 if (spellInfo->SpellIconID == 184 && spellInfo->Attributes == 4259840)
-                     spellInfo->AttributesCu |= SPELL_ATTR_CU_NO_SPELL_DMG_COEFF;
-                 else if (spellInfo->Id == 15852)
-                     spellInfo->Dispel = DISPEL_NONE;
-                 else if (spellInfo->Id == 46337) // Crab disguise
-                     spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_CAST;
-                 else if (spellInfo->SpellIconID == 2367) // remove flag from steam tonk & crashin trashin racers
-                     spellInfo->AttributesEx4 &= ~SPELL_ATTR_EX4_FORCE_TRIGGERED;
-                 break;
+                if (spellInfo->Id == 52009)
+                    spellInfo->EffectMiscValue[0] = 20865;
+                // Goblin Rocket Launcher
+                else if (spellInfo->SpellIconID == 184 && spellInfo->Attributes == 4259840)
+                    spellInfo->AttributesCu |= SPELL_ATTR_CU_NO_SPELL_DMG_COEFF;
+                else if (spellInfo->Id == 15852)
+                    spellInfo->Dispel = DISPEL_NONE;
+                else if (spellInfo->Id == 46337) // Crab disguise
+                    spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_CAST;
+                else if (spellInfo->SpellIconID == 2367) // remove flag from steam tonk & crashin trashin racers
+                    spellInfo->AttributesEx4 &= ~SPELL_ATTR_EX4_FORCE_TRIGGERED;
+                break;
             }
             case SPELLFAMILY_SHAMAN:
             {
