@@ -442,7 +442,7 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
         {
             // when changing forms seting timers (or when ending whirlwind - to avoid adding new variable i use Whirlwind_Timer to countdown 2s while whirlwinding)
             if(DemonForm)
-                InnerDemons_Timer = 30000;
+                InnerDemons_Timer = 20000;
             else
                 Whirlwind_Timer =  15000;
 
