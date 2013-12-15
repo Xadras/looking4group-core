@@ -197,9 +197,9 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
         Whirlwind_Timer = 15000;
         ChaosBlast_Timer = 1000;
         SwitchToDemon_Timer = 55000;
-        SwitchToHuman_Timer = 45000;
+        SwitchToHuman_Timer = 60000;
         Berserk_Timer = 600000;
-        InnerDemons_Timer = 20000;
+        InnerDemons_Timer = 30000;
         m_creature->SetCanDualWield(true);
         DealDamage = true;
         DemonForm = false;
@@ -442,7 +442,7 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
         {
             // when changing forms seting timers (or when ending whirlwind - to avoid adding new variable i use Whirlwind_Timer to countdown 2s while whirlwinding)
             if(DemonForm)
-                InnerDemons_Timer = 20000;
+                InnerDemons_Timer = 30000;
             else
                 Whirlwind_Timer =  15000;
 
