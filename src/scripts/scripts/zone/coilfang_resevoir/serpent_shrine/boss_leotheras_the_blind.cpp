@@ -199,7 +199,7 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
         SwitchToDemon_Timer = 55000;
         SwitchToHuman_Timer = 45000;
         Berserk_Timer = 600000;
-        InnerDemons_Timer = 30000;
+        InnerDemons_Timer = 20000;
         m_creature->SetCanDualWield(true);
         DealDamage = true;
         DemonForm = false;
