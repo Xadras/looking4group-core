@@ -3645,6 +3645,47 @@ bool ChatHandler::HandleLookupPlayerIpCommand(const char* args)
     return LookupPlayerSearchCommand(result, limit);
 }
 
+bool ChatHandler::HandleLookupPlayerIpListCommand(const char* /*args*/)
+{
+    QueryResultAutoPtr result = AccountsDatabase.PQuery("SELECT account_id, username, last_ip "
+        "FROM account "
+        "WHERE EXISTS ("
+        "SELECT account_id FROM account Dup "
+        "WHERE account.last_ip = Dup.last_ip AND account.account_id <> Dup.account_id "
+        "AND account.online ='1') "
+        "ORDER BY last_ip;");
+
+    if (result){
+        int i = 0;
+        do
+        {
+            Field* fields = result->Fetch();
+            uint32 acc_id = fields[0].GetUInt32();
+            std::string acc_name = fields[1].GetCppString();
+            std::string ip = fields[2].GetCppString();
+
+            PSendSysMessage(LANG_IP_LIST,acc_name.c_str(),acc_id, ip);
+            ++i;
+
+        } while (result->NextRow());
+        PSendSysMessage("Sofern keine 2 gleichen IPs ausgegeben wurden, ist einer der Doppelaccounts offline und der andere online.");
+
+        if (i == 0)                                                // empty accounts only
+        {
+            PSendSysMessage(LANG_NO_PLAYERS_FOUND);
+            SetSentErrorMessage(true);
+            return false;
+        }
+    }
+    else
+    {
+        PSendSysMessage(LANG_NO_PLAYERS_FOUND);
+        SetSentErrorMessage(true);
+        return false;
+    }
+    return LookupPlayerSearchIpListCommand(result, 50);
+}
+
 bool ChatHandler::HandleLookupPlayerAccountCommand(const char* args)
 {
     if (!*args)

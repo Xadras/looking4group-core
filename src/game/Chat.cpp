@@ -442,6 +442,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "account",        PERM_GMT,       true,   &ChatHandler::HandleLookupPlayerAccountCommand, "", NULL },
         { "email",          PERM_HIGH_GMT,  true,   &ChatHandler::HandleLookupPlayerEmailCommand,   "", NULL },
         { "ip",             PERM_GMT,       true,   &ChatHandler::HandleLookupPlayerIpCommand,      "", NULL },
+        { "iplist",         PERM_GMT,       true,   &ChatHandler::HandleLookupPlayerIpListCommand,  "", NULL },
         { NULL,             0,              false,  NULL,                                           "", NULL }
     };
 

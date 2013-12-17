@@ -250,6 +250,7 @@ class ChatHandler
         bool HandleLookupItemSetCommand(const char * args);
         bool HandleLookupObjectCommand(const char* args);
         bool HandleLookupPlayerIpCommand(const char* args);
+        bool HandleLookupPlayerIpListCommand(const char* args);
         bool HandleLookupPlayerAccountCommand(const char* args);
         bool HandleLookupPlayerEmailCommand(const char* args);
         bool HandleLookupQuestCommand(const char* args);

@@ -330,6 +330,7 @@ enum TrinityStrings
     LANG_MUTEINFO_HISTORYENTRY          = 349,
     LANG_MUTEINFO_YES                   = 350,
     LANG_MUTEINFO_NO                    = 351,
+    LANG_IP_LIST                        = 352,
 
     // Room for more level 2              346-399 not used
 
