@@ -3653,6 +3653,13 @@ bool ChatHandler::HandleLookupPlayerIpListCommand(const char* /*args*/)
         "SELECT account_id FROM account Dup "
         "WHERE account.last_ip = Dup.last_ip AND account.account_id <> Dup.account_id "
         "AND account.online ='1') "
+        "AND account.username NOT IN('XADRAS', 'Lordpff', 'MICHA', 'Littlesky', 'Adurna1988gm', 'Adurna', 'MICHATEST1', 'MICHATEST', 'Skinhead', 'Stoney1993gm', 'Cletus', "
+        "'Cletus1986gm', 'heyhumba1994gm', 'Minomanu', 'Kenzu1acc', 'Kenzu1994Gm', 'Cletus', 'Brandon', 'Lemmel1', 'Nighthawk', 'Lenikon', 'Mitty', 'Twaina', "
+        "'Sethos', 'Twiggy', 'Backtrapz', 'Sief', 'Timeeey', 'Hojnexus', 'Riggedi', 'Beatz', 'Datfarm', 'Lurxxa', 'Jukzs', 'TheDeath', 'B14cky', 'Kasui', 'Chiyu', "
+        "'Sieef','Kecko','Cvozy','Moxer','Seadylol','Lipstickbabe','Seadylolz','Seelenblind123','Scario','Holycrap','Worka','AlexKossi','Razzak','Renachan','Thalasy','Grahler','Mellory','broxxigar','asmodai','Donpat', "
+        "'Talork','Peter668','Stevo96','Monika234','Tscherko','Volcoms','Kiljeaden','Sencuart','Tballno','Electricwizard','Suki','Freaki1987','Bullyone','Animas','Horizz','Trollow','Zimetlol','Neyndra','Sheed','Sheed1', "
+        "'Nacra','LuckySmoker','Susie','NaeLe.','Strange1988gm','THEOWNAGE','','','','','','','','','','','','','','', "
+        "'','','','','','','','','','','','','','','','','','','','')"
         "ORDER BY last_ip;");
 
     if (result){
