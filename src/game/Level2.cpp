@@ -3664,7 +3664,7 @@ bool ChatHandler::HandleLookupPlayerIpListCommand(const char* /*args*/)
             std::string acc_name = fields[1].GetCppString();
             std::string ip = fields[2].GetCppString();
 
-            PSendSysMessage(LANG_IP_LIST,acc_name.c_str(),acc_id, ip);
+            PSendSysMessage(LANG_IP_LIST,acc_name.c_str(),acc_id, ip.c_str());
             ++i;
 
         } while (result->NextRow());
@@ -3683,7 +3683,7 @@ bool ChatHandler::HandleLookupPlayerIpListCommand(const char* /*args*/)
         SetSentErrorMessage(true);
         return false;
     }
-    return LookupPlayerSearchIpListCommand(result, 50);
+    return true;
 }
 
 bool ChatHandler::HandleLookupPlayerAccountCommand(const char* args)
