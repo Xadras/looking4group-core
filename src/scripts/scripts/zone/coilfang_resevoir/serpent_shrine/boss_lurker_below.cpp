@@ -258,7 +258,7 @@ struct boss_the_lurker_belowAI : public BossAI
     {
         instance->SetData(DATA_THELURKERBELOWEVENT, DONE);
         me->RemoveAurasDueToSpell(SPELL_SUBMERGE);
-        me->SummonGameObject(300159, 48.2741, -397.065, -18.6469, 4.14926,0,0,0,0,0);
+        me->SummonGameObject(300159, 48.2741, -397.065, -18.6469, 4.14926,0,0,0,0,7200000);
     }
 
     void SummonAdds()
