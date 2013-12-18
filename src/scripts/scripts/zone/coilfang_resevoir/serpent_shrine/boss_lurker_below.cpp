@@ -119,7 +119,7 @@ struct boss_the_lurker_belowAI : public BossAI
 
         events.ScheduleEvent(LURKER_EVENT_SPOUT_EMOTE, 42000);
         events.ScheduleEvent(LURKER_EVENT_WHIRL, 18000);
-        events.ScheduleEvent(LURKER_EVENT_GEYSER, 0);
+        events.ScheduleEvent(LURKER_EVENT_GEYSER, 8000);
         events.ScheduleEvent(LURKER_EVENT_SUBMERGE, 90000);
 
         RotType = NOROTATE;
@@ -220,6 +220,10 @@ struct boss_the_lurker_belowAI : public BossAI
         me->addUnitState(UNIT_STAT_ROTATING);
         me->SetReactState(REACT_PASSIVE);
         m_rotating = true;
+
+        events.RescheduleEvent(LURKER_EVENT_WHIRL, 20000);
+        events.RescheduleEvent(LURKER_EVENT_GEYSER, 25000);
+        events.ScheduleEvent(LURKER_EVENT_SPOUT_EMOTE, 45000);
 
         me->MonsterTextEmote(EMOTE_SPOUT,0,true);
         //DoCast(me,SPELL_SPOUT_BREATH);//take breath anim
@@ -363,7 +367,7 @@ struct boss_the_lurker_belowAI : public BossAI
             case LURKER_EVENT_WHIRL:
                 {
                     AddSpellToCast(me, SPELL_WHIRL);
-                    events.ScheduleEvent(LURKER_EVENT_WHIRL, 17500);
+                    events.ScheduleEvent(LURKER_EVENT_WHIRL, 18000);
                     break;
                 }
             case LURKER_EVENT_GEYSER:
