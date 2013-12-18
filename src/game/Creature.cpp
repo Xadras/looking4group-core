@@ -1303,6 +1303,10 @@ void Creature::SaveToDB()
 
 void Creature::SaveToDB(uint32 mapid, uint8 spawnMask)
 {
+    QueryResultAutoPtr result = GameDataDatabase.Query("SELECT MAX(guid) FROM creature");
+    if (result)
+        m_DBTableGuid = (*result)[0].GetUInt32()+1;
+
     // update in loaded data
     if (!m_DBTableGuid)
         m_DBTableGuid = GetGUIDLow();
