@@ -3650,16 +3650,11 @@ bool ChatHandler::HandleLookupPlayerIpListCommand(const char* /*args*/)
     QueryResultAutoPtr result = AccountsDatabase.PQuery("SELECT account_id, username, last_ip "
         "FROM account "
         "WHERE EXISTS ("
-        "SELECT account_id FROM account Dup "
-        "WHERE account.last_ip = Dup.last_ip AND account.account_id <> Dup.account_id "
-        "AND account.online ='1') "
-        "AND account.username NOT IN('XADRAS', 'Lordpff', 'MICHA', 'Littlesky', 'Adurna1988gm', 'Adurna', 'MICHATEST1', 'MICHATEST', 'Skinhead', 'Stoney1993gm', 'Cletus', "
-        "'Cletus1986gm', 'heyhumba1994gm', 'Minomanu', 'Kenzu1acc', 'Kenzu1994Gm', 'Cletus', 'Brandon', 'Lemmel1', 'Nighthawk', 'Lenikon', 'Mitty', 'Twaina', "
-        "'Sethos', 'Twiggy', 'Backtrapz', 'Sief', 'Timeeey', 'Hojnexus', 'Riggedi', 'Beatz', 'Datfarm', 'Lurxxa', 'Jukzs', 'TheDeath', 'B14cky', 'Kasui', 'Chiyu', "
-        "'Sieef','Kecko','Cvozy','Moxer','Seadylol','Lipstickbabe','Seadylolz','Seelenblind123','Scario','Holycrap','Worka','AlexKossi','Razzak','Renachan','Thalasy','Grahler','Mellory','broxxigar','asmodai','Donpat', "
-        "'Talork','Peter668','Stevo96','Monika234','Tscherko','Volcoms','Kiljeaden','Sencuart','Tballno','Electricwizard','Suki','Freaki1987','Bullyone','Animas','Horizz','Trollow','Zimetlol','Neyndra','Sheed','Sheed1', "
-        "'Nacra','LuckySmoker','Susie','NaeLe.','Strange1988gm','THEOWNAGE','','','','','','','','','','','','','','', "
-        "'','','','','','','','','','','','','','','','','','','','')"
+            "SELECT account_id FROM account Dup "
+            "WHERE account.last_ip = Dup.last_ip AND account.account_id <> Dup.account_id "
+            "AND account.online ='1') "
+        "AND NOT EXISTS ("
+            "SELECT acc_id FROM account_multi WHERE account.account_id = account_multi.acc_id) "
         "ORDER BY last_ip;");
 
     if (result){
@@ -4610,5 +4605,52 @@ bool ChatHandler::HandleGuildEnableAnnounceCommand(const char *args)
     guild->BroadcastToGuild(m_session, "Guild announce system has been enabled for that guild");
     PSendSysMessage("Guild announce system has been enabled for guild %s", guildName.c_str());
 
+    return true;
+}
+
+bool ChatHandler::HandleAccountSetMultiaccCommand(const char* args)
+{
+    if (!args)
+        return false;   
+    
+    char* accid = strtok ((char*)args, " ");
+    if (!accid || !atoi(accid))
+        return false;
+
+    uint32 id = atoi(accid);
+
+    char* reason = strtok (NULL," ");
+    if (!reason)
+        return false;
+    std::string acc_reason = reason;
+
+    QueryResultAutoPtr result = AccountsDatabase.PQuery("SELECT username FROM account WHERE account_id = %u", id);
+    if (!result)
+    {
+        PSendSysMessage(LANG_NO_PLAYERS_FOUND);
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    Field *fields = result->Fetch();
+    std::string username = fields[0].GetCppString();
+    AccountsDatabase.PExecute("INSERT INTO account_multi (`acc_id`, `acc_name`, `reason`) VALUES (%u, %s, %s)", id, username, reason);
+    PSendSysMessage("Account %s (Id: %u) for reason '%s' was successful added to Multiaccount list.", username, id, reason);
+    return true;
+}
+
+bool ChatHandler::HandleAccountDelMultiaccCommand(const char* args)
+{
+    if (!args)
+        return false;   
+    
+    char* accid = strtok ((char*)args, " ");
+    if (!accid || !atoi(accid))
+        return false;
+
+    uint32 id = atoi(accid);
+
+    AccountsDatabase.PExecute("DELETE FROM account_multi WHERE acc_id = %u", id);
+    PSendSysMessage("Account-Id %u removed from Multiacc List.", id);
     return true;
 }
