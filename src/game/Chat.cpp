@@ -71,7 +71,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "xp",             PERM_PLAYER,    false,  &ChatHandler::HandleAccountXPToggleCommand,     "", NULL },
         { "whisp",          PERM_ADM,       true,   &ChatHandler::HandleAccountWhispLogCommand,     "", NULL },
         { "",               PERM_PLAYER,    false,  &ChatHandler::HandleAccountCommand,             "", NULL },
-        { "delmultiacc",    PERM_GMT,       false,  &ChatHandler::HandleAccountDelMultiaccCommand,  "", NULL },
+        { "delmultiacc",    PERM_GMT,       true,   &ChatHandler::HandleAccountDelMultiaccCommand,  "", NULL },
         { NULL,             0,              false,  NULL,                                           "", NULL }
     };
 
