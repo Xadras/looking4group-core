@@ -70,8 +70,8 @@ ChatCommand * ChatHandler::getCommandTable()
         { "set",            PERM_ADM,       true,   NULL,                                           "", accountSetCommandTable },
         { "xp",             PERM_PLAYER,    false,  &ChatHandler::HandleAccountXPToggleCommand,     "", NULL },
         { "whisp",          PERM_ADM,       true,   &ChatHandler::HandleAccountWhispLogCommand,     "", NULL },
-        { "",               PERM_PLAYER,    false,  &ChatHandler::HandleAccountCommand,             "", NULL },
         { "delmultiacc",    PERM_GMT,       true,   &ChatHandler::HandleAccountDelMultiaccCommand,  "", NULL },
+        { "",               PERM_PLAYER,    false,  &ChatHandler::HandleAccountCommand,             "", NULL },
         { NULL,             0,              false,  NULL,                                           "", NULL }
     };
 
