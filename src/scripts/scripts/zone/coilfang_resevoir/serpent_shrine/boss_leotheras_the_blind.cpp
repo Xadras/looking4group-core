@@ -591,7 +591,7 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
                 DemonForm = false;
                 NeedThreatReset = true;
 
-                SwitchToHuman_Timer = 45000;
+                SwitchToHuman_Timer = 60000;
                 m_creature->SetMeleeDamageSchool(SPELL_SCHOOL_NORMAL);
             }
             else
