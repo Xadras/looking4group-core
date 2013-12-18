@@ -4634,8 +4634,8 @@ bool ChatHandler::HandleAccountSetMultiaccCommand(const char* args)
 
     Field *fields = result->Fetch();
     std::string username = fields[0].GetCppString();
-    AccountsDatabase.PExecute("INSERT INTO account_multi (`acc_id`, `acc_name`, `reason`) VALUES (%u, %s, %s)", id, username, reason);
-    PSendSysMessage("Account %s (Id: %u) for reason '%s' was successful added to Multiaccount list.", username, id, reason);
+    AccountsDatabase.PExecute("INSERT INTO account_multi (`acc_id`, `acc_name`, `reason`) VALUES (%u, %s, %s)", id, username.c_str(), reason);
+    PSendSysMessage("Account %s (Id: %u) for reason '%s' was successful added to Multiaccount list.", username.c_str(), id, reason);
     return true;
 }
 
