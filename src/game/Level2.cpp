@@ -4640,7 +4640,7 @@ bool ChatHandler::HandleAccountSetMultiaccCommand(const char* args)
         PSendSysMessage("Account %s (Id: %u) already in multiacc list for reason: %s", username.c_str(), id, reason);
         return false;
     }
-    AccountsDatabase.PExecute("INSERT INTO account_multi (`acc_id`, `acc_name`, `reason`) VALUES (%u, %s, %s)", id, username.c_str(), reason);
+    AccountsDatabase.PExecute("INSERT INTO account_multi (`acc_id`, `acc_name`, `reason`) VALUES (%u, '%s', '%s')", id, username.c_str(), reason);
     PSendSysMessage("Account %s (Id: %u) for reason '%s' was successful added to Multiaccount list.", username.c_str(), id, reason);
     return true;
 }
