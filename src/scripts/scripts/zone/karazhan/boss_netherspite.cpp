@@ -88,7 +88,8 @@ struct boss_netherspiteAI : public ScriptedAI
             BeamerGUID[i] = 0;
         }
 
-        m_creature->GetMotionMaster()->MovePath(NETHER_PATROL_PATH, true);
+        //temporary commented out due to mysterious invisible bug
+        //m_creature->GetMotionMaster()->MovePath(NETHER_PATROL_PATH, true);
 
         if(pInstance && pInstance->GetData(DATA_NETHERSPITE_EVENT) != DONE)
             pInstance->SetData(DATA_NETHERSPITE_EVENT, NOT_STARTED);
