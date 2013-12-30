@@ -301,7 +301,7 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
             if (pInstance && pInstance->GetData64(DATA_LEOTHERAS_EVENT_STARTER))
             {
                 Unit *victim = NULL;
-                Unit *victim = Unit::GetUnit(*m_creature, pInstance->GetData64(DATA_LEOTHERAS_EVENT_STARTER));
+                victim = Unit::GetUnit(*m_creature, pInstance->GetData64(DATA_LEOTHERAS_EVENT_STARTER));
                 if (victim)
                     m_creature->getThreatManager().addThreat(victim, 1);
                 StartEvent();
@@ -779,7 +779,7 @@ struct mob_greyheart_spellbinderAI : public ScriptedAI
             if (!m_creature->isInCombat() && pInstance->GetData64(DATA_LEOTHERAS_EVENT_STARTER))
             {
                 Unit *victim = NULL;
-                Unit *victim = Unit::GetUnit(*m_creature, pInstance->GetData64(DATA_LEOTHERAS_EVENT_STARTER));
+                victim = Unit::GetUnit(*m_creature, pInstance->GetData64(DATA_LEOTHERAS_EVENT_STARTER));
                 if (victim)
                     AttackStart(victim);
             }
