@@ -119,7 +119,7 @@ struct boss_the_lurker_belowAI : public BossAI
 
         events.ScheduleEvent(LURKER_EVENT_SPOUT_EMOTE, 42000);
         events.ScheduleEvent(LURKER_EVENT_WHIRL, 18000);
-        events.ScheduleEvent(LURKER_EVENT_GEYSER, 8000);
+        events.ScheduleEvent(LURKER_EVENT_GEYSER, rand()%5000 + 15000);
         events.ScheduleEvent(LURKER_EVENT_SUBMERGE, 90000);
 
         RotType = NOROTATE;
@@ -222,7 +222,7 @@ struct boss_the_lurker_belowAI : public BossAI
         m_rotating = true;
 
         events.RescheduleEvent(LURKER_EVENT_WHIRL, 20000);
-        events.RescheduleEvent(LURKER_EVENT_GEYSER, 25000);
+        events.RescheduleEvent(LURKER_EVENT_GEYSER, rand()%25000 + 30000); // Geysir can´t come while spout
         events.ScheduleEvent(LURKER_EVENT_SPOUT_EMOTE, 45000);
 
         me->MonsterTextEmote(EMOTE_SPOUT,0,true);
@@ -373,7 +373,7 @@ struct boss_the_lurker_belowAI : public BossAI
             case LURKER_EVENT_GEYSER:
                 {
                     AddSpellToCast(SPELL_GEYSER, CAST_RANDOM);
-                    events.ScheduleEvent(LURKER_EVENT_GEYSER, urand(10000, 30000));
+                    events.ScheduleEvent(LURKER_EVENT_GEYSER, urand(15000, 20000));
                     break;
                 }
             case LURKER_EVENT_SUBMERGE:
