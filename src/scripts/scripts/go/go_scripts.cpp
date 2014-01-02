@@ -636,6 +636,13 @@ bool GOGossipSelect_go_draconic_for_dummies(Player* pPlayer, GameObject* pGO, ui
 
 bool GOUse_go_personal_mole_machine(Player *player, GameObject* _GO)
 {
+    if (_GO == nullptr || player == nullptr || !_GO->IsInWorld() || !player->IsInWorld())
+        return false;
+        
+    if (_GO->GetOwner() == nullptr || !_GO->GetOwner()->IsInWorld())
+        return false;
+
+
     if (_GO->GetOwner())
         if (player->IsInPartyWith(_GO->GetOwner()) || player->IsInRaidWith(_GO->GetOwner())){
             player->TeleportTo(230,884.04,-181.64,-43.93,1.42);
@@ -711,7 +718,10 @@ const char* ImpInABottleQuotes[] =
 
 bool GOUse_go_imp_in_a_bottle(Player* player, GameObject* go)
 {
-    go->Whisper(ImpInABottleQuotes[urand(0, sizeof(ImpInABottleQuotes)/sizeof(char*))], player->GetGUID());
+    if (go == nullptr || player == nullptr || !go->IsInWorld() || !player->IsInWorld())
+        return false;
+
+    go->Whisper(ImpInABottleQuotes[urand(0, (sizeof(ImpInABottleQuotes)/sizeof(char*)) -1)], player->GetGUID());
     return true;
 };
 
