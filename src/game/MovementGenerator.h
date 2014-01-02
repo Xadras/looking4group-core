@@ -28,7 +28,7 @@
 #include "MotionMaster.h"
 #include "StateMgr.h"
 
-class lOOKING4GROUP_IMPORT_EXPORT MovementGenerator : public UnitAction
+class LOOKING4GROUP_IMPORT_EXPORT MovementGenerator : public UnitAction
 {
     public:
         virtual ~MovementGenerator();
@@ -66,7 +66,7 @@ class lOOKING4GROUP_IMPORT_EXPORT MovementGenerator : public UnitAction
 };
 
 template<class T, class D>
-class lOOKING4GROUP_IMPORT_EXPORT MovementGeneratorMedium : public MovementGenerator
+class LOOKING4GROUP_IMPORT_EXPORT MovementGeneratorMedium : public MovementGenerator
 {
     public:
         void Initialize(Unit &u)

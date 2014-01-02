@@ -14,9 +14,9 @@
 
 #define _FULLVERSION "TrinityScript"
 
-#ifndef _lOOKING4GROUP_SCRIPT_CONFIG
-# define _lOOKING4GROUP_SCRIPT_CONFIG  "trinitycore.conf"
-#endif // _lOOKING4GROUP_SCRIPT_CONFIG
+#ifndef _LOOKING4GROUP_SCRIPT_CONFIG
+# define _LOOKING4GROUP_SCRIPT_CONFIG  "trinitycore.conf"
+#endif // _LOOKING4GROUP_SCRIPT_CONFIG
 
 int num_sc_scripts;
 Script *m_scripts[MAX_SCRIPTS];
@@ -38,7 +38,7 @@ struct TSpellSummary
     uint8 Effects;                                          // set of enum SelectEffect
 } extern *SpellSummary;
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 void FreeScriptLibrary()
 {
     // Free Spell Summary
@@ -51,7 +51,7 @@ void FreeScriptLibrary()
     num_sc_scripts = 0;
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 void InitScriptLibrary()
 {
     //Trinity Script startup
@@ -249,13 +249,13 @@ void Script::RegisterSelf(bool bReportError)
 //********************************
 //*** Functions to be Exported ***
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 char const* GetScriptLibraryVersion()
 {
     return "Default Trinity scripting library";
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool GossipHello(Player* pPlayer, Creature* pCreature)
 {
     Script* pTempScript = m_scripts[pCreature->GetScriptId()];
@@ -268,7 +268,7 @@ bool GossipHello(Player* pPlayer, Creature* pCreature)
     return pTempScript->pGossipHello(pPlayer, pCreature);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool GossipSelect(Player* pPlayer, Creature* pCreature, uint32 uiSender, uint32 uiAction)
 {
     debug_log("SD2: Gossip selection, sender: %u, action: %u", uiSender, uiAction);
@@ -283,7 +283,7 @@ bool GossipSelect(Player* pPlayer, Creature* pCreature, uint32 uiSender, uint32 
     return pTempScript->pGossipSelect(pPlayer, pCreature, uiSender, uiAction);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool GOGossipSelect(Player* pPlayer, GameObject* pGo, uint32 uiSender, uint32 uiAction)
 {
     debug_log("SD2: GO Gossip selection, sender: %u, action: %u", uiSender, uiAction);
@@ -298,7 +298,7 @@ bool GOGossipSelect(Player* pPlayer, GameObject* pGo, uint32 uiSender, uint32 ui
     return pTempScript->pGossipSelectGO(pPlayer, pGo, uiSender, uiAction);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool GossipSelectWithCode(Player* pPlayer, Creature* pCreature, uint32 uiSender, uint32 uiAction, const char* sCode)
 {
     debug_log("SD2: Gossip selection with code, sender: %u, action: %u", uiSender, uiAction);
@@ -313,7 +313,7 @@ bool GossipSelectWithCode(Player* pPlayer, Creature* pCreature, uint32 uiSender,
     return pTempScript->pGossipSelectWithCode(pPlayer, pCreature, uiSender, uiAction, sCode);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool GOGossipSelectWithCode(Player* pPlayer, GameObject* pGo, uint32 uiSender, uint32 uiAction, const char* sCode)
 {
     debug_log("SD2: GO Gossip selection with code, sender: %u, action: %u", uiSender, uiAction);
@@ -328,7 +328,7 @@ bool GOGossipSelectWithCode(Player* pPlayer, GameObject* pGo, uint32 uiSender, u
     return pTempScript->pGossipSelectGOWithCode(pPlayer, pGo, uiSender, uiAction, sCode);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool QuestAccept(Player* pPlayer, Creature* pCreature, const Quest* pQuest)
 {
     Script* pTempScript = m_scripts[pCreature->GetScriptId()];
@@ -341,7 +341,7 @@ bool QuestAccept(Player* pPlayer, Creature* pCreature, const Quest* pQuest)
     return pTempScript->pQuestAcceptNPC(pPlayer, pCreature, pQuest);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool QuestRewarded(Player* pPlayer, Creature* pCreature, Quest const* pQuest)
 {
     Script* pTempScript = m_scripts[pCreature->GetScriptId()];
@@ -354,7 +354,7 @@ bool QuestRewarded(Player* pPlayer, Creature* pCreature, Quest const* pQuest)
     return pTempScript->pQuestRewardedNPC(pPlayer, pCreature, pQuest);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 uint32 GetNPCDialogStatus(Player* pPlayer, Creature* pCreature)
 {
     Script* pTempScript = m_scripts[pCreature->GetScriptId()];
@@ -367,7 +367,7 @@ uint32 GetNPCDialogStatus(Player* pPlayer, Creature* pCreature)
     return pTempScript->pDialogStatusNPC(pPlayer, pCreature);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 uint32 GetGODialogStatus(Player* pPlayer, GameObject* pGo)
 {
     Script* pTempScript = m_scripts[pGo->GetGOInfo()->ScriptId];
@@ -380,7 +380,7 @@ uint32 GetGODialogStatus(Player* pPlayer, GameObject* pGo)
     return pTempScript->pDialogStatusGO(pPlayer, pGo);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool ItemQuestAccept(Player* pPlayer, Item* pItem, Quest const* pQuest)
 {
     Script* pTempScript = m_scripts[pItem->GetProto()->ScriptId];
@@ -393,7 +393,7 @@ bool ItemQuestAccept(Player* pPlayer, Item* pItem, Quest const* pQuest)
     return pTempScript->pQuestAcceptItem(pPlayer, pItem, pQuest);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool GOUse(Player* pPlayer, GameObject* pGo)
 {
     Script* pTempScript = m_scripts[pGo->GetGOInfo()->ScriptId];
@@ -404,7 +404,7 @@ bool GOUse(Player* pPlayer, GameObject* pGo)
     return pTempScript->pGOUse(pPlayer, pGo);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool GOQuestAccept(Player* pPlayer, GameObject* pGo, const Quest* pQuest)
 {
     Script* pTempScript = m_scripts[pGo->GetGOInfo()->ScriptId];
@@ -417,7 +417,7 @@ bool GOQuestAccept(Player* pPlayer, GameObject* pGo, const Quest* pQuest)
     return pTempScript->pQuestAcceptGO(pPlayer, pGo, pQuest);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool GOQuestRewarded(Player* pPlayer, GameObject* pGo, Quest const* pQuest)
 {
     Script* pTempScript = m_scripts[pGo->GetGOInfo()->ScriptId];
@@ -430,7 +430,7 @@ bool GOQuestRewarded(Player* pPlayer, GameObject* pGo, Quest const* pQuest)
     return pTempScript->pQuestRewardedGO(pPlayer, pGo, pQuest);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool AreaTrigger(Player* pPlayer, AreaTriggerEntry const* atEntry)
 {
     Script* pTempScript = m_scripts[GetAreaTriggerScriptId(atEntry->id)];
@@ -441,7 +441,7 @@ bool AreaTrigger(Player* pPlayer, AreaTriggerEntry const* atEntry)
     return pTempScript->pAreaTrigger(pPlayer, atEntry);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool CompletedCinematic(Player* pPlayer, CinematicSequencesEntry const* cinematic)
 {
     Script* pTempScript = m_scripts[GetCompletedCinematicScriptId(cinematic->Id)];
@@ -452,7 +452,7 @@ bool CompletedCinematic(Player* pPlayer, CinematicSequencesEntry const* cinemati
     return pTempScript->pCompletedCinematic(pPlayer, cinematic);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool ProcessEvent(uint32 uiEventId, Object* pSource, Object* pTarget, bool bIsStart)
 {
     Script* pTempScript = m_scripts[GetEventIdScriptId(uiEventId)];
@@ -464,7 +464,7 @@ bool ProcessEvent(uint32 uiEventId, Object* pSource, Object* pTarget, bool bIsSt
     return pTempScript->pProcessEventId(uiEventId, pSource, pTarget, bIsStart);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 CreatureAI* GetCreatureAI(Creature* pCreature)
 {
     Script* pTempScript = m_scripts[pCreature->GetScriptId()];
@@ -475,7 +475,7 @@ CreatureAI* GetCreatureAI(Creature* pCreature)
     return pTempScript->GetAI(pCreature);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool ItemUse(Player* pPlayer, Item* pItem, SpellCastTargets const& targets)
 {
     Script* pTempScript = m_scripts[pItem->GetProto()->ScriptId];
@@ -486,7 +486,7 @@ bool ItemUse(Player* pPlayer, Item* pItem, SpellCastTargets const& targets)
     return pTempScript->pItemUse(pPlayer, pItem, targets);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool EffectDummyCreature(Unit* pCaster, uint32 spellId, uint32 effIndex, Creature* pTarget)
 {
     Script* pTempScript = m_scripts[pTarget->GetScriptId()];
@@ -497,7 +497,7 @@ bool EffectDummyCreature(Unit* pCaster, uint32 spellId, uint32 effIndex, Creatur
     return pTempScript->pEffectDummyNPC(pCaster, spellId, effIndex, pTarget);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool EffectDummyGameObject(Unit* pCaster, uint32 spellId, uint32 effIndex, GameObject* pTarget)
 {
     Script* pTempScript = m_scripts[pTarget->GetGOInfo()->ScriptId];
@@ -508,7 +508,7 @@ bool EffectDummyGameObject(Unit* pCaster, uint32 spellId, uint32 effIndex, GameO
     return pTempScript->pEffectDummyGO(pCaster, spellId, effIndex, pTarget);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool EffectDummyItem(Unit* pCaster, uint32 spellId, uint32 effIndex, Item* pTarget)
 {
     Script* pTempScript = m_scripts[pTarget->GetProto()->ScriptId];
@@ -519,7 +519,7 @@ bool EffectDummyItem(Unit* pCaster, uint32 spellId, uint32 effIndex, Item* pTarg
     return pTempScript->pEffectDummyItem(pCaster, spellId, effIndex, pTarget);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool AuraDummy(Aura const* pAura, bool bApply)
 {
     Script* pTempScript = m_scripts[((Creature*)pAura->GetTarget())->GetScriptId()];
@@ -530,7 +530,7 @@ bool AuraDummy(Aura const* pAura, bool bApply)
     return pTempScript->pEffectAuraDummy(pAura, bApply);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool ReceiveEmote( Player *player, Creature *_Creature, uint32 emote )
 {
     Script *tmpscript = m_scripts[_Creature->GetScriptId()];
@@ -539,7 +539,7 @@ bool ReceiveEmote( Player *player, Creature *_Creature, uint32 emote )
     return tmpscript->pReceiveEmote(player, _Creature, emote);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 InstanceData* CreateInstanceData(Map* pMap)
 {
     if (!pMap->IsDungeon())
@@ -552,7 +552,7 @@ InstanceData* CreateInstanceData(Map* pMap)
     return pTempScript->GetInstanceData(pMap);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool SpellSetTargetMap(Unit* pCaster, std::list<Unit*> &unitList, SpellCastTargets const& targets, SpellEntry const *pSpell, uint32 effectIndex)
 {
     Script* pTempScript = m_scripts[GetSpellIdScriptId(pSpell->Id)];
@@ -563,7 +563,7 @@ bool SpellSetTargetMap(Unit* pCaster, std::list<Unit*> &unitList, SpellCastTarge
     return pTempScript->pSpellTargetMap(pCaster, unitList, targets, pSpell, effectIndex);
 }
 
-lOOKING4GROUP_DLL_EXPORT
+LOOKING4GROUP_DLL_EXPORT
 bool SpellHandleEffect(Unit *pCaster, Unit* pUnit, Item* pItem, GameObject* pGameObject, SpellEntry const *pSpell, uint32 effectIndex)
 {
     Script* pTempScript = m_scripts[GetSpellIdScriptId(pSpell->Id)];

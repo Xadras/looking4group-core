@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef lOOKING4GROUP_CALLBACK_H
-#define lOOKING4GROUP_CALLBACK_H
+#ifndef LOOKING4GROUP_CALLBACK_H
+#define LOOKING4GROUP_CALLBACK_H
 
 //defines to simplify multi param templates code and readablity
 #define TYPENAMES_1 typename T1

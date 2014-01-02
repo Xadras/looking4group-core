@@ -65,7 +65,7 @@ CreatureEventAI::CreatureEventAI(Creature *c) : CreatureAI(c)
         for (i = (*CreatureEvents).second.begin(); i != (*CreatureEvents).second.end(); ++i)
         {
             //Debug check
-            #ifndef lOOKING4GROUP_DEBUG
+            #ifndef LOOKING4GROUP_DEBUG
             if ((*i).event_flags & EFLAG_DEBUG_ONLY)
                 continue;
             #endif
@@ -92,7 +92,7 @@ CreatureEventAI::CreatureEventAI(Creature *c) : CreatureAI(c)
         {
 
             //Debug check
-            #ifndef lOOKING4GROUP_DEBUG
+            #ifndef LOOKING4GROUP_DEBUG
             if ((*i).event_flags & EFLAG_DEBUG_ONLY)
                 continue;
             #endif

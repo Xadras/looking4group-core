@@ -54,7 +54,7 @@ typedef std::map<uint32,ReputationRank> ForcedReactions;
 
 class Player;
 
-class lOOKING4GROUP_EXPORT ReputationMgr
+class LOOKING4GROUP_EXPORT ReputationMgr
 {
     public:                                                 // constructors and global modifiers
         explicit ReputationMgr(Player* owner) : m_player(owner) {}

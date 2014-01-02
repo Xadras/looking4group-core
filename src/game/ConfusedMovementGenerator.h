@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef lOOKING4GROUP_CONFUSEDGENERATOR_H
-#define lOOKING4GROUP_CONFUSEDGENERATOR_H
+#ifndef LOOKING4GROUP_CONFUSEDGENERATOR_H
+#define LOOKING4GROUP_CONFUSEDGENERATOR_H
 
 #include "MovementGenerator.h"
 
@@ -30,7 +30,7 @@
 #define MAX_RANDOM_POINTS  6
 
 template<class UNIT>
-class lOOKING4GROUP_EXPORT ConfusedMovementGenerator : public MovementGeneratorMedium< UNIT, ConfusedMovementGenerator<UNIT> >
+class LOOKING4GROUP_EXPORT ConfusedMovementGenerator : public MovementGeneratorMedium< UNIT, ConfusedMovementGenerator<UNIT> >
 {
     public:
         explicit ConfusedMovementGenerator() : _nextMoveTime(0) {}

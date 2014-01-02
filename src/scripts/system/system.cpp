@@ -25,9 +25,9 @@
 #include "Database/DatabaseEnv.h"
 
 #if PLATFORM == PLATFORM_WINDOWS
-lOOKING4GROUP_IMPORT_EXPORT DatabaseType GameDataDatabase;                              ///< Accessor to the world database
-lOOKING4GROUP_IMPORT_EXPORT DatabaseType RealmDataDatabase;                             ///< Accessor to the character database
-lOOKING4GROUP_IMPORT_EXPORT DatabaseType AccountsDatabase;                              ///< Accessor to the realm/login database
+LOOKING4GROUP_IMPORT_EXPORT DatabaseType GameDataDatabase;                              ///< Accessor to the world database
+LOOKING4GROUP_IMPORT_EXPORT DatabaseType RealmDataDatabase;                             ///< Accessor to the character database
+LOOKING4GROUP_IMPORT_EXPORT DatabaseType AccountsDatabase;                              ///< Accessor to the realm/login database
 #endif
 
 SystemMgr::SystemMgr()

@@ -26,7 +26,7 @@
 class TargetedMovementGeneratorBase;
 class Unit;
 
-class lOOKING4GROUP_IMPORT_EXPORT FollowerReference : public Reference<Unit, TargetedMovementGeneratorBase>
+class LOOKING4GROUP_IMPORT_EXPORT FollowerReference : public Reference<Unit, TargetedMovementGeneratorBase>
 {
     protected:
         void targetObjectBuildLink();

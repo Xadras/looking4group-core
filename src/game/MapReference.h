@@ -22,7 +22,7 @@
 #include "Utilities/LinkedReference/Reference.h"
 #include "Map.h"
 
-class lOOKING4GROUP_IMPORT_EXPORT MapReference : public Reference<Map, Player>
+class LOOKING4GROUP_IMPORT_EXPORT MapReference : public Reference<Map, Player>
 {
     protected:
         void targetObjectBuildLink()

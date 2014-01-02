@@ -849,7 +849,7 @@ struct AccessRequirement
     std::string missingAuraText;
 };
 
-class lOOKING4GROUP_IMPORT_EXPORT PlayerTaxi
+class LOOKING4GROUP_IMPORT_EXPORT PlayerTaxi
 {
     public:
         PlayerTaxi();
@@ -912,7 +912,7 @@ class lOOKING4GROUP_IMPORT_EXPORT PlayerTaxi
         std::deque<uint32> m_TaxiDestinations;
 };
 
-class lOOKING4GROUP_EXPORT Player : public Unit
+class LOOKING4GROUP_EXPORT Player : public Unit
 {
     friend class WorldSession;
     friend void Item::AddToUpdateQueueOf(Player *player);

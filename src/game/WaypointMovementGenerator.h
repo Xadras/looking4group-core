@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef lOOKING4GROUP_WAYPOINTMOVEMENTGENERATOR_H
-#define lOOKING4GROUP_WAYPOINTMOVEMENTGENERATOR_H
+#ifndef LOOKING4GROUP_WAYPOINTMOVEMENTGENERATOR_H
+#define LOOKING4GROUP_WAYPOINTMOVEMENTGENERATOR_H
 
 /** @page PathMovementGenerator is used to generate movements
  * of way points and flight paths.  Each serves the purpose
@@ -41,7 +41,7 @@
 #define TIMEDIFF_NEXT_WP      250
 
 template<class T, class P>
-class lOOKING4GROUP_IMPORT_EXPORT PathMovementBase
+class LOOKING4GROUP_IMPORT_EXPORT PathMovementBase
 {
     public:
         PathMovementBase() : _currentNode(0), _path(NULL) {}
@@ -99,7 +99,7 @@ class WaypointMovementGenerator<Creature> : public MovementGeneratorMedium< Crea
 /** FlightPathMovementGenerator generates movement of the player for the paths
  * and hence generates ground and activities for the player.
  */
-class lOOKING4GROUP_IMPORT_EXPORT FlightPathMovementGenerator
+class LOOKING4GROUP_IMPORT_EXPORT FlightPathMovementGenerator
 : public MovementGeneratorMedium< Player, FlightPathMovementGenerator >,
 public PathMovementBase<Player,TaxiPathNodeList const*>
 {

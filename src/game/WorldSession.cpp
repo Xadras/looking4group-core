@@ -207,7 +207,7 @@ void WorldSession::SendPacket(WorldPacket const* packet)
     if (!m_Socket)
         return;
 
-    #ifdef lOOKING4GROUP_DEBUG
+    #ifdef LOOKING4GROUP_DEBUG
 
     // Code for network use statistic
     static uint64 sendPacketCount = 0;
@@ -241,7 +241,7 @@ void WorldSession::SendPacket(WorldPacket const* packet)
         sendLastPacketBytes = packet->wpos();               // wpos is real written size
     }
 
-    #endif                                                  // !lOOKING4GROUP_DEBUG
+    #endif                                                  // !LOOKING4GROUP_DEBUG
 
     if (m_Socket->SendPacket(*packet) == -1)
         m_Socket->CloseSocket();

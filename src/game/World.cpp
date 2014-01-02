@@ -1482,7 +1482,7 @@ void World::SetInitialWorldSettings()
     sCreatureEAIMgr.LoadCreatureEventAI_Scripts();
 
     sLog.outString("Initializing Scripts...");
-    sScriptMgr.LoadScriptLibrary(lOOKING4GROUP_SCRIPT_NAME);
+    sScriptMgr.LoadScriptLibrary(LOOKING4GROUP_SCRIPT_NAME);
 
     ///- Initialize game time and timers
     sLog.outDebug("DEBUG:: Initialize game time and timers");

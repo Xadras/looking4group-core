@@ -2878,19 +2878,19 @@ void ObjectMgr::LoadQuests()
         if (qinfo->GetQuestMethod() >= 3)
             sLog.outLog(LOG_DB_ERR, "Quest %u has `Method` = %u, expected values are 0, 1 or 2.",qinfo->GetQuestId(),qinfo->GetQuestMethod());
 
-        if (qinfo->QuestFlags & ~QUEST_lOOKING4GROUP_FLAGS_DB_ALLOWED)
+        if (qinfo->QuestFlags & ~QUEST_LOOKING4GROUP_FLAGS_DB_ALLOWED)
         {
             sLog.outLog(LOG_DB_ERR, "Quest %u has `SpecialFlags` = %u > max allowed value. Correct `SpecialFlags` to value <= %u",
-                qinfo->GetQuestId(),qinfo->QuestFlags,QUEST_lOOKING4GROUP_FLAGS_DB_ALLOWED >> 16);
-            qinfo->QuestFlags &= QUEST_lOOKING4GROUP_FLAGS_DB_ALLOWED;
+                qinfo->GetQuestId(),qinfo->QuestFlags,QUEST_LOOKING4GROUP_FLAGS_DB_ALLOWED >> 16);
+            qinfo->QuestFlags &= QUEST_LOOKING4GROUP_FLAGS_DB_ALLOWED;
         }
 
         if (qinfo->QuestFlags & QUEST_FLAGS_DAILY)
         {
-            if (!(qinfo->QuestFlags & QUEST_lOOKING4GROUP_FLAGS_REPEATABLE))
+            if (!(qinfo->QuestFlags & QUEST_LOOKING4GROUP_FLAGS_REPEATABLE))
             {
                 sLog.outLog(LOG_DB_ERR, "Daily Quest %u not marked as repeatable in `SpecialFlags`, added.",qinfo->GetQuestId());
-                qinfo->QuestFlags |= QUEST_lOOKING4GROUP_FLAGS_REPEATABLE;
+                qinfo->QuestFlags |= QUEST_LOOKING4GROUP_FLAGS_REPEATABLE;
             }
         }
 
@@ -3039,7 +3039,7 @@ void ObjectMgr::LoadQuests()
                     continue;
                 }
 
-                qinfo->SetFlag(QUEST_lOOKING4GROUP_FLAGS_DELIVER);
+                qinfo->SetFlag(QUEST_LOOKING4GROUP_FLAGS_DELIVER);
 
                 if (!sItemStorage.LookupEntry<ItemPrototype>(id))
                 {
@@ -3127,8 +3127,8 @@ void ObjectMgr::LoadQuests()
 
                     if (found)
                     {
-                        if (!qinfo->HasFlag(QUEST_lOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT))
-                            sLog.outLog(LOG_DB_ERR, "Spell (id: %u) have SPELL_EFFECT_QUEST_COMPLETE or SPELL_EFFECT_SEND_EVENT for quest %u and ReqCreatureOrGOId%d = 0, but quest not have flag QUEST_lOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT. Quest flags or ReqCreatureOrGOId%d must be fixed, quest modified to enable objective.",spellInfo->Id,qinfo->QuestId,j+1,j+1);
+                        if (!qinfo->HasFlag(QUEST_LOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT))
+                            sLog.outLog(LOG_DB_ERR, "Spell (id: %u) have SPELL_EFFECT_QUEST_COMPLETE or SPELL_EFFECT_SEND_EVENT for quest %u and ReqCreatureOrGOId%d = 0, but quest not have flag QUEST_LOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT. Quest flags or ReqCreatureOrGOId%d must be fixed, quest modified to enable objective.",spellInfo->Id,qinfo->QuestId,j+1,j+1);
                     }
                     else
                         sLog.outLog(LOG_DB_ERR, "Quest %u has `ReqSpellCast%d` = %u and ReqCreatureOrGOId%d = 0 but spell %u does not have SPELL_EFFECT_QUEST_COMPLETE or SPELL_EFFECT_SEND_EVENT effect for this quest, quest can't be done.", qinfo->GetQuestId(),j+1,id,j+1,id);
@@ -3154,7 +3154,7 @@ void ObjectMgr::LoadQuests()
             if (id)
             {
                 // In fact SpeakTo and Kill are quite same: either you can speak to mob:SpeakTo or you can't:Kill/Cast
-                qinfo->SetFlag(QUEST_lOOKING4GROUP_FLAGS_KILL_OR_CAST | QUEST_lOOKING4GROUP_FLAGS_SPEAKTO);
+                qinfo->SetFlag(QUEST_LOOKING4GROUP_FLAGS_KILL_OR_CAST | QUEST_LOOKING4GROUP_FLAGS_SPEAKTO);
 
                 if (!qinfo->ReqCreatureOrGOCount[j])
                     sLog.outLog(LOG_DB_ERR, "Quest %u has `ReqCreatureOrGOId%d` = %u but `ReqCreatureOrGOCount%d` = 0, quest can't be done.", qinfo->GetQuestId(),j+1,id,j+1);
@@ -3296,7 +3296,7 @@ void ObjectMgr::LoadQuests()
             mExclusiveQuestGroups.insert(std::pair<int32, uint32>(qinfo->ExclusiveGroup, qinfo->GetQuestId()));
 
         if (qinfo->LimitTime)
-            qinfo->SetFlag(QUEST_lOOKING4GROUP_FLAGS_TIMED);
+            qinfo->SetFlag(QUEST_LOOKING4GROUP_FLAGS_TIMED);
     }
 
     sLog.outString();
@@ -3912,12 +3912,12 @@ void ObjectMgr::LoadQuestAreaTriggers()
             continue;
         }
 
-        if (!quest->HasFlag(QUEST_lOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT))
+        if (!quest->HasFlag(QUEST_LOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT))
         {
-            sLog.outLog(LOG_DB_ERR, "Table `areatrigger_involvedrelation` has record (id: %u) for not quest %u, but quest not have flag QUEST_lOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT. Trigger or quest flags must be fixed, quest modified to require objective.",trigger_ID,quest_ID);
+            sLog.outLog(LOG_DB_ERR, "Table `areatrigger_involvedrelation` has record (id: %u) for not quest %u, but quest not have flag QUEST_LOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT. Trigger or quest flags must be fixed, quest modified to require objective.",trigger_ID,quest_ID);
 
             // this will prevent quest completing without objective
-            const_cast<Quest*>(quest)->SetFlag(QUEST_lOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT);
+            const_cast<Quest*>(quest)->SetFlag(QUEST_LOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT);
 
             // continue; - quest modified to required objective and trigger can be allowed.
         }
@@ -5927,7 +5927,7 @@ bool ObjectMgr::LoadLooking4groupStrings(DatabaseType& db, char const* table, in
         bar.step();
 
         sLog.outString();
-        if (min_value == MIN_lOOKING4GROUP_STRING_ID)              // error only in case internal strings
+        if (min_value == MIN_LOOKING4GROUP_STRING_ID)              // error only in case internal strings
             sLog.outLog(LOG_DB_ERR, ">> Loaded 0 trinity strings. DB table `%s` is empty. Cannot continue.",table);
         else
             sLog.outString(">> Loaded 0 string templates. DB table `%s` is empty.",table);
@@ -5989,7 +5989,7 @@ bool ObjectMgr::LoadLooking4groupStrings(DatabaseType& db, char const* table, in
     } while (result->NextRow());
 
     sLog.outString();
-    if (min_value == MIN_lOOKING4GROUP_STRING_ID)               // internal Trinity strings
+    if (min_value == MIN_LOOKING4GROUP_STRING_ID)               // internal Trinity strings
         sLog.outString(">> Loaded %u Trinity strings from table %s", count,table);
     else
         sLog.outString(">> Loaded %u string templates from %s", count,table);
@@ -6010,7 +6010,7 @@ const char *ObjectMgr::GetTrinityString(int32 entry, int locale_idx) const
     }
 
     if (entry > 0)
-        sLog.outLog(LOG_DB_ERR, "Entry %i not found in `lOOKING4GROUP_string` table.",entry);
+        sLog.outLog(LOG_DB_ERR, "Entry %i not found in `LOOKING4GROUP_string` table.",entry);
     else
         sLog.outLog(LOG_DB_ERR, "Trinity string entry %i not found in DB.",entry);
     return "<error>";

@@ -98,8 +98,8 @@ typedef UNORDERED_MAP<uint64/*(instance,guid) pair*/,time_t> RespawnTimes;
 typedef UNORDERED_MAP<uint32,time_t> GuildCooldowns;
 
 // trinity string ranges
-#define MIN_lOOKING4GROUP_STRING_ID           1                    // 'lOOKING4GROUP_string'
-#define MAX_lOOKING4GROUP_STRING_ID           2000000000
+#define MIN_LOOKING4GROUP_STRING_ID           1                    // 'LOOKING4GROUP_string'
+#define MAX_LOOKING4GROUP_STRING_ID           2000000000
 
 #define MIN_CREATURE_AI_TEXT_STRING_ID (-1)                 // 'creature_ai_texts'
 #define MAX_CREATURE_AI_TEXT_STRING_ID (-1000000)
@@ -248,7 +248,7 @@ SkillRangeType GetSkillRangeType(SkillLineEntry const *pSkill, bool racial);
 
 bool normalizePlayerName(std::string& name);
 
-struct lOOKING4GROUP_IMPORT_EXPORT LanguageDesc
+struct LOOKING4GROUP_IMPORT_EXPORT LanguageDesc
 {
     Language lang_id;
     uint32   spell_id;
@@ -256,7 +256,7 @@ struct lOOKING4GROUP_IMPORT_EXPORT LanguageDesc
 };
 
 extern LanguageDesc lang_description[LANGUAGES_COUNT];
-lOOKING4GROUP_IMPORT_EXPORT LanguageDesc const* GetLanguageDescByID(uint32 lang);
+LOOKING4GROUP_IMPORT_EXPORT LanguageDesc const* GetLanguageDescByID(uint32 lang);
 
 class ObjectMgr
 {
@@ -473,7 +473,7 @@ class ObjectMgr
         void LoadTransportEvents();
 
         bool LoadLooking4groupStrings(DatabaseType& db, char const* table, int32 min_value, int32 max_value);
-        bool LoadLooking4groupStrings() { return LoadLooking4groupStrings(GameDataDatabase,"looking4group_string",MIN_lOOKING4GROUP_STRING_ID,MAX_lOOKING4GROUP_STRING_ID); }
+        bool LoadLooking4groupStrings() { return LoadLooking4groupStrings(GameDataDatabase,"looking4group_string",MIN_LOOKING4GROUP_STRING_ID,MAX_LOOKING4GROUP_STRING_ID); }
 
         void LoadPetCreateSpells();
         void LoadCreatureLocales();
@@ -898,10 +898,10 @@ class ObjectMgr
 #define sObjectMgr (*ACE_Singleton<ObjectMgr, ACE_Null_Mutex>::instance())
 
 // scripting access functions
-lOOKING4GROUP_IMPORT_EXPORT bool LoadLooking4groupStrings(DatabaseType& db, char const* table,int32 start_value = MAX_CREATURE_AI_TEXT_STRING_ID, int32 end_value = std::numeric_limits<int32>::min());
-lOOKING4GROUP_IMPORT_EXPORT GameObjectInfo const *GetGameObjectInfo(uint32 id);
-lOOKING4GROUP_IMPORT_EXPORT CreatureInfo const *GetCreatureInfo(uint32 id);
-lOOKING4GROUP_IMPORT_EXPORT CreatureInfo const* GetCreatureTemplateStore(uint32 entry);
-lOOKING4GROUP_IMPORT_EXPORT Quest const* GetQuestTemplateStore(uint32 entry);
+LOOKING4GROUP_IMPORT_EXPORT bool LoadLooking4groupStrings(DatabaseType& db, char const* table,int32 start_value = MAX_CREATURE_AI_TEXT_STRING_ID, int32 end_value = std::numeric_limits<int32>::min());
+LOOKING4GROUP_IMPORT_EXPORT GameObjectInfo const *GetGameObjectInfo(uint32 id);
+LOOKING4GROUP_IMPORT_EXPORT CreatureInfo const *GetCreatureInfo(uint32 id);
+LOOKING4GROUP_IMPORT_EXPORT CreatureInfo const* GetCreatureTemplateStore(uint32 entry);
+LOOKING4GROUP_IMPORT_EXPORT Quest const* GetQuestTemplateStore(uint32 entry);
 
 #endif

@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef lOOKING4GROUP_TYPECONTAINERVISITOR_H
-#define lOOKING4GROUP_TYPECONTAINERVISITOR_H
+#ifndef LOOKING4GROUP_TYPECONTAINERVISITOR_H
+#define LOOKING4GROUP_TYPECONTAINERVISITOR_H
 
 /*
  * @class TypeContainerVisitor is implemented as a visitor pattern.  It is

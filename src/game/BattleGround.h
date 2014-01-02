@@ -260,7 +260,7 @@ This class is used to:
 3. some certain cases, same for all battlegrounds
 4. It has properties same for all battlegrounds
 */
-class lOOKING4GROUP_IMPORT_EXPORT BattleGround
+class LOOKING4GROUP_IMPORT_EXPORT BattleGround
 {
     friend class BattleGroundMgr;
 

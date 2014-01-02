@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef lOOKING4GROUP_COMBATAI_H
-#define lOOKING4GROUP_COMBATAI_H
+#ifndef LOOKING4GROUP_COMBATAI_H
+#define LOOKING4GROUP_COMBATAI_H
 
 #include "CreatureAI.h"
 #include "CreatureAIImpl.h"
@@ -37,7 +37,7 @@ class AggressorAI : public CreatureAI
 
 typedef std::vector<uint32> SpellVct;
 
-class lOOKING4GROUP_IMPORT_EXPORT CombatAI : public CreatureAI
+class LOOKING4GROUP_IMPORT_EXPORT CombatAI : public CreatureAI
 {
     public:
         explicit CombatAI(Creature *c) : CreatureAI(c) {}
@@ -53,7 +53,7 @@ class lOOKING4GROUP_IMPORT_EXPORT CombatAI : public CreatureAI
         SpellVct spells;
 };
 
-class lOOKING4GROUP_IMPORT_EXPORT CasterAI : public CombatAI
+class LOOKING4GROUP_IMPORT_EXPORT CasterAI : public CombatAI
 {
     public:
         explicit CasterAI(Creature *c) : CombatAI(c) { m_attackDist = MELEE_RANGE; }

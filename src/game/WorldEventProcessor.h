@@ -27,7 +27,7 @@
 
 class Player;
 
-class lOOKING4GROUP_IMPORT_EXPORT WorldEvent
+class LOOKING4GROUP_IMPORT_EXPORT WorldEvent
 {
     public:
         WorldEvent(Player* player) : _owner(player) {}
@@ -39,7 +39,7 @@ class lOOKING4GROUP_IMPORT_EXPORT WorldEvent
         Player* _owner;
 };
 
-class lOOKING4GROUP_IMPORT_EXPORT WorldEventProcessor
+class LOOKING4GROUP_IMPORT_EXPORT WorldEventProcessor
 {
     friend class ACE_Singleton<WorldEventProcessor, ACE_Thread_Mutex>;
     WorldEventProcessor() {}

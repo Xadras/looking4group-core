@@ -28,7 +28,7 @@ namespace Movement
 {
     /*  Initializes and launches spline movement
      */
-    class lOOKING4GROUP_IMPORT_EXPORT MoveSplineInit
+    class LOOKING4GROUP_IMPORT_EXPORT MoveSplineInit
     {
     public:
 

@@ -666,7 +666,7 @@ void CreatureEventAIMgr::LoadCreatureEventAI_Scripts(uint32 creatureId)
                     case ACTION_T_QUEST_EVENT:
                         if (Quest const* qid = sObjectMgr.GetQuestTemplate(action.quest_event.questId))
                         {
-                            if (!qid->HasFlag(QUEST_lOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT))
+                            if (!qid->HasFlag(QUEST_LOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT))
                                 sLog.outLog(LOG_DB_ERR, "CreatureEventAI:  Event %u Action %u. SpecialFlags for quest entry %u does not include |2, Action will not have any effect.", i, j+1, action.quest_event.questId);
                         }
                         else
@@ -708,7 +708,7 @@ void CreatureEventAIMgr::LoadCreatureEventAI_Scripts(uint32 creatureId)
                     case ACTION_T_QUEST_EVENT_ALL:
                         if (Quest const* qid = sObjectMgr.GetQuestTemplate(action.quest_event_all.questId))
                         {
-                            if (!qid->HasFlag(QUEST_lOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT))
+                            if (!qid->HasFlag(QUEST_LOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT))
                                 sLog.outLog(LOG_DB_ERR, "CreatureEventAI:  Event %u Action %u. SpecialFlags for quest entry %u does not include |2, Action will not have any effect.", i, j+1, action.quest_event_all.questId);
                         }
                         else

@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef lOOKING4GROUP_CREATUREAI_H
-#define lOOKING4GROUP_CREATUREAI_H
+#ifndef LOOKING4GROUP_CREATUREAI_H
+#define LOOKING4GROUP_CREATUREAI_H
 
 #include "UnitAI.h"
 #include "Common.h"
@@ -66,7 +66,7 @@ enum SCEquip
     EQUIP_UNEQUIP   = 0
 };
 
-class lOOKING4GROUP_IMPORT_EXPORT CreatureAI : public UnitAI
+class LOOKING4GROUP_IMPORT_EXPORT CreatureAI : public UnitAI
 {
     protected:
         Creature * const me;

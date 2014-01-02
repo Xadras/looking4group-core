@@ -149,7 +149,7 @@ class WorldSessionFilter : public PacketFilter
 };
 
 /// Player session in the World
-class lOOKING4GROUP_IMPORT_EXPORT WorldSession
+class LOOKING4GROUP_IMPORT_EXPORT WorldSession
 {
     friend class CharacterHandler;
     public:

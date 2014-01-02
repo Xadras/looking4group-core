@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef lOOKING4GROUP_CELLIMPL_H
-#define lOOKING4GROUP_CELLIMPL_H
+#ifndef LOOKING4GROUP_CELLIMPL_H
+#define LOOKING4GROUP_CELLIMPL_H
 
 #include "Common.h"
 #include "Cell.h"

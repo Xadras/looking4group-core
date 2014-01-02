@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef lOOKING4GROUP_FACTORY_HOLDER
-#define lOOKING4GROUP_FACTORY_HOLDER
+#ifndef LOOKING4GROUP_FACTORY_HOLDER
+#define LOOKING4GROUP_FACTORY_HOLDER
 
 #include "ace/Singleton.h"
 

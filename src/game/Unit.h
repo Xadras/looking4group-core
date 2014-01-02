@@ -828,7 +828,7 @@ enum ReactiveType
 
 struct SpellProcEventEntry;                                 // used only privately
 
-class lOOKING4GROUP_IMPORT_EXPORT Unit : public WorldObject
+class LOOKING4GROUP_IMPORT_EXPORT Unit : public WorldObject
 {
     public:
         typedef std::set<Unit*> AttackerSet;

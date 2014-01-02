@@ -26,7 +26,7 @@
 class Creature;
 class GameObject;
 
-class lOOKING4GROUP_IMPORT_EXPORT ZoneScript
+class LOOKING4GROUP_IMPORT_EXPORT ZoneScript
 {
     public:
         explicit ZoneScript() {}

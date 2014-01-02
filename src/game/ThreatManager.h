@@ -46,7 +46,7 @@ class ThreatCalcHelper
 
 //==============================================================
 
-class lOOKING4GROUP_IMPORT_EXPORT HostilReference : public Reference<Unit, ThreatManager>
+class LOOKING4GROUP_IMPORT_EXPORT HostilReference : public Reference<Unit, ThreatManager>
 {
     public:
         HostilReference(Unit* pUnit, ThreatManager *pThreatManager, float pThreat);
@@ -132,7 +132,7 @@ class lOOKING4GROUP_IMPORT_EXPORT HostilReference : public Reference<Unit, Threa
 //==============================================================
 class ThreatManager;
 
-class lOOKING4GROUP_IMPORT_EXPORT ThreatContainer
+class LOOKING4GROUP_IMPORT_EXPORT ThreatContainer
 {
     private:
         std::list<HostilReference*> iThreatList;
@@ -170,7 +170,7 @@ class lOOKING4GROUP_IMPORT_EXPORT ThreatContainer
 
 //=================================================
 
-class lOOKING4GROUP_IMPORT_EXPORT ThreatManager
+class LOOKING4GROUP_IMPORT_EXPORT ThreatManager
 {
     public:
         friend class HostilReference;

@@ -16,8 +16,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef lOOKING4GROUP_TARGETEDMOVEMENTGENERATOR_H
-#define lOOKING4GROUP_TARGETEDMOVEMENTGENERATOR_H
+#ifndef LOOKING4GROUP_TARGETEDMOVEMENTGENERATOR_H
+#define LOOKING4GROUP_TARGETEDMOVEMENTGENERATOR_H
 
 #include "MovementGenerator.h"
 

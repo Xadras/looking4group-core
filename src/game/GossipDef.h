@@ -113,7 +113,7 @@ struct QuestMenuItem
 
 typedef std::vector<QuestMenuItem> QuestMenuItemList;
 
-class lOOKING4GROUP_IMPORT_EXPORT GossipMenu
+class LOOKING4GROUP_IMPORT_EXPORT GossipMenu
 {
     public:
         GossipMenu();
@@ -181,7 +181,7 @@ class QuestMenu
         QuestMenuItemList m_qItems;
 };
 
-class lOOKING4GROUP_IMPORT_EXPORT PlayerMenu
+class LOOKING4GROUP_IMPORT_EXPORT PlayerMenu
 {
     private:
         GossipMenu mGossipMenu;

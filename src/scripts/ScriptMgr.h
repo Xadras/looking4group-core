@@ -96,11 +96,11 @@ void ScriptText(int32 textEntry, Unit* pSource, Unit* target = NULL);
 #endif
 
 #ifdef WIN32
-#define lOOKING4GROUP_DLL_EXPORT extern "C" __declspec(dllexport)
+#define LOOKING4GROUP_DLL_EXPORT extern "C" __declspec(dllexport)
 #elif defined( __GNUC__ )
-#define lOOKING4GROUP_DLL_EXPORT extern "C"
+#define LOOKING4GROUP_DLL_EXPORT extern "C"
 #else
-#define lOOKING4GROUP_DLL_EXPORT extern "C" export
+#define LOOKING4GROUP_DLL_EXPORT extern "C" export
 #endif
 
 #endif

@@ -140,7 +140,7 @@ struct GroupMemberSlot
 
 /** request member stats checken **/
 /** todo: uninvite people that not accepted invite **/
-class lOOKING4GROUP_IMPORT_EXPORT Group
+class LOOKING4GROUP_IMPORT_EXPORT Group
 {
     public:
 

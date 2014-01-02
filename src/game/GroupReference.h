@@ -26,7 +26,7 @@
 class Group;
 class Player;
 
-class lOOKING4GROUP_IMPORT_EXPORT GroupReference : public Reference<Group, Player>
+class LOOKING4GROUP_IMPORT_EXPORT GroupReference : public Reference<Group, Player>
 {
     protected:
         uint8 iSubGroup;

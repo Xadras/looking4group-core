@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef lOOKING4GROUP_GRIDNOTIFIERS_H
-#define lOOKING4GROUP_GRIDNOTIFIERS_H
+#ifndef LOOKING4GROUP_GRIDNOTIFIERS_H
+#define LOOKING4GROUP_GRIDNOTIFIERS_H
 
 #include "ObjectGridLoader.h"
 #include "ByteBuffer.h"
@@ -58,7 +58,7 @@ namespace Looking4group
         void SendToSelf(void);
     };
 
-    struct lOOKING4GROUP_EXPORT VisibleChangesNotifier
+    struct LOOKING4GROUP_EXPORT VisibleChangesNotifier
     {
         WorldObject &_object;
 
@@ -94,7 +94,7 @@ namespace Looking4group
         void Visit(GridRefManager<NOT_INTERESTED>&) {}
     };
 
-    struct lOOKING4GROUP_EXPORT PacketBroadcaster
+    struct LOOKING4GROUP_EXPORT PacketBroadcaster
     {
         WorldObject &_source;
         WorldPacket *_message;
@@ -115,7 +115,7 @@ namespace Looking4group
         void Visit(GridRefManager<SKIP>&) {}
     };
 
-    struct lOOKING4GROUP_EXPORT ObjectUpdater
+    struct LOOKING4GROUP_EXPORT ObjectUpdater
     {
         uint32 i_timeDiff;
         explicit ObjectUpdater(const uint32 &diff) : i_timeDiff(diff) {}
@@ -129,7 +129,7 @@ namespace Looking4group
         void Visit(GridRefManager<T> &m);
     };
 
-    struct lOOKING4GROUP_EXPORT DynamicObjectUpdater
+    struct LOOKING4GROUP_EXPORT DynamicObjectUpdater
     {
         DynamicObject &i_dynobject;
         Unit* i_check;
@@ -150,7 +150,7 @@ namespace Looking4group
 
 #pragma region Searchers
     template<class T, class Check>
-    struct lOOKING4GROUP_EXPORT ObjectSearcher
+    struct LOOKING4GROUP_EXPORT ObjectSearcher
     {
         T* &_object;
         Check &_check;
@@ -164,7 +164,7 @@ namespace Looking4group
     };
 
     template<class T, class Check>
-    struct lOOKING4GROUP_EXPORT ObjectLastSearcher
+    struct LOOKING4GROUP_EXPORT ObjectLastSearcher
     {
         T* &_object;
         Check &_check;
@@ -178,7 +178,7 @@ namespace Looking4group
     };
 
     template<class T, class Check>
-    struct lOOKING4GROUP_EXPORT ObjectListSearcher
+    struct LOOKING4GROUP_EXPORT ObjectListSearcher
     {
         std::list<T*> &_objects;
         Check& _check;
@@ -192,7 +192,7 @@ namespace Looking4group
     };
 
     template<class Check>
-    struct lOOKING4GROUP_EXPORT UnitSearcher
+    struct LOOKING4GROUP_EXPORT UnitSearcher
     {
         Unit* &i_object;
         Check & i_check;
@@ -206,7 +206,7 @@ namespace Looking4group
     };
 
     template<class Check>
-    struct lOOKING4GROUP_EXPORT UnitLastSearcher
+    struct LOOKING4GROUP_EXPORT UnitLastSearcher
     {
         Unit* &i_object;
         Check & i_check;
@@ -221,7 +221,7 @@ namespace Looking4group
     };
 
     template<class Check>
-    struct lOOKING4GROUP_EXPORT UnitListSearcher
+    struct LOOKING4GROUP_EXPORT UnitListSearcher
     {
         std::list<Unit*> &i_objects;
         Check& i_check;
@@ -238,7 +238,7 @@ namespace Looking4group
 
 #pragma region Workers
     template<class T, class Do>
-    struct lOOKING4GROUP_EXPORT ObjectWorker
+    struct LOOKING4GROUP_EXPORT ObjectWorker
     {
         Do& _do;
 
@@ -255,7 +255,7 @@ namespace Looking4group
     };
 
     template<class Do>
-    struct lOOKING4GROUP_EXPORT CameraDistWorker
+    struct LOOKING4GROUP_EXPORT CameraDistWorker
     {
         WorldObject const* i_searcher;
         float i_dist;

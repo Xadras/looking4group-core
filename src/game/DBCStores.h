@@ -39,7 +39,7 @@ uint32 GetTalentSpellCost(TalentSpellPos const* pos);
 TalentSpellPos const* GetTalentSpellPos(uint32 spellId);
 
 int32 GetAreaFlagByAreaID(uint32 area_id);                  // -1 if not found
-lOOKING4GROUP_IMPORT_EXPORT AreaTableEntry const* GetAreaEntryByAreaID(uint32 area_id);
+LOOKING4GROUP_IMPORT_EXPORT AreaTableEntry const* GetAreaEntryByAreaID(uint32 area_id);
 AreaTableEntry const* GetAreaEntryByAreaFlagAndMap(uint32 area_flag,uint32 map_id);
 uint32 GetAreaFlagByMapId(uint32 mapid);
 
@@ -142,10 +142,10 @@ extern DBCStorage <WorldSafeLocsEntry>           sWorldSafeLocsStore;
 void LoadDBCStores(const std::string& dataPath);
 
 // script support functions
-lOOKING4GROUP_IMPORT_EXPORT DBCStorage <SoundEntriesEntry>          const* GetSoundEntriesStore();
-lOOKING4GROUP_IMPORT_EXPORT DBCStorage <SpellEntry>                 const* GetSpellStore();
-lOOKING4GROUP_IMPORT_EXPORT DBCStorage <SpellRangeEntry>            const* GetSpellRangeStore();
-lOOKING4GROUP_IMPORT_EXPORT DBCStorage <FactionEntry>               const* GetFactionStore();
-lOOKING4GROUP_IMPORT_EXPORT DBCStorage <ItemEntry>                  const* GetItemDisplayStore();
-lOOKING4GROUP_IMPORT_EXPORT DBCStorage <CreatureDisplayInfoEntry>   const* GetCreatureDisplayStore();
+LOOKING4GROUP_IMPORT_EXPORT DBCStorage <SoundEntriesEntry>          const* GetSoundEntriesStore();
+LOOKING4GROUP_IMPORT_EXPORT DBCStorage <SpellEntry>                 const* GetSpellStore();
+LOOKING4GROUP_IMPORT_EXPORT DBCStorage <SpellRangeEntry>            const* GetSpellRangeStore();
+LOOKING4GROUP_IMPORT_EXPORT DBCStorage <FactionEntry>               const* GetFactionStore();
+LOOKING4GROUP_IMPORT_EXPORT DBCStorage <ItemEntry>                  const* GetItemDisplayStore();
+LOOKING4GROUP_IMPORT_EXPORT DBCStorage <CreatureDisplayInfoEntry>   const* GetCreatureDisplayStore();
 #endif

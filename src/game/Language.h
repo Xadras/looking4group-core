@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef __lOOKING4GROUP_LANGUAGE_H
-#define __lOOKING4GROUP_LANGUAGE_H
+#ifndef __LOOKING4GROUP_LANGUAGE_H
+#define __LOOKING4GROUP_LANGUAGE_H
 
 enum TrinityStrings
 {

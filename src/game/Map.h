@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef lOOKING4GROUP_MAP_H
-#define lOOKING4GROUP_MAP_H
+#ifndef LOOKING4GROUP_MAP_H
+#define LOOKING4GROUP_MAP_H
 
 #include "Platform/Define.h"
 #include "ace/RW_Thread_Mutex.h"
@@ -119,7 +119,7 @@ enum GetCreatureGuidType
 
 typedef std::list<std::pair<Map*, uint32> > DelayedMapList;
 
-class lOOKING4GROUP_IMPORT_EXPORT Map : public GridRefManager<NGridType>
+class LOOKING4GROUP_IMPORT_EXPORT Map : public GridRefManager<NGridType>
 {
     friend class MapReference;
     public:
@@ -392,7 +392,7 @@ enum InstanceResetMethod
     INSTANCE_RESET_RESPAWN_DELAY
 };
 
-class lOOKING4GROUP_IMPORT_EXPORT InstanceMap : public Map
+class LOOKING4GROUP_IMPORT_EXPORT InstanceMap : public Map
 {
     public:
         InstanceMap(uint32 id, time_t, uint32 InstanceId, uint8 SpawnMode);
@@ -422,7 +422,7 @@ class lOOKING4GROUP_IMPORT_EXPORT InstanceMap : public Map
         uint32 i_script_id;
 };
 
-class lOOKING4GROUP_IMPORT_EXPORT BattleGroundMap : public Map
+class LOOKING4GROUP_IMPORT_EXPORT BattleGroundMap : public Map
 {
     public:
         BattleGroundMap(uint32 id, time_t, uint32 InstanceId, BattleGround *bg);

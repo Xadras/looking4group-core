@@ -18,13 +18,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef lOOKING4GROUP_PASSIVEAI_H
-#define lOOKING4GROUP_PASSIVEAI_H
+#ifndef LOOKING4GROUP_PASSIVEAI_H
+#define LOOKING4GROUP_PASSIVEAI_H
 
 #include "CreatureAI.h"
 //#include "CreatureAIImpl.h"
 
-class lOOKING4GROUP_IMPORT_EXPORT PassiveAI : public CreatureAI
+class LOOKING4GROUP_IMPORT_EXPORT PassiveAI : public CreatureAI
 {
     public:
         explicit PassiveAI(Creature *c);
@@ -52,7 +52,7 @@ class PossessedAI : public CreatureAI
         static int Permissible(const Creature *) { return PERMIT_BASE_IDLE;  }
 };
 
-class lOOKING4GROUP_IMPORT_EXPORT NullCreatureAI : public CreatureAI
+class LOOKING4GROUP_IMPORT_EXPORT NullCreatureAI : public CreatureAI
 {
     public:
         explicit NullCreatureAI(Creature *c);
@@ -75,7 +75,7 @@ class CritterAI : public PassiveAI
         void EnterEvadeMode();
 };
 
-class lOOKING4GROUP_IMPORT_EXPORT TriggerAI : public NullCreatureAI
+class LOOKING4GROUP_IMPORT_EXPORT TriggerAI : public NullCreatureAI
 {
     public:
         explicit TriggerAI(Creature *c) : NullCreatureAI(c) {}

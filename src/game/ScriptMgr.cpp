@@ -244,12 +244,12 @@ void ScriptMgr::LoadScripts(ScriptMapMap& scripts, char const* tablename)
                     continue;
                 }
 
-                if (!quest->HasFlag(QUEST_lOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT))
+                if (!quest->HasFlag(QUEST_LOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT))
                 {
-                    sLog.outLog(LOG_DB_ERR, "Table `%s` has quest (ID: %u) in SCRIPT_COMMAND_QUEST_EXPLORED in `datalong` for script id %u, but quest not have flag QUEST_lOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT in quest flags. Script command or quest flags wrong. Quest modified to require objective.",tablename,tmp.datalong,tmp.id);
+                    sLog.outLog(LOG_DB_ERR, "Table `%s` has quest (ID: %u) in SCRIPT_COMMAND_QUEST_EXPLORED in `datalong` for script id %u, but quest not have flag QUEST_LOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT in quest flags. Script command or quest flags wrong. Quest modified to require objective.",tablename,tmp.datalong,tmp.id);
 
                     // this will prevent quest completing without objective
-                    const_cast<Quest*>(quest)->SetFlag(QUEST_lOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT);
+                    const_cast<Quest*>(quest)->SetFlag(QUEST_LOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT);
 
                     // continue; - quest objective requirement set and command can be allowed
                 }
@@ -874,9 +874,9 @@ bool ScriptMgr::LoadScriptLibrary(const char* libName)
     UnloadScriptLibrary();
 
     std::string name = libName;
-    name = lOOKING4GROUP_SCRIPT_PREFIX + name + lOOKING4GROUP_SCRIPT_SUFFIX;
+    name = LOOKING4GROUP_SCRIPT_PREFIX + name + LOOKING4GROUP_SCRIPT_SUFFIX;
 
-    m_hScriptLib = lOOKING4GROUP_LOAD_LIBRARY(name.c_str());
+    m_hScriptLib = LOOKING4GROUP_LOAD_LIBRARY(name.c_str());
 
     if (!m_hScriptLib)
         return false;
@@ -934,7 +934,7 @@ void ScriptMgr::UnloadScriptLibrary()
     if (m_pOnFreeScriptLibrary)
         m_pOnFreeScriptLibrary();
 
-    lOOKING4GROUP_CLOSE_LIBRARY(m_hScriptLib);
+    LOOKING4GROUP_CLOSE_LIBRARY(m_hScriptLib);
     m_hScriptLib = NULL;
 
     m_pOnInitScriptLibrary      = NULL;

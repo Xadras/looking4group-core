@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef lOOKING4GROUP_TYPECONTAINER_H
-#define lOOKING4GROUP_TYPECONTAINER_H
+#ifndef LOOKING4GROUP_TYPECONTAINER_H
+#define LOOKING4GROUP_TYPECONTAINER_H
 
 /*
  * Here, you'll find a series of containers that allow you to hold multiple
