@@ -2093,8 +2093,8 @@ void Creature::DoFleeToGetAssistance()
     {
         Creature* pCreature = NULL;
 
-        Hellground::NearestAssistCreatureInCreatureRangeCheck u_check(this, getVictim(), radius);
-        Hellground::ObjectLastSearcher<Creature, Hellground::NearestAssistCreatureInCreatureRangeCheck> searcher(pCreature, u_check);
+        Looking4group::NearestAssistCreatureInCreatureRangeCheck u_check(this, getVictim(), radius);
+        Looking4group::ObjectLastSearcher<Creature, Looking4group::NearestAssistCreatureInCreatureRangeCheck> searcher(pCreature, u_check);
 
         Cell::VisitGridObjects(this, searcher, radius);
 
@@ -2112,8 +2112,8 @@ Unit* Creature::SelectNearestTarget(float dist) const
 {
     Unit *target = NULL;
     {
-        Hellground::NearestHostileUnitInAttackDistanceCheck u_check(this, dist);
-        Hellground::UnitLastSearcher<Hellground::NearestHostileUnitInAttackDistanceCheck> searcher(target, u_check);
+        Looking4group::NearestHostileUnitInAttackDistanceCheck u_check(this, dist);
+        Looking4group::UnitLastSearcher<Looking4group::NearestHostileUnitInAttackDistanceCheck> searcher(target, u_check);
 
         Cell::VisitAllObjects(this, searcher, dist);
     }
@@ -2142,8 +2142,8 @@ void Creature::CallAssistance()
         {
             std::list<Creature*> assistList;
             {
-                Hellground::AnyAssistCreatureInRangeCheck u_check(this, getVictim(), radius);
-                Hellground::ObjectListSearcher<Creature, Hellground::AnyAssistCreatureInRangeCheck> searcher(assistList, u_check);
+                Looking4group::AnyAssistCreatureInRangeCheck u_check(this, getVictim(), radius);
+                Looking4group::ObjectListSearcher<Creature, Looking4group::AnyAssistCreatureInRangeCheck> searcher(assistList, u_check);
 
                 Cell::VisitGridObjects(this, searcher, radius);
             }
@@ -2168,8 +2168,8 @@ void Creature::CallForHelp(float fRadius)
     if (fRadius <= 0.0f || !getVictim() || isPet() || isCharmed())
         return;
 
-    Hellground::CallOfHelpCreatureInRangeDo u_do(this, getVictim(), fRadius);
-    Hellground::ObjectWorker<Creature, Hellground::CallOfHelpCreatureInRangeDo> worker(u_do);
+    Looking4group::CallOfHelpCreatureInRangeDo u_do(this, getVictim(), fRadius);
+    Looking4group::ObjectWorker<Creature, Looking4group::CallOfHelpCreatureInRangeDo> worker(u_do);
 
     Cell::VisitGridObjects(this, worker, fRadius);
 }
@@ -2497,7 +2497,7 @@ void Creature::GetRespawnCoord(float &x, float &y, float &z, float* ori, float* 
     }
     //lets check if our creatures have valid spawn coordinates
     //ASSERT(false); crashes server, so ...
-    if(!Hellground::IsValidMapCoord(x, y, z))
+    if(!Looking4group::IsValidMapCoord(x, y, z))
     {
         sLog.outLog(LOG_DEFAULT, "ERROR: Creature with invalid respawn coordinates: mapid = %u, guid = %u, x = %f, y = %f, z = %f", GetMapId(), GetGUIDLow(), x, y, z);
         //ASSERT(false);

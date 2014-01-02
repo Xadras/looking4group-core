@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef HELLGROUND_GAMEEVENT_H
-#define HELLGROUND_GAMEEVENT_H
+#ifndef lOOKING4GROUP_GAMEEVENT_H
+#define lOOKING4GROUP_GAMEEVENT_H
 
 #include "ace/Singleton.h"
 
@@ -170,5 +170,5 @@ class GameEventMgr
 #define sGameEventMgr (*ACE_Singleton<GameEventMgr, ACE_Null_Mutex>::instance())
 #endif
 
-HELLGROUND_IMPORT_EXPORT bool isGameEventActive(uint16 event_id);
-HELLGROUND_IMPORT_EXPORT void HandleWorldEventGossip(Player*, Creature*);
+lOOKING4GROUP_IMPORT_EXPORT bool isGameEventActive(uint16 event_id);
+lOOKING4GROUP_IMPORT_EXPORT void HandleWorldEventGossip(Player*, Creature*);

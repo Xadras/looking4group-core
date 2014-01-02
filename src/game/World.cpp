@@ -1177,8 +1177,8 @@ void World::SetInitialWorldSettings()
 
     ///- Loading strings. Getting no records means core load has to be canceled because no error message can be output.
     sLog.outString("");
-    sLog.outString("Loading Hellground strings...");
-    if (!sObjectMgr.LoadHellgroundStrings())
+    sLog.outString("Loading Looking4group strings...");
+    if (!sObjectMgr.LoadLooking4groupStrings())
         exit(1);                                            // Error message displayed in function already
 
     ///- Update the realm entry in the database with the realm type from the config file
@@ -1482,7 +1482,7 @@ void World::SetInitialWorldSettings()
     sCreatureEAIMgr.LoadCreatureEventAI_Scripts();
 
     sLog.outString("Initializing Scripts...");
-    sScriptMgr.LoadScriptLibrary(HELLGROUND_SCRIPT_NAME);
+    sScriptMgr.LoadScriptLibrary(lOOKING4GROUP_SCRIPT_NAME);
 
     ///- Initialize game time and timers
     sLog.outDebug("DEBUG:: Initialize game time and timers");

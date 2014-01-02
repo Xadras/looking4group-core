@@ -482,8 +482,8 @@ bool ItemUse_item_rood_rofl(Player *player, Item* _Item, SpellCastTargets const&
 bool ItemUse_item_chest_of_containment_coffers(Player *player, Item* _Item, SpellCastTargets const& targets)
 {
     std::list<Creature*> SpawnList;
-    Hellground::AllCreaturesOfEntryInRange u_check(player, MOB_RIFT_SPAWN, 20.0);
-    Hellground::ObjectListSearcher<Creature, Hellground::AllCreaturesOfEntryInRange> searcher(SpawnList, u_check);
+    Looking4group::AllCreaturesOfEntryInRange u_check(player, MOB_RIFT_SPAWN, 20.0);
+    Looking4group::ObjectListSearcher<Creature, Looking4group::AllCreaturesOfEntryInRange> searcher(SpawnList, u_check);
     Cell::VisitAllObjects(player, searcher, 20.0);
 
     if(!SpawnList.empty())

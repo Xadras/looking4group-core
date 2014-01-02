@@ -2618,8 +2618,8 @@ struct npc_resurrectAI : public Scripted_NoMovementAI
         if (timer.Passed())
         {
             std::list<Player*> players;
-            Hellground::AnyPlayerInObjectRangeCheck check(me, 15.0f, false);
-            Hellground::ObjectListSearcher<Player, Hellground::AnyPlayerInObjectRangeCheck> searcher(players, check);
+            Looking4group::AnyPlayerInObjectRangeCheck check(me, 15.0f, false);
+            Looking4group::ObjectListSearcher<Player, Looking4group::AnyPlayerInObjectRangeCheck> searcher(players, check);
 
             Cell::VisitAllObjects(me, searcher, 15.0f);
 

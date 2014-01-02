@@ -26,7 +26,7 @@
 class Creature;
 class GameObject;
 
-class HELLGROUND_IMPORT_EXPORT ZoneScript
+class lOOKING4GROUP_IMPORT_EXPORT ZoneScript
 {
     public:
         explicit ZoneScript() {}

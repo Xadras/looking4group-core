@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef HELLGROUND_CELL_H
-#define HELLGROUND_CELL_H
+#ifndef lOOKING4GROUP_CELL_H
+#define lOOKING4GROUP_CELL_H
 
 #include "GameSystem/TypeContainer.h"
 #include "GameSystem/TypeContainerVisitor.h"

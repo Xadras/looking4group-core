@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef HELLGROUND_UNITAI_H
-#define HELLGROUND_UNITAI_H
+#ifndef lOOKING4GROUP_UNITAI_H
+#define lOOKING4GROUP_UNITAI_H
 
 #include "Platform/Define.h"
 #include <list>
@@ -41,7 +41,7 @@ enum SelectAggroTarget
     SELECT_TARGET_HIGHEST_HP,
 };
 
-class HELLGROUND_EXPORT UnitAI
+class lOOKING4GROUP_EXPORT UnitAI
 {
     protected:
         Unit * const me;

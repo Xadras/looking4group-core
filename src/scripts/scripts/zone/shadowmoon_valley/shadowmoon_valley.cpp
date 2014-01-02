@@ -1998,8 +1998,8 @@ struct npc_AkamaAI : public ScriptedAI
     {
         float range = 20.0f;
         std::list<Unit*> tempTargets;
-        Hellground::AnyUnitInObjectRangeCheck check(m_creature, range);
-        Hellground::UnitListSearcher<Hellground::AnyUnitInObjectRangeCheck> searcher(tempTargets, check);
+        Looking4group::AnyUnitInObjectRangeCheck check(m_creature, range);
+        Looking4group::UnitListSearcher<Looking4group::AnyUnitInObjectRangeCheck> searcher(tempTargets, check);
         Cell::VisitAllObjects(me, searcher, range);
         for (std::list<Unit*>::iterator iter = tempTargets.begin(); iter != tempTargets.end(); ++iter)
             if ((*iter)->GetTypeId() == TYPEID_PLAYER)
@@ -3388,8 +3388,8 @@ struct mob_deathbringer_joovanAI : public ScriptedAI
                         WarbringerSay(WARBRINGER_SAY4);
 
                         std::list<Unit*> pList;
-                        Hellground::AnyUnitInObjectRangeCheck u_check(me, 20.0f);
-                        Hellground::UnitListSearcher<Hellground::AnyUnitInObjectRangeCheck> searcher(pList, u_check);
+                        Looking4group::AnyUnitInObjectRangeCheck u_check(me, 20.0f);
+                        Looking4group::UnitListSearcher<Looking4group::AnyUnitInObjectRangeCheck> searcher(pList, u_check);
 
                         Cell::VisitAllObjects(me, searcher, 20.0f);
 

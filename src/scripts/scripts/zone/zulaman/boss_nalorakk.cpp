@@ -154,8 +154,8 @@ struct boss_nalorakkAI : public ScriptedAI
         float x, y, z;
         m_creature->GetPosition(x, y, z);
         {
-            Hellground::AllFriendlyCreaturesInGrid check(m_creature);
-            Hellground::ObjectListSearcher<Creature, Hellground::AllFriendlyCreaturesInGrid> searcher(templist, check);
+            Looking4group::AllFriendlyCreaturesInGrid check(m_creature);
+            Looking4group::ObjectListSearcher<Creature, Looking4group::AllFriendlyCreaturesInGrid> searcher(templist, check);
 
             Cell::VisitGridObjects(me, searcher, me->GetMap()->GetVisibilityDistance());
         }

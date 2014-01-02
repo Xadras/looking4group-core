@@ -510,7 +510,7 @@ struct boss_illidan_stormrageAI : public BossAI
     void RespawnGlaiveTargets()
     {
         GlaiveTargetRespawner respawner;
-        Hellground::ObjectWorker<Creature, GlaiveTargetRespawner> worker(respawner);
+        Looking4group::ObjectWorker<Creature, GlaiveTargetRespawner> worker(respawner);
         Cell::VisitGridObjects(me, worker, 200.0f);
     }
 

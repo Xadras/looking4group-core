@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef HELLGROUND_NGRID_H
-#define HELLGROUND_NGRID_H
+#ifndef lOOKING4GROUP_NGRID_H
+#define lOOKING4GROUP_NGRID_H
 
 /** NGrid is nothing more than a wrapper of the Grid with an NxN cells
  */

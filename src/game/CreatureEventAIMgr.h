@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef HELLGROUND_CREATURE_EAI_MGR_H
-#define HELLGROUND_CREATURE_EAI_MGR_H
+#ifndef lOOKING4GROUP_CREATURE_EAI_MGR_H
+#define lOOKING4GROUP_CREATURE_EAI_MGR_H
 
 #include "ace/Singleton.h"
 

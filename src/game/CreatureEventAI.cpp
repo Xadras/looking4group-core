@@ -65,7 +65,7 @@ CreatureEventAI::CreatureEventAI(Creature *c) : CreatureAI(c)
         for (i = (*CreatureEvents).second.begin(); i != (*CreatureEvents).second.end(); ++i)
         {
             //Debug check
-            #ifndef HELLGROUND_DEBUG
+            #ifndef lOOKING4GROUP_DEBUG
             if ((*i).event_flags & EFLAG_DEBUG_ONLY)
                 continue;
             #endif
@@ -92,7 +92,7 @@ CreatureEventAI::CreatureEventAI(Creature *c) : CreatureAI(c)
         {
 
             //Debug check
-            #ifndef HELLGROUND_DEBUG
+            #ifndef lOOKING4GROUP_DEBUG
             if ((*i).event_flags & EFLAG_DEBUG_ONLY)
                 continue;
             #endif
@@ -1296,8 +1296,8 @@ Unit* CreatureEventAI::SelectLowestHpFriendly(float range, uint32 MinHPDiff)
 {
     Unit* pUnit = NULL;
 
-    Hellground::MostHPMissingInRange u_check(m_creature, range, MinHPDiff);
-    Hellground::UnitLastSearcher<Hellground::MostHPMissingInRange> searcher(pUnit, u_check);
+    Looking4group::MostHPMissingInRange u_check(m_creature, range, MinHPDiff);
+    Looking4group::UnitLastSearcher<Looking4group::MostHPMissingInRange> searcher(pUnit, u_check);
     /*
     typedef TYPELIST_4(GameObject, Creature*except pets*, DynamicObject, Corpse*Bones*) AllGridObjectTypes;
     This means that if we only search grid then we cannot possibly return pets or players so this is safe
@@ -1308,16 +1308,16 @@ Unit* CreatureEventAI::SelectLowestHpFriendly(float range, uint32 MinHPDiff)
 
 void CreatureEventAI::FindFriendlyCC(std::list<Creature*>& _list, float range)
 {
-    Hellground::FriendlyCCedInRange u_check(m_creature, range);
-    Hellground::ObjectListSearcher<Creature, Hellground::FriendlyCCedInRange> searcher(_list, u_check);
+    Looking4group::FriendlyCCedInRange u_check(m_creature, range);
+    Looking4group::ObjectListSearcher<Creature, Looking4group::FriendlyCCedInRange> searcher(_list, u_check);
 
     Cell::VisitGridObjects(m_creature, searcher, range);
 }
 
 void CreatureEventAI::FindFriendlyMissingBuff(std::list<Creature*>& _list, float range, uint32 spellid)
 {
-    Hellground::FriendlyMissingBuffInRange u_check(m_creature, range, spellid);
-    Hellground::ObjectListSearcher<Creature, Hellground::FriendlyMissingBuffInRange> searcher(_list, u_check);
+    Looking4group::FriendlyMissingBuffInRange u_check(m_creature, range, spellid);
+    Looking4group::ObjectListSearcher<Creature, Looking4group::FriendlyMissingBuffInRange> searcher(_list, u_check);
 
     Cell::VisitGridObjects(m_creature,searcher, range);
 }

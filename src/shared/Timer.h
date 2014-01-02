@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef HELLGROUND_TIMER_H
-#define HELLGROUND_TIMER_H
+#ifndef lOOKING4GROUP_TIMER_H
+#define lOOKING4GROUP_TIMER_H
 
 #include "Common.h"
 #include "Log.h"

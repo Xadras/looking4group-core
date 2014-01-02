@@ -299,8 +299,8 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z)
         float dy = y + sin(angle + pathangle) * dist;
         float dz = z;
 
-        Hellground::NormalizeMapCoord(dx);
-        Hellground::NormalizeMapCoord(dy);
+        Looking4group::NormalizeMapCoord(dx);
+        Looking4group::NormalizeMapCoord(dy);
 
         member->UpdateGroundPositionZ(dx, dy, dz);
 

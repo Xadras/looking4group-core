@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef HELLGROUND_OBJECTGRIDLOADER_H
-#define HELLGROUND_OBJECTGRIDLOADER_H
+#ifndef lOOKING4GROUP_OBJECTGRIDLOADER_H
+#define lOOKING4GROUP_OBJECTGRIDLOADER_H
 
 #include "Utilities/TypeList.h"
 #include "Platform/Define.h"

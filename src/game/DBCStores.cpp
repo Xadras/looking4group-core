@@ -320,7 +320,7 @@ void LoadDBCStores(const std::string& dataPath)
 
         // DBC not support uint64 fields but SpellEntry have SpellFamilyFlags mapped at 2 uint32 fields
         // uint32 field already converted to bigendian if need, but must be swapped for correct uint64 bigendian view
-        #if HELLGROUND_ENDIAN == HELLGROUND_BIGENDIAN
+        #if lOOKING4GROUP_ENDIAN == lOOKING4GROUP_BIGENDIAN
         std::swap(*((uint32*)(&spell->SpellFamilyFlags)),*(((uint32*)(&spell->SpellFamilyFlags))+1));
         #endif
     }
@@ -754,8 +754,8 @@ uint32 const* GetTalentTabPages(uint32 cls)
 }
 
 // script support functions
-HELLGROUND_EXPORT DBCStorage <SoundEntriesEntry>  const* GetSoundEntriesStore()   { return &sSoundEntriesStore;   }
-HELLGROUND_EXPORT DBCStorage <SpellEntry>         const* GetSpellStore()          { return &sSpellStore;          }
-HELLGROUND_EXPORT DBCStorage <SpellRangeEntry>    const* GetSpellRangeStore()     { return &sSpellRangeStore;     }
-HELLGROUND_EXPORT DBCStorage <EmotesEntry>        const* GetEmotesStore()         { return &sEmotesStore;         }
-HELLGROUND_EXPORT DBCStorage <EmotesTextEntry>    const* GetEmotesTextStore()     { return &sEmotesTextStore;     }
+lOOKING4GROUP_EXPORT DBCStorage <SoundEntriesEntry>  const* GetSoundEntriesStore()   { return &sSoundEntriesStore;   }
+lOOKING4GROUP_EXPORT DBCStorage <SpellEntry>         const* GetSpellStore()          { return &sSpellStore;          }
+lOOKING4GROUP_EXPORT DBCStorage <SpellRangeEntry>    const* GetSpellRangeStore()     { return &sSpellRangeStore;     }
+lOOKING4GROUP_EXPORT DBCStorage <EmotesEntry>        const* GetEmotesStore()         { return &sEmotesStore;         }
+lOOKING4GROUP_EXPORT DBCStorage <EmotesTextEntry>    const* GetEmotesTextStore()     { return &sEmotesTextStore;     }

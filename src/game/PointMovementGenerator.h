@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef HELLGROUND_POINTMOVEMENTGENERATOR_H
-#define HELLGROUND_POINTMOVEMENTGENERATOR_H
+#ifndef lOOKING4GROUP_POINTMOVEMENTGENERATOR_H
+#define lOOKING4GROUP_POINTMOVEMENTGENERATOR_H
 
 #include "MovementGenerator.h"
 #include "FollowerReference.h"
@@ -62,7 +62,7 @@ class AssistanceMovementGenerator : public PointMovementGenerator<Creature>
 };
 
 // Does almost nothing - just doesn't allows previous movegen interrupt current effect.
-class HELLGROUND_IMPORT_EXPORT EffectMovementGenerator : public MovementGenerator
+class lOOKING4GROUP_IMPORT_EXPORT EffectMovementGenerator : public MovementGenerator
 {
     public:
         explicit EffectMovementGenerator(uint32 Id) : m_Id(Id) {}

@@ -98,8 +98,8 @@ typedef UNORDERED_MAP<uint64/*(instance,guid) pair*/,time_t> RespawnTimes;
 typedef UNORDERED_MAP<uint32,time_t> GuildCooldowns;
 
 // trinity string ranges
-#define MIN_HELLGROUND_STRING_ID           1                    // 'HELLGROUND_string'
-#define MAX_HELLGROUND_STRING_ID           2000000000
+#define MIN_lOOKING4GROUP_STRING_ID           1                    // 'lOOKING4GROUP_string'
+#define MAX_lOOKING4GROUP_STRING_ID           2000000000
 
 #define MIN_CREATURE_AI_TEXT_STRING_ID (-1)                 // 'creature_ai_texts'
 #define MAX_CREATURE_AI_TEXT_STRING_ID (-1000000)
@@ -118,7 +118,7 @@ typedef UNORDERED_MAP<uint32,ItemLocale> ItemLocaleMap;
 typedef UNORDERED_MAP<uint32,QuestLocale> QuestLocaleMap;
 typedef UNORDERED_MAP<uint32,NpcTextLocale> NpcTextLocaleMap;
 typedef UNORDERED_MAP<uint32,PageTextLocale> PageTextLocaleMap;
-typedef UNORDERED_MAP<uint32,TrinityStringLocale> HellgroundStringLocaleMap;
+typedef UNORDERED_MAP<uint32,TrinityStringLocale> Looking4groupStringLocaleMap;
 typedef UNORDERED_MAP<uint32,NpcOptionLocale> NpcOptionLocaleMap;
 typedef UNORDERED_MAP<uint16,ShortIntervalTimer> OpcodesCooldown;
 
@@ -248,7 +248,7 @@ SkillRangeType GetSkillRangeType(SkillLineEntry const *pSkill, bool racial);
 
 bool normalizePlayerName(std::string& name);
 
-struct HELLGROUND_IMPORT_EXPORT LanguageDesc
+struct lOOKING4GROUP_IMPORT_EXPORT LanguageDesc
 {
     Language lang_id;
     uint32   spell_id;
@@ -256,7 +256,7 @@ struct HELLGROUND_IMPORT_EXPORT LanguageDesc
 };
 
 extern LanguageDesc lang_description[LANGUAGES_COUNT];
-HELLGROUND_IMPORT_EXPORT LanguageDesc const* GetLanguageDescByID(uint32 lang);
+lOOKING4GROUP_IMPORT_EXPORT LanguageDesc const* GetLanguageDescByID(uint32 lang);
 
 class ObjectMgr
 {
@@ -472,8 +472,8 @@ class ObjectMgr
 
         void LoadTransportEvents();
 
-        bool LoadHellgroundStrings(DatabaseType& db, char const* table, int32 min_value, int32 max_value);
-        bool LoadHellgroundStrings() { return LoadHellgroundStrings(GameDataDatabase,"hellground_string",MIN_HELLGROUND_STRING_ID,MAX_HELLGROUND_STRING_ID); }
+        bool LoadLooking4groupStrings(DatabaseType& db, char const* table, int32 min_value, int32 max_value);
+        bool LoadLooking4groupStrings() { return LoadLooking4groupStrings(GameDataDatabase,"looking4group_string",MIN_lOOKING4GROUP_STRING_ID,MAX_lOOKING4GROUP_STRING_ID); }
 
         void LoadPetCreateSpells();
         void LoadCreatureLocales();
@@ -669,8 +669,8 @@ class ObjectMgr
 
         TrinityStringLocale const* GetTrinityStringLocale(int32 entry) const
         {
-            HellgroundStringLocaleMap::const_iterator itr = mHellgroundStringLocaleMap.find(entry);
-            if (itr==mHellgroundStringLocaleMap.end()) return NULL;
+            Looking4groupStringLocaleMap::const_iterator itr = mLooking4groupStringLocaleMap.find(entry);
+            if (itr==mLooking4groupStringLocaleMap.end()) return NULL;
             return &itr->second;
         }
         const char *GetTrinityString(int32 entry, int locale_idx) const;
@@ -874,7 +874,7 @@ class ObjectMgr
         QuestLocaleMap mQuestLocaleMap;
         NpcTextLocaleMap mNpcTextLocaleMap;
         PageTextLocaleMap mPageTextLocaleMap;
-        HellgroundStringLocaleMap mHellgroundStringLocaleMap;
+        Looking4groupStringLocaleMap mLooking4groupStringLocaleMap;
         NpcOptionLocaleMap mNpcOptionLocaleMap;
         RespawnTimes mCreatureRespawnTimes;
         RespawnTimes mGORespawnTimes;
@@ -898,10 +898,10 @@ class ObjectMgr
 #define sObjectMgr (*ACE_Singleton<ObjectMgr, ACE_Null_Mutex>::instance())
 
 // scripting access functions
-HELLGROUND_IMPORT_EXPORT bool LoadHellgroundStrings(DatabaseType& db, char const* table,int32 start_value = MAX_CREATURE_AI_TEXT_STRING_ID, int32 end_value = std::numeric_limits<int32>::min());
-HELLGROUND_IMPORT_EXPORT GameObjectInfo const *GetGameObjectInfo(uint32 id);
-HELLGROUND_IMPORT_EXPORT CreatureInfo const *GetCreatureInfo(uint32 id);
-HELLGROUND_IMPORT_EXPORT CreatureInfo const* GetCreatureTemplateStore(uint32 entry);
-HELLGROUND_IMPORT_EXPORT Quest const* GetQuestTemplateStore(uint32 entry);
+lOOKING4GROUP_IMPORT_EXPORT bool LoadLooking4groupStrings(DatabaseType& db, char const* table,int32 start_value = MAX_CREATURE_AI_TEXT_STRING_ID, int32 end_value = std::numeric_limits<int32>::min());
+lOOKING4GROUP_IMPORT_EXPORT GameObjectInfo const *GetGameObjectInfo(uint32 id);
+lOOKING4GROUP_IMPORT_EXPORT CreatureInfo const *GetCreatureInfo(uint32 id);
+lOOKING4GROUP_IMPORT_EXPORT CreatureInfo const* GetCreatureTemplateStore(uint32 entry);
+lOOKING4GROUP_IMPORT_EXPORT Quest const* GetQuestTemplateStore(uint32 entry);
 
 #endif

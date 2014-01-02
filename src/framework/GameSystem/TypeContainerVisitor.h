@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef HELLGROUND_TYPECONTAINERVISITOR_H
-#define HELLGROUND_TYPECONTAINERVISITOR_H
+#ifndef lOOKING4GROUP_TYPECONTAINERVISITOR_H
+#define lOOKING4GROUP_TYPECONTAINERVISITOR_H
 
 /*
  * @class TypeContainerVisitor is implemented as a visitor pattern.  It is

@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef HELLGROUND_PETAI_H
-#define HELLGROUND_PETAI_H
+#ifndef lOOKING4GROUP_PETAI_H
+#define lOOKING4GROUP_PETAI_H
 
 #include "CreatureAI.h"
 #include "Timer.h"

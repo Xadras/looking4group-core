@@ -1,4 +1,4 @@
-/* Copyright (C) 2008 - 2011 HellgroundDev <http://gamefreedom.pl/>
+/* Copyright (C) 2008 - 2011 Looking4groupDev <http://gamefreedom.pl/>
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of

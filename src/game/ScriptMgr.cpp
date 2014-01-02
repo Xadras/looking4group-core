@@ -160,7 +160,7 @@ void ScriptMgr::LoadScripts(ScriptMapMap& scripts, char const* tablename)
                     continue;
                 }
 
-                if (!Hellground::IsValidMapCoord(tmp.x,tmp.y,tmp.z,tmp.o))
+                if (!Looking4group::IsValidMapCoord(tmp.x,tmp.y,tmp.z,tmp.o))
                 {
                     sLog.outLog(LOG_DB_ERR, "Table `%s` has invalid coordinates (X: %f Y: %f) in SCRIPT_COMMAND_TELEPORT_TO for script id %u",tablename,tmp.x,tmp.y,tmp.id);
                     continue;
@@ -170,7 +170,7 @@ void ScriptMgr::LoadScripts(ScriptMapMap& scripts, char const* tablename)
 
             case SCRIPT_COMMAND_TEMP_SUMMON_CREATURE:
             {
-                if (!Hellground::IsValidMapCoord(tmp.x,tmp.y,tmp.z,tmp.o))
+                if (!Looking4group::IsValidMapCoord(tmp.x,tmp.y,tmp.z,tmp.o))
                 {
                     sLog.outLog(LOG_DB_ERR, "Table `%s` has invalid coordinates (X: %f Y: %f) in SCRIPT_COMMAND_TEMP_SUMMON_CREATURE for script id %u",tablename,tmp.x,tmp.y,tmp.id);
                     continue;
@@ -244,12 +244,12 @@ void ScriptMgr::LoadScripts(ScriptMapMap& scripts, char const* tablename)
                     continue;
                 }
 
-                if (!quest->HasFlag(QUEST_HELLGROUND_FLAGS_EXPLORATION_OR_EVENT))
+                if (!quest->HasFlag(QUEST_lOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT))
                 {
-                    sLog.outLog(LOG_DB_ERR, "Table `%s` has quest (ID: %u) in SCRIPT_COMMAND_QUEST_EXPLORED in `datalong` for script id %u, but quest not have flag QUEST_HELLGROUND_FLAGS_EXPLORATION_OR_EVENT in quest flags. Script command or quest flags wrong. Quest modified to require objective.",tablename,tmp.datalong,tmp.id);
+                    sLog.outLog(LOG_DB_ERR, "Table `%s` has quest (ID: %u) in SCRIPT_COMMAND_QUEST_EXPLORED in `datalong` for script id %u, but quest not have flag QUEST_lOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT in quest flags. Script command or quest flags wrong. Quest modified to require objective.",tablename,tmp.datalong,tmp.id);
 
                     // this will prevent quest completing without objective
-                    const_cast<Quest*>(quest)->SetFlag(QUEST_HELLGROUND_FLAGS_EXPLORATION_OR_EVENT);
+                    const_cast<Quest*>(quest)->SetFlag(QUEST_lOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT);
 
                     // continue; - quest objective requirement set and command can be allowed
                 }
@@ -595,7 +595,7 @@ void ScriptMgr::LoadWaypointScripts()
 
 void ScriptMgr::LoadDbScriptStrings()
 {
-    LoadHellgroundStrings(GameDataDatabase,"db_script_string",MIN_DB_SCRIPT_STRING_ID,MAX_DB_SCRIPT_STRING_ID);
+    LoadLooking4groupStrings(GameDataDatabase,"db_script_string",MIN_DB_SCRIPT_STRING_ID,MAX_DB_SCRIPT_STRING_ID);
 
     std::set<int32> ids;
 
@@ -874,9 +874,9 @@ bool ScriptMgr::LoadScriptLibrary(const char* libName)
     UnloadScriptLibrary();
 
     std::string name = libName;
-    name = HELLGROUND_SCRIPT_PREFIX + name + HELLGROUND_SCRIPT_SUFFIX;
+    name = lOOKING4GROUP_SCRIPT_PREFIX + name + lOOKING4GROUP_SCRIPT_SUFFIX;
 
-    m_hScriptLib = HELLGROUND_LOAD_LIBRARY(name.c_str());
+    m_hScriptLib = lOOKING4GROUP_LOAD_LIBRARY(name.c_str());
 
     if (!m_hScriptLib)
         return false;
@@ -934,7 +934,7 @@ void ScriptMgr::UnloadScriptLibrary()
     if (m_pOnFreeScriptLibrary)
         m_pOnFreeScriptLibrary();
 
-    HELLGROUND_CLOSE_LIBRARY(m_hScriptLib);
+    lOOKING4GROUP_CLOSE_LIBRARY(m_hScriptLib);
     m_hScriptLib = NULL;
 
     m_pOnInitScriptLibrary      = NULL;

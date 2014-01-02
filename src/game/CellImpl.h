@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef HELLGROUND_CELLIMPL_H
-#define HELLGROUND_CELLIMPL_H
+#ifndef lOOKING4GROUP_CELLIMPL_H
+#define lOOKING4GROUP_CELLIMPL_H
 
 #include "Common.h"
 #include "Cell.h"
@@ -39,14 +39,14 @@ inline CellArea Cell::CalculateCellArea(float x, float y, float radius)
 {
     if (radius <= 0.0f)
     {
-        CellPair center = Hellground::ComputeCellPair(x, y).normalize();
+        CellPair center = Looking4group::ComputeCellPair(x, y).normalize();
         return CellArea(center, center);
     }
 
     return CellArea
     (
-        Hellground::ComputeCellPair(x - radius, y - radius).normalize(),
-        Hellground::ComputeCellPair(x + radius, y + radius).normalize()
+        Looking4group::ComputeCellPair(x - radius, y - radius).normalize(),
+        Looking4group::ComputeCellPair(x + radius, y + radius).normalize()
     );
 }
 
@@ -173,7 +173,7 @@ inline void Cell::VisitCircle(TypeContainerVisitor<T, CONTAINER> &visitor, Map &
 template<class T>
 inline void Cell::VisitGridObjects(const WorldObject *center_obj, T &visitor, float radius, bool dont_load)
 {
-    CellPair p(Hellground::ComputeCellPair(center_obj->GetPositionX(), center_obj->GetPositionY()));
+    CellPair p(Looking4group::ComputeCellPair(center_obj->GetPositionX(), center_obj->GetPositionY()));
     Cell cell(p);
 
     if (dont_load)
@@ -186,7 +186,7 @@ inline void Cell::VisitGridObjects(const WorldObject *center_obj, T &visitor, fl
 template<class T>
 inline void Cell::VisitWorldObjects(const WorldObject *center_obj, T &visitor, float radius, bool dont_load)
 {
-    CellPair p(Hellground::ComputeCellPair(center_obj->GetPositionX(), center_obj->GetPositionY()));
+    CellPair p(Looking4group::ComputeCellPair(center_obj->GetPositionX(), center_obj->GetPositionY()));
     Cell cell(p);
 
     if (dont_load)
@@ -199,7 +199,7 @@ inline void Cell::VisitWorldObjects(const WorldObject *center_obj, T &visitor, f
 template<class T>
 inline void Cell::VisitAllObjects(const WorldObject *center_obj, T &visitor, float radius, bool dont_load)
 {
-    CellPair p(Hellground::ComputeCellPair(center_obj->GetPositionX(), center_obj->GetPositionY()));
+    CellPair p(Looking4group::ComputeCellPair(center_obj->GetPositionX(), center_obj->GetPositionY()));
     Cell cell(p);
 
     if (dont_load)
@@ -214,7 +214,7 @@ inline void Cell::VisitAllObjects(const WorldObject *center_obj, T &visitor, flo
 template<class T>
 inline void Cell::VisitGridObjects(float x, float y, Map *map, T &visitor, float radius, bool dont_load)
 {
-    CellPair p(Hellground::ComputeCellPair(x, y));
+    CellPair p(Looking4group::ComputeCellPair(x, y));
     Cell cell(p);
 
     if (dont_load)
@@ -227,7 +227,7 @@ inline void Cell::VisitGridObjects(float x, float y, Map *map, T &visitor, float
 template<class T>
 inline void Cell::VisitWorldObjects(float x, float y, Map *map, T &visitor, float radius, bool dont_load)
 {
-    CellPair p(Hellground::ComputeCellPair(x, y));
+    CellPair p(Looking4group::ComputeCellPair(x, y));
     Cell cell(p);
 
     if (dont_load)
@@ -240,7 +240,7 @@ inline void Cell::VisitWorldObjects(float x, float y, Map *map, T &visitor, floa
 template<class T>
 inline void Cell::VisitAllObjects(float x, float y, Map *map, T &visitor, float radius, bool dont_load)
 {
-    CellPair p(Hellground::ComputeCellPair(x, y));
+    CellPair p(Looking4group::ComputeCellPair(x, y));
     Cell cell(p);
 
     if (dont_load)

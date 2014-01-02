@@ -324,8 +324,8 @@ void GameObject::Update(uint32 update_diff, uint32 p_time)
                 // search unfriendly creature
                 if (owner && NeedDespawn)                    // hunter trap
                 {
-                    Hellground::AnyUnfriendlyNoTotemUnitInObjectRangeCheck u_check(this, owner, radius);
-                    Hellground::UnitSearcher<Hellground::AnyUnfriendlyNoTotemUnitInObjectRangeCheck> checker(ok, u_check);
+                    Looking4group::AnyUnfriendlyNoTotemUnitInObjectRangeCheck u_check(this, owner, radius);
+                    Looking4group::UnitSearcher<Looking4group::AnyUnfriendlyNoTotemUnitInObjectRangeCheck> checker(ok, u_check);
 
                     Cell::VisitGridObjects(this, checker, radius);
 
@@ -336,8 +336,8 @@ void GameObject::Update(uint32 update_diff, uint32 p_time)
                 {
                     // affect only players
                     Player* p_ok = NULL;
-                    Hellground::AnyPlayerInObjectRangeCheck p_check(this, radius);
-                    Hellground::ObjectSearcher<Player, Hellground::AnyPlayerInObjectRangeCheck>  checker(p_ok, p_check);
+                    Looking4group::AnyPlayerInObjectRangeCheck p_check(this, radius);
+                    Looking4group::ObjectSearcher<Player, Looking4group::AnyPlayerInObjectRangeCheck>  checker(p_ok, p_check);
 
                     Cell::VisitWorldObjects(this,checker, radius);
 
@@ -905,8 +905,8 @@ void GameObject::TriggeringLinkedGameObject(uint32 trapEntry, Unit* target)
     GameObject* trapGO = NULL;
     {
         // using original GO distance
-        Hellground::NearestGameObjectEntryInObjectRangeCheck go_check(*target, trapEntry, range);
-        Hellground::ObjectLastSearcher<GameObject, Hellground::NearestGameObjectEntryInObjectRangeCheck> checker(trapGO, go_check);
+        Looking4group::NearestGameObjectEntryInObjectRangeCheck go_check(*target, trapEntry, range);
+        Looking4group::ObjectLastSearcher<GameObject, Looking4group::NearestGameObjectEntryInObjectRangeCheck> checker(trapGO, go_check);
 
         Cell::VisitGridObjects(this, checker, range);
     }
@@ -921,8 +921,8 @@ GameObject* GameObject::LookupFishingHoleAround(float range)
 {
     GameObject* ok = NULL;
 
-    Hellground::NearestGameObjectFishingHole u_check(*this, range);
-    Hellground::ObjectSearcher<GameObject, Hellground::NearestGameObjectFishingHole> checker(ok, u_check);
+    Looking4group::NearestGameObjectFishingHole u_check(*this, range);
+    Looking4group::ObjectSearcher<GameObject, Looking4group::NearestGameObjectFishingHole> checker(ok, u_check);
 
     Cell::VisitGridObjects(this, checker, range);
     return ok;

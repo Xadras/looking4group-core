@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef HELLGROUND_GRIDNOTIFIERSIMPL_H
-#define HELLGROUND_GRIDNOTIFIERSIMPL_H
+#ifndef lOOKING4GROUP_GRIDNOTIFIERSIMPL_H
+#define lOOKING4GROUP_GRIDNOTIFIERSIMPL_H
 
 #include "GridNotifiers.h"
 #include "WorldPacket.h"
@@ -29,7 +29,7 @@
 #include "CreatureAI.h"
 #include "SpellAuras.h"
 
-namespace Hellground
+namespace Looking4group
 {
 
 template<class T>

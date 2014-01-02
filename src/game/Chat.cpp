@@ -380,7 +380,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "spell_target_position",       PERM_ADM,  true,   &ChatHandler::HandleReloadSpellTargetPositionCommand,       "", NULL },
         { "spell_threats",               PERM_ADM,  true,   &ChatHandler::HandleReloadSpellThreatsCommand,              "", NULL },
         { "spell_disabled",              PERM_ADM,  true,   &ChatHandler::HandleReloadSpellDisabledCommand,             "", NULL },
-        { "hellground_string",           PERM_ADM,  true,   &ChatHandler::HandleReloadHellgroundStringCommand,          "", NULL },
+        { "looking4group_string",           PERM_ADM,  true,   &ChatHandler::HandleReloadLooking4groupStringCommand,          "", NULL },
         { "unqueue_account",             PERM_ADM,  true,   &ChatHandler::HandleReloadUnqueuedAccountListCommand,       "", NULL },
         { "waypoint_scripts",            PERM_ADM,  true,   &ChatHandler::HandleReloadWpScriptsCommand,                 "", NULL },
 
@@ -1398,8 +1398,8 @@ GameObject* ChatHandler::GetObjectGlobalyWithGuidOrNearWithDbGuid(uint32 lowguid
     if (!obj && sObjectMgr.GetGOData(lowguid))                   // guid is DB guid of object
     {
         // search near player then
-        Hellground::GameObjectWithDbGUIDCheck go_check(*pl,lowguid);
-        Hellground::ObjectSearcher<GameObject, Hellground::GameObjectWithDbGUIDCheck> checker(obj,go_check);
+        Looking4group::GameObjectWithDbGUIDCheck go_check(*pl,lowguid);
+        Looking4group::ObjectSearcher<GameObject, Looking4group::GameObjectWithDbGUIDCheck> checker(obj,go_check);
 
         Cell::VisitGridObjects(pl,checker, pl->GetMap()->GetVisibilityDistance());
     }

@@ -167,7 +167,7 @@ class Log
 
 #define sLog (*ACE_Singleton<Log, ACE_Thread_Mutex>::instance())
 
-#ifdef HELLGROUND_DEBUG
+#ifdef lOOKING4GROUP_DEBUG
 #define DEBUG_LOG sLog.outDebug
 #else
 #define DEBUG_LOG

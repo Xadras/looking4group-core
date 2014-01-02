@@ -52,7 +52,7 @@ bool PathFinder::calculate(float destX, float destY, float destZ, bool forceDest
 {
     float x, y, z;
     m_sourceUnit->GetPosition(x, y, z);
-    if (!Hellground::IsValidMapCoord(destX, destY, destZ) || !Hellground::IsValidMapCoord(x, y, z))
+    if (!Looking4group::IsValidMapCoord(destX, destY, destZ) || !Looking4group::IsValidMapCoord(x, y, z))
         return false;
 
     Vector3 oldDest = getEndPosition();

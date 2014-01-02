@@ -33,7 +33,7 @@ void CreatureEventAIMgr::LoadCreatureEventAI_Texts(bool check_entry_use)
     m_CreatureEventAI_TextMap.clear();
 
     // Load EventAI Text
-    sObjectMgr.LoadHellgroundStrings(GameDataDatabase,"creature_ai_texts",MIN_CREATURE_AI_TEXT_STRING_ID,MAX_CREATURE_AI_TEXT_STRING_ID);
+    sObjectMgr.LoadLooking4groupStrings(GameDataDatabase,"creature_ai_texts",MIN_CREATURE_AI_TEXT_STRING_ID,MAX_CREATURE_AI_TEXT_STRING_ID);
 
     // Gather Additional data from EventAI Texts
     QueryResultAutoPtr result = GameDataDatabase.Query("SELECT entry, sound, type, language, emote FROM creature_ai_texts");
@@ -172,7 +172,7 @@ void CreatureEventAIMgr::LoadCreatureEventAI_Summons(bool check_entry_use)
             temp.orientation = fields[4].GetFloat();
             temp.SpawnTimeSecs = fields[5].GetUInt32();
 
-            if (!Hellground::IsValidMapCoord(temp.position_x,temp.position_y,temp.position_z,temp.orientation))
+            if (!Looking4group::IsValidMapCoord(temp.position_x,temp.position_y,temp.position_z,temp.orientation))
             {
                 sLog.outLog(LOG_DB_ERR, "CreatureEventAI:  Summon id %u have wrong coordinates (%f,%f,%f,%f), skipping.", i,temp.position_x,temp.position_y,temp.position_z,temp.orientation);
                 continue;
@@ -666,7 +666,7 @@ void CreatureEventAIMgr::LoadCreatureEventAI_Scripts(uint32 creatureId)
                     case ACTION_T_QUEST_EVENT:
                         if (Quest const* qid = sObjectMgr.GetQuestTemplate(action.quest_event.questId))
                         {
-                            if (!qid->HasFlag(QUEST_HELLGROUND_FLAGS_EXPLORATION_OR_EVENT))
+                            if (!qid->HasFlag(QUEST_lOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT))
                                 sLog.outLog(LOG_DB_ERR, "CreatureEventAI:  Event %u Action %u. SpecialFlags for quest entry %u does not include |2, Action will not have any effect.", i, j+1, action.quest_event.questId);
                         }
                         else
@@ -708,7 +708,7 @@ void CreatureEventAIMgr::LoadCreatureEventAI_Scripts(uint32 creatureId)
                     case ACTION_T_QUEST_EVENT_ALL:
                         if (Quest const* qid = sObjectMgr.GetQuestTemplate(action.quest_event_all.questId))
                         {
-                            if (!qid->HasFlag(QUEST_HELLGROUND_FLAGS_EXPLORATION_OR_EVENT))
+                            if (!qid->HasFlag(QUEST_lOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT))
                                 sLog.outLog(LOG_DB_ERR, "CreatureEventAI:  Event %u Action %u. SpecialFlags for quest entry %u does not include |2, Action will not have any effect.", i, j+1, action.quest_event_all.questId);
                         }
                         else

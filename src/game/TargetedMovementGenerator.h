@@ -16,8 +16,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef HELLGROUND_TARGETEDMOVEMENTGENERATOR_H
-#define HELLGROUND_TARGETEDMOVEMENTGENERATOR_H
+#ifndef lOOKING4GROUP_TARGETEDMOVEMENTGENERATOR_H
+#define lOOKING4GROUP_TARGETEDMOVEMENTGENERATOR_H
 
 #include "MovementGenerator.h"
 

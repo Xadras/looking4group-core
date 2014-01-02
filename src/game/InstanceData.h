@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef HELLGROUND_INSTANCE_DATA_H
-#define HELLGROUND_INSTANCE_DATA_H
+#ifndef lOOKING4GROUP_INSTANCE_DATA_H
+#define lOOKING4GROUP_INSTANCE_DATA_H
 
 #include <vector>
 
@@ -76,7 +76,7 @@ struct DoorData
     DoorType type;
 };
 
-class HELLGROUND_IMPORT_EXPORT InstanceData : public ZoneScript
+class lOOKING4GROUP_IMPORT_EXPORT InstanceData : public ZoneScript
 {
     public:
 

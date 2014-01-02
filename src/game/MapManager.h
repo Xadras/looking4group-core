@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef HELLGROUND_MAPMANAGER_H
-#define HELLGROUND_MAPMANAGER_H
+#ifndef lOOKING4GROUP_MAPMANAGER_H
+#define lOOKING4GROUP_MAPMANAGER_H
 
 #include "ace/Singleton.h"
 #include "ace/Thread_Mutex.h"
@@ -83,12 +83,12 @@ class MapManager
 
         static bool IsValidMapCoord(uint32 mapid, float x,float y)
         {
-            return IsValidMAP(mapid) && Hellground::IsValidMapCoord(x,y);
+            return IsValidMAP(mapid) && Looking4group::IsValidMapCoord(x,y);
         }
 
         static bool IsValidMapCoord(uint32 mapid, float x,float y,float z)
         {
-            return IsValidMAP(mapid) && Hellground::IsValidMapCoord(x,y,z);
+            return IsValidMAP(mapid) && Looking4group::IsValidMapCoord(x,y,z);
         }
 
         static bool IsValidMapCoord(WorldLocation const& loc)
@@ -98,7 +98,7 @@ class MapManager
 
         static bool IsValidMapCoord(uint32 mapid, float x,float y,float z,float o)
         {
-            return IsValidMAP(mapid) && Hellground::IsValidMapCoord(x,y,z,o);
+            return IsValidMAP(mapid) && Looking4group::IsValidMapCoord(x,y,z,o);
         }
 
         // modulos a radian orientation to the range of 0..2PI

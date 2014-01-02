@@ -17,8 +17,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-#ifndef HELLGROUND_CREATUREAIFACTORY_H
-#define HELLGROUND_CREATUREAIFACTORY_H
+#ifndef lOOKING4GROUP_CREATUREAIFACTORY_H
+#define lOOKING4GROUP_CREATUREAIFACTORY_H
 
 //#include "Policies/Singleton.h"
 #include "Dynamic/ObjectRegistry.h"

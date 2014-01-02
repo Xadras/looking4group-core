@@ -3591,7 +3591,7 @@ bool Unit::isInAccessiblePlacefor (Creature const* c) const
 
 bool Unit::IsInWater() const
 {
-    if (!Hellground::IsValidMapCoord(GetPositionX(),GetPositionY(), GetPositionZ()))
+    if (!Looking4group::IsValidMapCoord(GetPositionX(),GetPositionY(), GetPositionZ()))
         return false;
 
     return GetTerrain()->IsInWater(GetPositionX(),GetPositionY(), GetPositionZ());
@@ -3599,7 +3599,7 @@ bool Unit::IsInWater() const
 
 bool Unit::IsUnderWater() const
 {
-    if (!Hellground::IsValidMapCoord(GetPositionX(),GetPositionY(), GetPositionZ()))
+    if (!Looking4group::IsValidMapCoord(GetPositionX(),GetPositionY(), GetPositionZ()))
         return false;
 
     return GetTerrain()->IsUnderWater(GetPositionX(),GetPositionY(),GetPositionZ());
@@ -9746,8 +9746,8 @@ void Unit::DestroyForNearbyPlayers()
         return;
 
     std::list<Player*> targets;
-    Hellground::AnyUnitInObjectRangeCheck check(this, GetMap()->GetVisibilityDistance() + World::GetVisibleObjectGreyDistance());
-    Hellground::ObjectListSearcher<Player, Hellground::AnyUnitInObjectRangeCheck> searcher(targets, check);
+    Looking4group::AnyUnitInObjectRangeCheck check(this, GetMap()->GetVisibilityDistance() + World::GetVisibleObjectGreyDistance());
+    Looking4group::ObjectListSearcher<Player, Looking4group::AnyUnitInObjectRangeCheck> searcher(targets, check);
     Cell::VisitWorldObjects(this, searcher, GetMap()->GetVisibilityDistance() + World::GetVisibleObjectGreyDistance());
 
     for (std::list<Player*>::iterator iter = targets.begin(); iter != targets.end(); ++iter)
@@ -11498,7 +11498,7 @@ void Unit::SendPetAIReaction(uint64 guid)
 bool Unit::SetPosition(float x, float y, float z, float orientation, bool teleport)
 {
     // prevent crash when a bad coord is sent by the client
-    if (!Hellground::IsValidMapCoord(x,y,z,orientation))
+    if (!Looking4group::IsValidMapCoord(x,y,z,orientation))
     {
         sLog.outDebug("Unit::SetPosition(%f, %f, %f) .. bad coordinates!",x,y,z);
         return false;
@@ -11679,8 +11679,8 @@ void Unit::UpdateReactives(uint32 p_time)
 Unit* Unit::SelectNearbyTarget(float dist, Unit* erase) const
 {
     std::list<Unit *> targets;
-    Hellground::AnyUnfriendlyUnitInObjectRangeCheck u_check(this, this, dist);
-    Hellground::UnitListSearcher<Hellground::AnyUnfriendlyUnitInObjectRangeCheck> searcher(targets, u_check);
+    Looking4group::AnyUnfriendlyUnitInObjectRangeCheck u_check(this, this, dist);
+    Looking4group::UnitListSearcher<Looking4group::AnyUnfriendlyUnitInObjectRangeCheck> searcher(targets, u_check);
 
     Cell::VisitAllObjects(this, searcher, dist);
 
@@ -12230,12 +12230,12 @@ class RelocationNotifyEvent : public BasicEvent
             float radius = _owner.GetMap()->GetVisibilityDistance(&_owner);
             if (_owner.GetObjectGuid().IsPlayer())
             {
-                 Hellground::PlayerRelocationNotifier notify(*_owner.ToPlayer());
+                 Looking4group::PlayerRelocationNotifier notify(*_owner.ToPlayer());
                  Cell::VisitAllObjects(&_owner,notify,radius);
             }
             else
             {
-                Hellground::CreatureRelocationNotifier notify(*_owner.ToCreature());
+                Looking4group::CreatureRelocationNotifier notify(*_owner.ToCreature());
                 Cell::VisitAllObjects(&_owner,notify,radius);
             }
 
@@ -12960,8 +12960,8 @@ void Unit::GetPartyMember(std::list<Unit*> &TagUnitMap, float radius)
         {
             // for Creatures, grid search friendly units in radius
             std::list<Creature*> pList;
-            Hellground::AllFriendlyCreaturesInGrid u_check(owner);
-            Hellground::ObjectListSearcher<Creature, Hellground::AllFriendlyCreaturesInGrid> searcher(pList, u_check);
+            Looking4group::AllFriendlyCreaturesInGrid u_check(owner);
+            Looking4group::ObjectListSearcher<Creature, Looking4group::AllFriendlyCreaturesInGrid> searcher(pList, u_check);
             Cell::VisitAllObjects(owner, searcher, radius);
 
             for (std::list<Creature*>::iterator i = pList.begin(); i != pList.end(); ++i)

@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef HELLGROUND_GRIDNOTIFIERS_H
-#define HELLGROUND_GRIDNOTIFIERS_H
+#ifndef lOOKING4GROUP_GRIDNOTIFIERS_H
+#define lOOKING4GROUP_GRIDNOTIFIERS_H
 
 #include "ObjectGridLoader.h"
 #include "ByteBuffer.h"
@@ -38,7 +38,7 @@
 class Player;
 //class Map;
 
-namespace Hellground
+namespace Looking4group
 {
     struct VisibleNotifier
     {
@@ -58,7 +58,7 @@ namespace Hellground
         void SendToSelf(void);
     };
 
-    struct HELLGROUND_EXPORT VisibleChangesNotifier
+    struct lOOKING4GROUP_EXPORT VisibleChangesNotifier
     {
         WorldObject &_object;
 
@@ -94,7 +94,7 @@ namespace Hellground
         void Visit(GridRefManager<NOT_INTERESTED>&) {}
     };
 
-    struct HELLGROUND_EXPORT PacketBroadcaster
+    struct lOOKING4GROUP_EXPORT PacketBroadcaster
     {
         WorldObject &_source;
         WorldPacket *_message;
@@ -115,7 +115,7 @@ namespace Hellground
         void Visit(GridRefManager<SKIP>&) {}
     };
 
-    struct HELLGROUND_EXPORT ObjectUpdater
+    struct lOOKING4GROUP_EXPORT ObjectUpdater
     {
         uint32 i_timeDiff;
         explicit ObjectUpdater(const uint32 &diff) : i_timeDiff(diff) {}
@@ -129,7 +129,7 @@ namespace Hellground
         void Visit(GridRefManager<T> &m);
     };
 
-    struct HELLGROUND_EXPORT DynamicObjectUpdater
+    struct lOOKING4GROUP_EXPORT DynamicObjectUpdater
     {
         DynamicObject &i_dynobject;
         Unit* i_check;
@@ -150,7 +150,7 @@ namespace Hellground
 
 #pragma region Searchers
     template<class T, class Check>
-    struct HELLGROUND_EXPORT ObjectSearcher
+    struct lOOKING4GROUP_EXPORT ObjectSearcher
     {
         T* &_object;
         Check &_check;
@@ -164,7 +164,7 @@ namespace Hellground
     };
 
     template<class T, class Check>
-    struct HELLGROUND_EXPORT ObjectLastSearcher
+    struct lOOKING4GROUP_EXPORT ObjectLastSearcher
     {
         T* &_object;
         Check &_check;
@@ -178,7 +178,7 @@ namespace Hellground
     };
 
     template<class T, class Check>
-    struct HELLGROUND_EXPORT ObjectListSearcher
+    struct lOOKING4GROUP_EXPORT ObjectListSearcher
     {
         std::list<T*> &_objects;
         Check& _check;
@@ -192,7 +192,7 @@ namespace Hellground
     };
 
     template<class Check>
-    struct HELLGROUND_EXPORT UnitSearcher
+    struct lOOKING4GROUP_EXPORT UnitSearcher
     {
         Unit* &i_object;
         Check & i_check;
@@ -206,7 +206,7 @@ namespace Hellground
     };
 
     template<class Check>
-    struct HELLGROUND_EXPORT UnitLastSearcher
+    struct lOOKING4GROUP_EXPORT UnitLastSearcher
     {
         Unit* &i_object;
         Check & i_check;
@@ -221,7 +221,7 @@ namespace Hellground
     };
 
     template<class Check>
-    struct HELLGROUND_EXPORT UnitListSearcher
+    struct lOOKING4GROUP_EXPORT UnitListSearcher
     {
         std::list<Unit*> &i_objects;
         Check& i_check;
@@ -238,7 +238,7 @@ namespace Hellground
 
 #pragma region Workers
     template<class T, class Do>
-    struct HELLGROUND_EXPORT ObjectWorker
+    struct lOOKING4GROUP_EXPORT ObjectWorker
     {
         Do& _do;
 
@@ -255,7 +255,7 @@ namespace Hellground
     };
 
     template<class Do>
-    struct HELLGROUND_EXPORT CameraDistWorker
+    struct lOOKING4GROUP_EXPORT CameraDistWorker
     {
         WorldObject const* i_searcher;
         float i_dist;

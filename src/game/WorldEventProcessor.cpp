@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 HellGround <http://www.hellground.pl/>
+ * Copyright (C) 2012 Looking4Group <http://www.looking4group.pl/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

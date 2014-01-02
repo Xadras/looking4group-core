@@ -84,7 +84,7 @@ enum SpellNotifyPushType
 
 bool IsQuestTameSpell(uint32 spellId);
 
-namespace Hellground
+namespace Looking4group
 {
     struct SpellNotifierCreatureAndPlayer;
 }
@@ -245,7 +245,7 @@ enum SpellTargets
 
 class Spell
 {
-    friend struct Hellground::SpellNotifierCreatureAndPlayer;
+    friend struct Looking4group::SpellNotifierCreatureAndPlayer;
     public:
 
         void EffectNULL(uint32);
@@ -648,7 +648,7 @@ class Spell
         PathFinder _path;
 };
 
-namespace Hellground
+namespace Looking4group
 {
     struct SpellNotifierGameObject
     {

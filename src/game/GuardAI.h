@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef HELLGROUND_GUARDAI_H
-#define HELLGROUND_GUARDAI_H
+#ifndef lOOKING4GROUP_GUARDAI_H
+#define lOOKING4GROUP_GUARDAI_H
 
 #include "CreatureAI.h"
 #include "Timer.h"

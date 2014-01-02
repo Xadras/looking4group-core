@@ -549,7 +549,7 @@ void WorldSession::HandleEmoteOpcode(WorldPacket & recv_data)
     GetPlayer()->HandleEmoteCommand(emote);
 }
 
-namespace Hellground
+namespace Looking4group
 {
     class EmoteChatBuilder
     {
@@ -579,7 +579,7 @@ namespace Hellground
             uint32        i_emote_num;
             Unit const*   i_target;
     };
-}                                                           // namespace Hellground
+}                                                           // namespace Looking4group
 
 void WorldSession::HandleTextEmoteOpcode(WorldPacket & recv_data)
 {
@@ -628,9 +628,9 @@ void WorldSession::HandleTextEmoteOpcode(WorldPacket & recv_data)
 
     Unit* unit = player->GetMap()->GetUnit(guid);
 
-    Hellground::EmoteChatBuilder emote_builder(*player, text_emote, emoteNum, unit);
-    Hellground::LocalizedPacketDo<Hellground::EmoteChatBuilder > emote_do(emote_builder);
-    Hellground::CameraDistWorker<Hellground::LocalizedPacketDo<Hellground::EmoteChatBuilder > > emote_worker(player, sWorld.getConfig(CONFIG_LISTEN_RANGE_TEXTEMOTE), emote_do);
+    Looking4group::EmoteChatBuilder emote_builder(*player, text_emote, emoteNum, unit);
+    Looking4group::LocalizedPacketDo<Looking4group::EmoteChatBuilder > emote_do(emote_builder);
+    Looking4group::CameraDistWorker<Looking4group::LocalizedPacketDo<Looking4group::EmoteChatBuilder > > emote_worker(player, sWorld.getConfig(CONFIG_LISTEN_RANGE_TEXTEMOTE), emote_do);
     Cell::VisitWorldObjects(player, emote_worker,  sWorld.getConfig(CONFIG_LISTEN_RANGE_TEXTEMOTE));
 
     //Send scripted event call

@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef HELLGROUND_TYPECONTAINER_H
-#define HELLGROUND_TYPECONTAINER_H
+#ifndef lOOKING4GROUP_TYPECONTAINER_H
+#define lOOKING4GROUP_TYPECONTAINER_H
 
 /*
  * Here, you'll find a series of containers that allow you to hold multiple
@@ -66,19 +66,19 @@ template<class OBJECT_TYPES>
 class TypeMapContainer
 {
     public:
-        template<class SPECIFIC_TYPE> size_t Count() const { return Hellground::Count(i_elements, (SPECIFIC_TYPE*)NULL); }
+        template<class SPECIFIC_TYPE> size_t Count() const { return Looking4group::Count(i_elements, (SPECIFIC_TYPE*)NULL); }
 
         /// inserts a specific object into the container
         template<class SPECIFIC_TYPE> bool insert(SPECIFIC_TYPE *obj)
         {
-            SPECIFIC_TYPE* t = Hellground::Insert(i_elements, obj);
+            SPECIFIC_TYPE* t = Looking4group::Insert(i_elements, obj);
             return (t != NULL);
         }
 
         ///  Removes the object from the container, and returns the removed object
         template<class SPECIFIC_TYPE> bool remove(SPECIFIC_TYPE* obj)
         {
-            SPECIFIC_TYPE* t = Hellground::Remove(i_elements, obj);
+            SPECIFIC_TYPE* t = Looking4group::Remove(i_elements, obj);
             return (t != NULL);
         }
 

@@ -34,8 +34,8 @@ typedef DatabaseMysql DatabaseType;
 #define _CONCAT3_(A,B,C) "CONCAT( " A " , " B " , " C " )"
 #define _OFFSET_         "LIMIT %d,1"
 
-extern HELLGROUND_IMPORT_EXPORT DatabaseType GameDataDatabase;
-extern HELLGROUND_IMPORT_EXPORT DatabaseType RealmDataDatabase;
-extern HELLGROUND_IMPORT_EXPORT DatabaseType AccountsDatabase;
+extern lOOKING4GROUP_IMPORT_EXPORT DatabaseType GameDataDatabase;
+extern lOOKING4GROUP_IMPORT_EXPORT DatabaseType RealmDataDatabase;
+extern lOOKING4GROUP_IMPORT_EXPORT DatabaseType AccountsDatabase;
 
 #endif

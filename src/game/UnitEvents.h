@@ -69,7 +69,7 @@ enum UNIT_EVENT_TYPE
 
 //==============================================================
 
-class HELLGROUND_IMPORT_EXPORT UnitBaseEvent
+class lOOKING4GROUP_IMPORT_EXPORT UnitBaseEvent
 {
     private:
         uint32 iType;
@@ -84,7 +84,7 @@ class HELLGROUND_IMPORT_EXPORT UnitBaseEvent
 
 //==============================================================
 
-class HELLGROUND_IMPORT_EXPORT ThreatRefStatusChangeEvent : public UnitBaseEvent
+class lOOKING4GROUP_IMPORT_EXPORT ThreatRefStatusChangeEvent : public UnitBaseEvent
 {
     private:
         HostilReference* iHostilReference;
@@ -121,7 +121,7 @@ class HELLGROUND_IMPORT_EXPORT ThreatRefStatusChangeEvent : public UnitBaseEvent
 
 //==============================================================
 
-class HELLGROUND_IMPORT_EXPORT ThreatManagerEvent : public ThreatRefStatusChangeEvent
+class lOOKING4GROUP_IMPORT_EXPORT ThreatManagerEvent : public ThreatRefStatusChangeEvent
 {
     private:
         ThreatContainer* iThreatContainer;

@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef HELLGROUND_CALLBACK_H
-#define HELLGROUND_CALLBACK_H
+#ifndef lOOKING4GROUP_CALLBACK_H
+#define lOOKING4GROUP_CALLBACK_H
 
 //defines to simplify multi param templates code and readablity
 #define TYPENAMES_1 typename T1
@@ -47,7 +47,7 @@ struct null { null() {} };
 
 /// ------------ BASE CLASSES ------------
 
-namespace Hellground
+namespace Looking4group
 {
     template<class Class, typename ParamType1 = void, typename ParamType2 = void, typename ParamType3 = void, typename ParamType4 = void>
     class _Callback
@@ -308,7 +308,7 @@ namespace Hellground
 
 /// --------- GENERIC CALLBACKS ----------
 
-namespace Hellground
+namespace Looking4group
 {
     class ICallback
     {
@@ -407,7 +407,7 @@ namespace Hellground
 #include "QueryResult.h"
 class QueryResult;
 
-namespace Hellground
+namespace Looking4group
 {
     class IQueryCallback
     {

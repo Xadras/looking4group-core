@@ -87,7 +87,7 @@ bool ChatHandler::HandleReloadAllCommand(const char*)
 
     HandleReloadCommandCommand("");
     HandleReloadReservedNameCommand("");
-    HandleReloadHellgroundStringCommand("");
+    HandleReloadLooking4groupStringCommand("");
     HandleReloadGameTeleCommand("");
     HandleReloadUnqueuedAccountListCommand("");
     HandleReloadAutobroadcastCommand("");
@@ -382,11 +382,11 @@ bool ChatHandler::HandleReloadLootTemplatesSkinningCommand(const char*)
     return true;
 }
 
-bool ChatHandler::HandleReloadHellgroundStringCommand(const char*)
+bool ChatHandler::HandleReloadLooking4groupStringCommand(const char*)
 {
-    sLog.outString("Re-Loading hellground_string Table!");
-    sObjectMgr.LoadHellgroundStrings();
-    SendGlobalGMSysMessage("DB table `hellground_string` reloaded.");
+    sLog.outString("Re-Loading looking4group_string Table!");
+    sObjectMgr.LoadLooking4groupStrings();
+    SendGlobalGMSysMessage("DB table `looking4group_string` reloaded.");
     return true;
 }
 
@@ -5706,8 +5706,8 @@ bool ChatHandler::HandleRespawnCommand(const char* /*args*/)
         return true;
     }
 
-    Hellground::RespawnDo u_do;
-    Hellground::ObjectWorker<Creature, Hellground::RespawnDo> worker(u_do);
+    Looking4group::RespawnDo u_do;
+    Looking4group::ObjectWorker<Creature, Looking4group::RespawnDo> worker(u_do);
 
     Cell::VisitGridObjects(pl, worker, pl->GetMap()->GetVisibilityDistance());
     return true;
@@ -7153,8 +7153,8 @@ bool ChatHandler::HandleUnbindSightCommand(const char* /*args*/)
 bool ChatHandler::HandleGameObjectGridCommand(const char* /*args*/)
 {
     std::list<GameObject*> tmpL;
-    Hellground::AllGameObjectsInRange go_check(m_session->GetPlayer(), 20.0f);
-    Hellground::ObjectListSearcher<GameObject, Hellground::AllGameObjectsInRange> searcher(tmpL, go_check);
+    Looking4group::AllGameObjectsInRange go_check(m_session->GetPlayer(), 20.0f);
+    Looking4group::ObjectListSearcher<GameObject, Looking4group::AllGameObjectsInRange> searcher(tmpL, go_check);
 
     Cell::VisitGridObjects(m_session->GetPlayer(), searcher, 20.0f);
 
@@ -7367,8 +7367,8 @@ bool ChatHandler::HandleMmapTestArea(const char* args)
 
     std::list<Creature*> creatureList;
 
-    Hellground::AnyUnitInObjectRangeCheck go_check(m_session->GetPlayer(), radius);
-    Hellground::ObjectListSearcher<Creature, Hellground::AnyUnitInObjectRangeCheck> go_search(creatureList, go_check);
+    Looking4group::AnyUnitInObjectRangeCheck go_check(m_session->GetPlayer(), radius);
+    Looking4group::ObjectListSearcher<Creature, Looking4group::AnyUnitInObjectRangeCheck> go_search(creatureList, go_check);
     // Get Creatures
     Cell::VisitGridObjects(m_session->GetPlayer(), go_search, radius);
 

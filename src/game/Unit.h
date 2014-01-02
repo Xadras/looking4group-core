@@ -828,7 +828,7 @@ enum ReactiveType
 
 struct SpellProcEventEntry;                                 // used only privately
 
-class HELLGROUND_IMPORT_EXPORT Unit : public WorldObject
+class lOOKING4GROUP_IMPORT_EXPORT Unit : public WorldObject
 {
     public:
         typedef std::set<Unit*> AttackerSet;
@@ -1722,7 +1722,7 @@ class HELLGROUND_IMPORT_EXPORT Unit : public WorldObject
 typedef std::set<Unit*> UnitSet;
 typedef std::list<Unit*> UnitList;
 
-namespace Hellground
+namespace Looking4group
 {
     template<class T>
     void RandomResizeList(std::list<T> &_list, uint32 _size)

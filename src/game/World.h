@@ -592,7 +592,7 @@ class CoreBalancer
 };
 
 /// The World
-class HELLGROUND_EXPORT World
+class lOOKING4GROUP_EXPORT World
 {
     friend class ACE_Singleton<World, ACE_Null_Mutex>;
 

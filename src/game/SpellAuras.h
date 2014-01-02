@@ -17,8 +17,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-#ifndef HELLGROUND_SPELLAURAS_H
-#define HELLGROUND_SPELLAURAS_H
+#ifndef lOOKING4GROUP_SPELLAURAS_H
+#define lOOKING4GROUP_SPELLAURAS_H
 
 #include "SpellAuraDefines.h"
 
@@ -71,7 +71,7 @@ typedef void(Aura::*pAuraHandler)(bool Apply, bool Real);
 //      each setting object update field code line moved under if (Real) check is significant Trinity speedup, and less server->client data sends
 //      each packet sending code moved under if (Real) check is _large_ Trinity speedup, and lot less server->client data sends
 
-class HELLGROUND_IMPORT_EXPORT Aura
+class lOOKING4GROUP_IMPORT_EXPORT Aura
 {
     friend Aura* CreateAura(SpellEntry const* spellproto, uint32 eff, int32 *currentBasePoints, Unit *target, Unit *caster, Item* castItem);
 
@@ -417,7 +417,7 @@ class HELLGROUND_IMPORT_EXPORT Aura
         void SetAuraApplication(uint32 slot, int8 count);
 };
 
-class HELLGROUND_IMPORT_EXPORT AreaAura : public Aura
+class lOOKING4GROUP_IMPORT_EXPORT AreaAura : public Aura
 {
     public:
         AreaAura(SpellEntry const* spellproto, uint32 eff, int32 *currentBasePoints, Unit *target, Unit *caster = NULL, Item* castItem = NULL);
@@ -429,7 +429,7 @@ class HELLGROUND_IMPORT_EXPORT AreaAura : public Aura
         AreaAuraType m_areaAuraType;
 };
 
-class HELLGROUND_IMPORT_EXPORT PersistentAreaAura : public Aura
+class lOOKING4GROUP_IMPORT_EXPORT PersistentAreaAura : public Aura
 {
     public:
         PersistentAreaAura(SpellEntry const* spellproto, uint32 eff, int32 *currentBasePoints, Unit *target, Unit *caster = NULL, Item* castItem = NULL, uint64 dynObjGUID = 0);

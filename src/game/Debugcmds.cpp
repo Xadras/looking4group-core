@@ -727,7 +727,7 @@ bool ChatHandler::HandleDebugHostilRefList(const char * /*args*/)
     {
         if (Unit* unit = ref->getSource()->getOwner())
         {
-            CellPair p = Hellground::ComputeCellPair(unit->GetPositionX(), unit->GetPositionY());
+            CellPair p = Looking4group::ComputeCellPair(unit->GetPositionX(), unit->GetPositionY());
             uint8 gridstate = unit->GetMap()->getNGrid(Cell(p).GridX(), Cell(p).GridY())->GetGridState();
 
             ++cnt;
@@ -864,8 +864,8 @@ bool ChatHandler::HandleGetPoolObjectStatsCommand(const char *args)
     Map *map = m_session->GetPlayer()->GetMap();
 
     std::list<GameObject*> pList;
-    Hellground::AllGameObjectsWithEntryInGrid u_check(entry);
-    Hellground::ObjectListSearcher<GameObject, Hellground::AllGameObjectsWithEntryInGrid> searcher(pList, u_check);
+    Looking4group::AllGameObjectsWithEntryInGrid u_check(entry);
+    Looking4group::ObjectListSearcher<GameObject, Looking4group::AllGameObjectsWithEntryInGrid> searcher(pList, u_check);
     Cell::VisitAllObjects(m_session->GetPlayer(), searcher, range, false);
 
     UNORDERED_MAP<uint16, uint32> map_unspawned;

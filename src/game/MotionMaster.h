@@ -42,7 +42,7 @@ enum RotateDirection
 #define DEFAULT_WALK_SPEED 24.0f
 #define SPEED_CHARGE       42.0f
 
-class HELLGROUND_IMPORT_EXPORT MotionMaster 
+class lOOKING4GROUP_IMPORT_EXPORT MotionMaster 
 {
     public:
 

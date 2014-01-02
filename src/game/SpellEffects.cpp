@@ -947,8 +947,8 @@ void Spell::EffectDummy(uint32 i)
                         {
                             // Handle associated GO - monstrous kaliri egg
                             GameObject* target = NULL;
-                            Hellground::AllGameObjectsWithEntryInGrid go_check(185549);
-                            Hellground::ObjectSearcher<GameObject, Hellground::AllGameObjectsWithEntryInGrid> searcher(target, go_check);
+                            Looking4group::AllGameObjectsWithEntryInGrid go_check(185549);
+                            Looking4group::ObjectSearcher<GameObject, Looking4group::AllGameObjectsWithEntryInGrid> searcher(target, go_check);
 
                             // Find GO that matches this trigger:
                             Cell::VisitGridObjects(unitTarget, searcher, 3.0f);
@@ -1649,8 +1649,8 @@ void Spell::EffectDummy(uint32 i)
                     Player* plr = unitTarget->GetCharmerOrOwnerPlayerOrPlayerItself();
 
                     GameObject* ok = NULL;
-                    Hellground::GameObjectFocusCheck go_check(plr,GetSpellInfo()->RequiresSpellFocus);
-                    Hellground::ObjectSearcher<GameObject, Hellground::GameObjectFocusCheck> checker(ok,go_check);
+                    Looking4group::GameObjectFocusCheck go_check(plr,GetSpellInfo()->RequiresSpellFocus);
+                    Looking4group::ObjectSearcher<GameObject, Looking4group::GameObjectFocusCheck> checker(ok,go_check);
 
                     Cell::VisitGridObjects(plr, checker, plr->GetMap()->GetVisibilityDistance());
 
@@ -1903,8 +1903,8 @@ void Spell::EffectDummy(uint32 i)
                         for (uint8 i=0;i<6;++i)
                         {
                             Creature *pCreature = NULL;
-                            Hellground::NearestCreatureEntryWithLiveStateInObjectRangeCheck creature_check(*m_caster, LunarEntry[i], true, 7.0, false);
-                            Hellground::ObjectLastSearcher<Creature, Hellground::NearestCreatureEntryWithLiveStateInObjectRangeCheck> searcher(pCreature, creature_check);
+                            Looking4group::NearestCreatureEntryWithLiveStateInObjectRangeCheck creature_check(*m_caster, LunarEntry[i], true, 7.0, false);
+                            Looking4group::ObjectLastSearcher<Creature, Looking4group::NearestCreatureEntryWithLiveStateInObjectRangeCheck> searcher(pCreature, creature_check);
                             Cell::VisitGridObjects(m_caster, searcher, 7.0);
 
                             if (pCreature)
@@ -2638,8 +2638,8 @@ void Spell::EffectTriggerSpell(uint32 i)
         case 37492:
         {
             std::list<Creature*> pList;
-            Hellground::AllCreaturesOfEntryInRange u_check(m_caster, 21633, 70.0f);
-            Hellground::ObjectListSearcher<Creature, Hellground::AllCreaturesOfEntryInRange> searcher(pList, u_check);
+            Looking4group::AllCreaturesOfEntryInRange u_check(m_caster, 21633, 70.0f);
+            Looking4group::ObjectListSearcher<Creature, Looking4group::AllCreaturesOfEntryInRange> searcher(pList, u_check);
 
             Cell::VisitAllObjects(m_caster, searcher, 70.0f);
 
@@ -6602,8 +6602,8 @@ void Spell::EffectSanctuary(uint32 /*i*/)
 
     std::list<Unit*> targets;
 
-    Hellground::AnyUnfriendlyUnitInObjectRangeCheck u_check(unitTarget, unitTarget, m_caster->GetMap()->GetVisibilityDistance());
-    Hellground::UnitListSearcher<Hellground::AnyUnfriendlyUnitInObjectRangeCheck> searcher(targets, u_check);
+    Looking4group::AnyUnfriendlyUnitInObjectRangeCheck u_check(unitTarget, unitTarget, m_caster->GetMap()->GetVisibilityDistance());
+    Looking4group::UnitListSearcher<Looking4group::AnyUnfriendlyUnitInObjectRangeCheck> searcher(targets, u_check);
 
     Cell::VisitAllObjects(unitTarget, searcher, m_caster->GetMap()->GetVisibilityDistance());
 
