@@ -174,6 +174,7 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
     uint32 Berserk_Timer;
     uint32 InnerDemons_Timer;
     uint32 BanishTimer;
+    uint32 Infight;
 
     WorldLocation wLoc;
 
@@ -195,6 +196,7 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
         CheckChannelers();
         CheckBanish();
         BanishTimer = 1000;
+        Infight = 1000;
         PulseCombat_Timer = 5000;
         Whirlwind_Timer = 15000;
         ChaosBlast_Timer = 1000;
@@ -631,6 +633,21 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
             m_creature->LoadEquipment(m_creature->GetEquipmentId());
             m_creature->SetMeleeDamageSchool(SPELL_SCHOOL_NORMAL);
         }
+        
+        if (Infight <= diff) {
+            if (Map * map = m_creature->GetMap()) {
+                Map::PlayerList const& players = map->GetPlayers();
+                for (Map::PlayerList::const_iterator i = players.begin(); i != players.end(); ++i) {
+                    Player* p = i->getSource();
+                    if (p->isAlive() && (p->GetDistance2d(m_creature->GetPositionX(), m_creature->GetPositionY()) <= 200 || p->GetDistance(m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ()) <= 60)) {
+                        m_creature->SetInCombatWith(p);
+                        m_creature->AddThreat(p, 0.0f);
+                        p->SetInCombatWith(m_creature);
+                    }
+                }
+            }
+            Infight = 1000;
+        } else Infight -= diff;
     }
 };
 
