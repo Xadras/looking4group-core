@@ -627,13 +627,6 @@ void Pet::Update(uint32 update_diff, uint32 p_diff)
 
 void Pet::RegenerateFocus()
 {
-    if (isInCombat())
-        if (!getVictim() && (GetReactState() != REACT_PASSIVE))
-        {
-            Unit* victim = SelectNearestTarget(25.0f);
-            Attack(victim, true);
-        }
-
     uint32 curValue = GetPower(POWER_FOCUS);
     uint32 maxValue = GetMaxPower(POWER_FOCUS);
 
