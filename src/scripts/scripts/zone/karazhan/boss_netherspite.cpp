@@ -256,6 +256,9 @@ struct boss_netherspiteAI : public ScriptedAI
 
     void MoveInLineOfSight(Unit *who)
     {
+        if (!who)
+            return;
+
         if (!m_creature->isInCombat() && m_creature->IsWithinDistInMap(who, 25.0) && m_creature->IsHostileTo(who))
             AttackStart(who);
     }
