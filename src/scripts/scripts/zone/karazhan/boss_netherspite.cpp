@@ -247,7 +247,7 @@ struct boss_netherspiteAI : public ScriptedAI
         HandleDoors(false);
         SwitchToPortalPhase();
 
-        m_creature->GetMotionMaster()->Clear();
+        //m_creature->GetMotionMaster()->Clear();
         DoStartMovement(who);
 
         if (pInstance)
@@ -256,7 +256,7 @@ struct boss_netherspiteAI : public ScriptedAI
 
     void MoveInLineOfSight(Unit *who)
     {
-        if (!who)
+        if (!who || who->GetTypeId() != TYPEID_PLAYER || !who->ToCreature()->isPet())
             return;
 
         if (!m_creature->isInCombat() && m_creature->IsWithinDistInMap(who, 25.0) && m_creature->IsHostileTo(who))
