@@ -634,23 +634,6 @@ bool GOGossipSelect_go_draconic_for_dummies(Player* pPlayer, GameObject* pGO, ui
     return true;
 }
 
-bool GOUse_go_personal_mole_machine(Player *player, GameObject* _GO)
-{
-    if (_GO == nullptr || player == nullptr || !_GO->IsInWorld() || !player->IsInWorld())
-        return false;
-        
-    if (_GO->GetOwner() == nullptr || !_GO->GetOwner()->IsInWorld())
-        return false;
-
-
-    if (_GO->GetOwner())
-        if (player->IsInPartyWith(_GO->GetOwner()) || player->IsInRaidWith(_GO->GetOwner())){
-            player->TeleportTo(230,884.04,-181.64,-43.93,1.42);
-            return false;
-        }
-    return true;
-}
-
 const char* ImpInABottleQuotes[] =
 {
     "Hey! You try telling the future when someone's shaking up your house!",
@@ -720,11 +703,27 @@ bool GOUse_go_imp_in_a_bottle(Player* player, GameObject* go)
 {
     if (go == nullptr || player == nullptr || !go->IsInWorld() || !player->IsInWorld())
         return false;
-
+        
     go->Whisper(ImpInABottleQuotes[urand(0, (sizeof(ImpInABottleQuotes)/sizeof(char*)) -1)], player->GetGUID());
     return true;
 };
 
+bool GOUse_go_personal_mole_machine(Player* player, GameObject* go)
+{
+    if (go == nullptr || player == nullptr || !go->IsInWorld() || !player->IsInWorld())
+        return false;
+        
+    Unit* owner = go->GetOwner();
+    if (!owner || !owner->IsInWorld())
+        return false;
+        
+    if (player->IsInRaidWith(owner))
+    {
+        WorldLocation location(230, 446.82f, 21.14f, -70.65f, 5.28f);
+        player->TeleportTo(location);
+    }
+    return true;
+};
 
 void AddSC_go_scripts()
 {
@@ -733,6 +732,16 @@ void AddSC_go_scripts()
     newscript = new Script;
     newscript->Name="go_northern_crystal_pylon";
     newscript->pGOUse = &GOUse_go_northern_crystal_pylon;
+    newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name="go_imp_in_a_bottle";
+    newscript->pGOUse = &GOUse_go_imp_in_a_bottle;
+    newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name="go_personal_mole_machine";
+    newscript->pGOUse = &GOUse_go_personal_mole_machine;
     newscript->RegisterSelf();
 
     newscript = new Script;
@@ -853,15 +862,4 @@ void AddSC_go_scripts()
     newscript->pGOUse = &GOUse_go_draconic_for_dummies;
     newscript->pGossipSelectGO =  &GOGossipSelect_go_draconic_for_dummies;
     newscript->RegisterSelf();
-        
-    newscript = new Script;
-    newscript->Name = "go_personal_mole_machine";
-    newscript->pGOUse = &GOUse_go_personal_mole_machine;
-    newscript->RegisterSelf();
-
-    newscript = new Script;
-    newscript->Name="go_imp_in_a_bottle";
-    newscript->pGOUse = &GOUse_go_imp_in_a_bottle;
-    newscript->RegisterSelf();
 }
-

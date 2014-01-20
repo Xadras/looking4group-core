@@ -1089,9 +1089,9 @@ void Spell::DoAllEffectOnTarget(TargetInfo *target)
     }
 
     // if target is flagged for pvp also flag caster if a player
-    if (unit->IsPvP())
+    if (unit->IsPvP() && m_caster->GetTypeId() == TYPEID_PLAYER && m_caster != unit)
     {
-        if ((m_caster->GetTypeId() == TYPEID_PLAYER) && (m_caster != unit))
+        if (!((Player*)m_caster)->duel || ((Player*)m_caster)->duel->opponent != unit->GetCharmerOrOwnerPlayerOrPlayerItself())
             ((Player*)m_caster)->UpdatePvP(true);
     }
 }
