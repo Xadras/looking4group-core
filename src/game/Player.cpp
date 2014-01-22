@@ -21432,7 +21432,7 @@ void Player::SendItemByMail(Player *plr,uint32 item, uint32 count)
 bool Player::ShowLowLevelQuest(){
     // Check if account premium
     QueryResultAutoPtr levelresult = RealmDataDatabase.PQuery ("SELECT 1 "
-     "FROM characters "
+     "FROM character_quest "
      "WHERE guid = '%u' "
      "AND show_low_level_quest = 1",
      GetGUID());
