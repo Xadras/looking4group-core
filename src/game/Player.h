@@ -2217,6 +2217,7 @@ class LOOKING4GROUP_EXPORT Player : public Unit
 
         Camera& GetCamera() { return m_camera; }
         bool StopLevel(uint64 charid);
+        bool ShowLowLevelQuest();
 
         void SendItemByMail(Player *plr,uint32 item, uint32 count);
 

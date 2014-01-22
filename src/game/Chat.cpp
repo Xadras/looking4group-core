@@ -585,6 +585,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "add",            PERM_HIGH_GMT,  false,  &ChatHandler::HandleQuestAdd,                   "", NULL },
         { "complete",       PERM_HIGH_GMT,  false,  &ChatHandler::HandleQuestComplete,              "", NULL },
         { "remove",         PERM_HIGH_GMT,  false,  &ChatHandler::HandleQuestRemove,                "", NULL },
+        { "showlowlevel",   PERM_PLAYER,    false,  &ChatHandler::HandleShowLowLevelQuestCommand,   "", NULL },
         { NULL,             0,              false,  NULL,                                           "", NULL }
     };
 

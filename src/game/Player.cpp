@@ -21428,3 +21428,17 @@ void Player::SendItemByMail(Player *plr,uint32 item, uint32 count)
             .SendMailTo(plr, MailSender(this, MAIL_STATIONERY_GM));
     }
 }
+
+bool Player::ShowLowLevelQuest(){
+    // Check if account premium
+    QueryResultAutoPtr levelresult = RealmDataDatabase.PQuery ("SELECT 1 "
+     "FROM characters "
+     "WHERE guid = '%u' "
+     "AND show_low_level_quest = 1",
+     GetGUID());
+    if (levelresult) // if account premium
+    {
+        return true;
+    }
+    return false;
+}

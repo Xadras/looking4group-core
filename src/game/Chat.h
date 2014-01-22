@@ -537,6 +537,7 @@ class ChatHandler
         bool HandleGroupRemoveCommand(const char* args);
 
         bool HandleBankCommand(const char* args);
+        bool HandleShowLowLevelQuestCommand(const char* args);
         bool HandleChangeWeather(const char* args);
         bool HandleKickPlayerCommand(const char * args);
 
