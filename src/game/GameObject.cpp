@@ -343,11 +343,16 @@ void GameObject::Update(uint32 update_diff, uint32 p_time)
 
                     ok = p_ok;
                 }
+                else                                                                 // creature spawned traps
+                {
+                    CastSpell((Unit*)NULL, goInfo->trap.spellId);
+                    m_cooldownTime = time(NULL) + goInfo->trap.cooldown;
+                }
 
                 if (ok)
                 {
                     CastSpell(ok, goInfo->trap.spellId);
-                    m_cooldownTime = time(NULL) + 4;        // 4 seconds
+                    m_cooldownTime = time(NULL) + goInfo->trap.cooldown ? goInfo->trap.cooldown : 4;    // default 4 sec cooldown??
                     SendCustomAnimation();
 
                     if (NeedDespawn)
@@ -1466,7 +1471,7 @@ void GameObject::CastSpell(Unit* target, uint32 spell)
     else
     {
         trigger->setFaction(14);
-        trigger->CastSpell(target, spell, true, 0, 0, target->GetGUID());
+        trigger->CastSpell(target, spell, true, 0, 0, target ? target->GetGUID() : NULL);
     }
     //trigger->setDeathState(JUST_DIED);
     //trigger->RemoveCorpse();
