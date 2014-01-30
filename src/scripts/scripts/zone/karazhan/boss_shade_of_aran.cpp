@@ -372,7 +372,7 @@ struct boss_aranAI : public ScriptedAI
             else
                 SuperCastTimer -= diff;
 
-            if (!ElementalsSpawned && HealthBelowPct(40))
+            if (!ElementalsSpawned && ((m_creature->GetHealth()*100)/ m_creature->GetMaxHealth()) <= 40)
             {
                 ElementalsSpawned = true;
                 AddSpellToCastWithScriptText(SPELL_ELEMENTAL1, CAST_SELF, SAY_ELEMENTALS);
