@@ -385,6 +385,22 @@ struct npc_bloodmaul_brutebaneAI : public ScriptedAI
            if (Player* plOwner = pOwner->GetCharmerOrOwnerPlayerOrPlayerItself())
                plOwner->KilledMonster(NPC_QUEST_CREDIT, pOgre->GetGUID());
        }
+       else if (Creature* pOgre = GetClosestCreatureWithEntry(me, 20726, 50.0f))
+       {
+           pOgre->SetReactState(REACT_DEFENSIVE);
+           pOgre->GetMotionMaster()->MovePoint(1, me->GetPositionX()-1, me->GetPositionY()+1, me->GetPositionZ());
+
+           if (Player* plOwner = pOwner->GetCharmerOrOwnerPlayerOrPlayerItself())
+               plOwner->KilledMonster(NPC_QUEST_CREDIT, pOgre->GetGUID());
+       }
+       else if (Creature* pOgre = GetClosestCreatureWithEntry(me, 20731, 50.0f))
+       {
+           pOgre->SetReactState(REACT_DEFENSIVE);
+           pOgre->GetMotionMaster()->MovePoint(1, me->GetPositionX()-1, me->GetPositionY()+1, me->GetPositionZ());
+
+           if (Player* plOwner = pOwner->GetCharmerOrOwnerPlayerOrPlayerItself())
+               plOwner->KilledMonster(NPC_QUEST_CREDIT, pOgre->GetGUID());
+       }
     }
 
     void UpdateAI(const uint32 uiDiff){}
