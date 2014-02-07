@@ -1873,6 +1873,17 @@ void Aura::TriggerSpell()
 //                    case 39306: break;
 //                    // Inferno
 //                    case 39346: break;
+//                    // Inferno - Raging Fires in Mechanar
+                    case 39346:
+                    {
+                        if (caster->GetTypeId() != TYPEID_UNIT)
+                            return;
+                        if (!caster->GetInstanceData())
+                            return;
+                        int32 damage = (caster->GetInstanceData()->instance->IsHeroic() ? 1880 : 940);
+                        caster->CastCustomSpell((Unit*)NULL, 35283, &damage, NULL, NULL, true, 0, this, originalCasterGUID);
+                        break;
+                    }
 //                    // Enchanted Weapons
 //                    case 39489: break;
 //                    // Shadow Bolt Whirl
