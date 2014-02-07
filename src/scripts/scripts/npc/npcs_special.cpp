@@ -1019,8 +1019,9 @@ bool ReceiveEmote_npc_winter_reveler( Player *player, Creature *_Creature, uint3
     if ((!player->HasAura(26218))&&(emote == TEXTEMOTE_KISS))
     {
         _Creature->CastSpell(player, 26218, false);
-            return true;
+        return true;
     }
+    
     return false;
 }
 
@@ -2871,7 +2872,7 @@ CreatureAI* GetAI_npc_gnomish_flame_turret(Creature *_Creature)
 #define DUMMY_PARK_ON "Start dummy park event"
 #define DUMMY_PARK_OFF "Stop dummy park event"
 #define DUMMY_PARK_OBJECTS 16
-#define DUMMY_PARK_NPCS 6
+#define DUMMY_PARK_NPCS 8
 
 float dummyparkstorage[3] = {-1899, 5607, -33};
 
@@ -2919,7 +2920,9 @@ float dummyparknpclocs[DUMMY_PARK_NPCS][3] ={
     {-1928.70, 5560.42, -12.428},
     {-1913.47, 5560.28, -12.428},
     {-1933.36, 5570.6, -12.427},
-    {-1938.83, 5548.67, -12.427}
+    {-1938.83, 5548.67, -12.427},
+    {-1922.58, 5565.43, -12.427},
+    {-1936.90, 5560.12, -12.427}
 };
 
 uint32 dummyparknpcs[DUMMY_PARK_NPCS][2] ={
@@ -2928,7 +2931,9 @@ uint32 dummyparknpcs[DUMMY_PARK_NPCS][2] ={
     {29437,66702},
     {29461,66703},
     {133929,66704},
-    {60062,66709}
+    {60062,66709},
+    {126618,66712},
+    {126714,66713}
 };
 
 bool GossipHello_npc_dummy_park(Player *player, Creature *creature)
@@ -3068,10 +3073,21 @@ struct npc_nearly_dead_combat_dummyAI : public Scripted_NoMovementAI
 
 CreatureAI* GetAI_npc_nearly_dead_combat_dummy(Creature *_Creature)
 {
-    return new npc_nearly_dead_combat_dummyAI (_Creature);
+    return new npc_nearly_dead_combat_dummyAI(_Creature);
 }
+struct npc_lunar_spotlightAI : public ScriptedAI
+{
+    npc_lunar_spotlightAI(Creature *c) : ScriptedAI(c)
+    {
+         me->AddAura(25824, me);
+         return;
+	}
+};
 
-
+CreatureAI* GetAI_npc_lunar_spotlight(Creature *_Creature)
+{
+    return new npc_lunar_spotlightAI(_Creature);
+}
 void AddSC_npcs_special()
 {
     Script *newscript;
@@ -3283,4 +3299,9 @@ void AddSC_npcs_special()
     newscript->Name="npc_nearly_dead_combat_dummy";
     newscript->GetAI = &GetAI_npc_nearly_dead_combat_dummy;
     newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name="npc_lunar_spotlight";
+	newscript->GetAI = &GetAI_npc_lunar_spotlight;
+	newscript->RegisterSelf();
 }
