@@ -2952,6 +2952,9 @@ void SpellMgr::LoadSpellCustomAttr()
             case 16614:
                 spellInfo->AttributesCu |= SPELL_ATTR_CU_NO_SPELL_DMG_COEFF; //Storm Gauntlets - temporary workaround for hell too big spell coef
                 break;
+            case 20532: // Intense Heat (Majordomo Executus lava pit)
+                spellInfo->AttributesEx2 |= SPELL_ATTR_EX2_CANT_CRIT;
+                // no break here
             /* NO SPELL DMG COEFF */
             // Enduring Light - T6 proc
             case 40471:
