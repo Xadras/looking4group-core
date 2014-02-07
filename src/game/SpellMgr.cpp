@@ -3326,7 +3326,6 @@ void SpellMgr::LoadSpellCustomAttr()
                 spellInfo->EffectRadiusIndex[0] = 8;
                 spellInfo->EffectRadiusIndex[1] = 8;
                 spellInfo->EffectMiscValue[1] = 50;
-
                 break;
             case 42835: // set visual only
                 spellInfo->Effect[0] = 0;
@@ -3338,6 +3337,7 @@ void SpellMgr::LoadSpellCustomAttr()
             case 46039:
                 spellInfo->AttributesEx2 |= SPELL_ATTR_EX2_IGNORE_LOS;
                 break;
+            case 21358: // Aqual Quintessence / Eternal Quintessence
             case 47977: // Broom Broom
             case 42679:
             case 42673:
