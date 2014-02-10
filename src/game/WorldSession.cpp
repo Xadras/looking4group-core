@@ -613,6 +613,9 @@ void WorldSession::LogoutPlayer(bool Save)
         ///- If the player is in a group (or invited), remove him. If the group if then only 1 person, disband the group.
         _player->UninviteFromGroup();
 
+       if (_player->GetGroup() && !_player->GetGroup()->isRaidGroup() && m_Socket)
+            _player->RemoveFromGroup();
+
         ///- Send update to group
         if (_player->GetGroup())
         {
@@ -632,8 +635,8 @@ void WorldSession::LogoutPlayer(bool Save)
         // the player may not be in the world when logging out
         // e.g if he got disconnected during a transfer to another map
         // calls to GetMap in this case may cause crashes
-        if (_player->IsInWorld())
-            _player->GetMap()->Remove(_player, false);
+        _player->GetMap()->Remove(_player, false);
+
 
         // RemoveFromWorld does cleanup that requires the player to be in the accessor
         sObjectAccessor.RemovePlayer(_player);

@@ -604,6 +604,8 @@ void Map::SendObjectUpdates()
     }
 }
 
+
+
 void Map::Remove(Player *player, bool remove)
 {
     // this may be called during Map::Update
@@ -620,12 +622,10 @@ void Map::Remove(Player *player, bool remove)
     {
         // invalid coordinates
         player->RemoveFromWorld();
-
         if (remove)
             DeleteFromWorld(player);
         else
             player->TeleportToHomebind();
-
         return;
     }
 
@@ -642,9 +642,10 @@ void Map::Remove(Player *player, bool remove)
     ASSERT(grid != NULL);
 
     player->DestroyForNearbyPlayers();
-
+    
     player->RemoveFromWorld();
-    //player->UpdateObjectVisibility();
+    player->UpdateObjectVisibility();
+    player->UpdateVisibilityAndView();
 
     RemoveFromGrid(player,grid,cell);
     SendRemoveTransports(player);
