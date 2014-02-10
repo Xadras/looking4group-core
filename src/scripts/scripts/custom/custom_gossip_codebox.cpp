@@ -31,7 +31,9 @@ bool GossipHello_custom_gossip_codebox(Player *Player, Creature *Creature) {
     return true;
 }
 
-bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint32 /*sender*/, uint32 action) {
+bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint32 /*sender*/, uint32 action)
+{
+    uint32 professions = 0;
     switch (action) {
         case GOSSIP_ACTION_INFO_DEF + 2:
             Player->ADD_GOSSIP_ITEM(0, "Weiter", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
@@ -134,6 +136,7 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
                     Player->ADD_GOSSIP_ITEM(0, "Heiler", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 24);
                     break;
                 case CLASS_MAGE:
+
                     Player->ADD_GOSSIP_ITEM(0, "Schadenverursacher", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 25);
                     break;
                 case CLASS_WARLOCK:
@@ -156,7 +159,7 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
             Player->EquipForPush(items);
             if (!Player->HasItemCount(28053, 200, true))
                 Player->AddItem(28053, 200);
-            Player->ADD_GOSSIP_ITEM(0, "Los gehts!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+            Player->ADD_GOSSIP_ITEM(0, "Weiter zu den Berufen", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
             Player->PlayerTalkClass->SendGossipMenu(30013, Creature->GetGUID());
             break;
         }
@@ -167,7 +170,7 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
             Player->EquipForPush(items);
             if (!Player->HasItemCount(28053, 200, true))
                 Player->AddItem(28053, 200);
-            Player->ADD_GOSSIP_ITEM(0, "Los gehts!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+            Player->ADD_GOSSIP_ITEM(0, "Weiter zu den Berufen", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
             Player->PlayerTalkClass->SendGossipMenu(30013, Creature->GetGUID());
             break;
         }
@@ -176,7 +179,7 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
             // PALADIN - DD - fertig
             uint16 items[] = {16727, 22340, 16729, 0, 16726, 16723, 16728, 16725, 16722, 16724, 18701, 13098, 7734, 22321, 13397, 12583, 0, 22401};
             Player->EquipForPush(items);
-            Player->ADD_GOSSIP_ITEM(0, "Los gehts!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+            Player->ADD_GOSSIP_ITEM(0, "Weiter zu den Berufen", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
             Player->PlayerTalkClass->SendGossipMenu(30013, Creature->GetGUID());
             break;
         }
@@ -185,7 +188,7 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
             // PALADIN - DD - Shockadin
             uint16 items[] = {29969, 25784, 30005, 0, 29789, 29807, 29980, 29786, 30402, 29812, 30339, 25926, 29776, 31617, 25780, 30394, 0, 30227};
             Player->EquipForPush(items);
-            Player->ADD_GOSSIP_ITEM(0, "Los gehts!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+            Player->ADD_GOSSIP_ITEM(0, "Weiter zu den Berufen", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
             Player->PlayerTalkClass->SendGossipMenu(30013, Creature->GetGUID());
             break;
         }
@@ -194,7 +197,7 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
             // PALADIN - TANK -ü
             uint16 items[] = {23276,21792,18384,0,15413,14620,14623,14621,21996, 23274,22680, 11669,12930,13515,19888,18396,22336,22401};
             Player->EquipForPush(items);
-            Player->ADD_GOSSIP_ITEM(0, "Los gehts!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+            Player->ADD_GOSSIP_ITEM(0, "Weiter zu den Berufen", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
             Player->PlayerTalkClass->SendGossipMenu(30013, Creature->GetGUID());
             break;
         }
@@ -203,7 +206,7 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
             // PALADIN - HEILER -ü
             uint16 items[] = {12633,18723,14548,0,15047,18702,20266,20711,13969,18527,13178, 16058,18472,12930,18389,22380,22336,23201};
             Player->EquipForPush(items);
-            Player->ADD_GOSSIP_ITEM(0, "Los gehts!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+            Player->ADD_GOSSIP_ITEM(0, "Weiter zu den Berufen", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
             Player->PlayerTalkClass->SendGossipMenu(30013, Creature->GetGUID());
             break;
         }
@@ -212,7 +215,7 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
             // HUNTER - fertig
             uint16 items[] = {16677, 22340, 16679, 0, 16674, 16680, 16678, 16675, 16681, 16676, 18701, 13098, 7734, 18537, 13397, 13368, 13368, 18680};
             Player->EquipForPush(items);
-            Player->ADD_GOSSIP_ITEM(0, "Los gehts!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+            Player->ADD_GOSSIP_ITEM(0, "Weiter zu den Berufen", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
             Player->PlayerTalkClass->SendGossipMenu(30013, Creature->GetGUID());
             break;
         }
@@ -221,7 +224,7 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
             // ROGUE - fertig
             uint16 items[] = {16707, 22340, 16708, 0, 16721, 16713, 16709, 16711, 16710, 16712, 18701, 13098, 7734, 22321, 13397, 22404, 13368, 28972};
             Player->EquipForPush(items);
-            Player->ADD_GOSSIP_ITEM(0, "Los gehts!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+            Player->ADD_GOSSIP_ITEM(0, "Weiter zu den Berufen", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
             Player->PlayerTalkClass->SendGossipMenu(30013, Creature->GetGUID());
             break;
         }
@@ -230,7 +233,7 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
             // PRIEST - DD - fertig
             uint16 items[] = {16693, 22403, 16695, 0, 16690, 16696, 16694, 16691, 16697, 16692, 22433, 13345, 7734, 12930, 12968, 22335, 0, 13938};
             Player->EquipForPush(items);
-            Player->ADD_GOSSIP_ITEM(0, "Los gehts!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+            Player->ADD_GOSSIP_ITEM(0, "Weiter zu den Berufen", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
             Player->PlayerTalkClass->SendGossipMenu(30013, Creature->GetGUID());
             break;
         }
@@ -239,7 +242,7 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
             // PRIEST - HEILER -ü
             uint16 items[] = {13102,18723,22405,0,13346,18327,18386,12556,18497,12554,22334, 18395,18469,12930,18389,22380,18523,21801};
             Player->EquipForPush(items);
-            Player->ADD_GOSSIP_ITEM(0, "Los gehts!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+            Player->ADD_GOSSIP_ITEM(0, "Weiter zu den Berufen", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
             Player->PlayerTalkClass->SendGossipMenu(30013, Creature->GetGUID());
             break;
         }
@@ -249,7 +252,7 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
             uint16 items[] = {16667, 22340, 16669, 0, 16666, 16673, 16668, 16670, 16671, 16672, 18701, 13098, 7734, 22321, 13397, 22404, 0, 22395};
             Player->EquipForPush(items);
             Player->AddItem(14487, 1);
-            Player->ADD_GOSSIP_ITEM(0, "Los gehts!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+            Player->ADD_GOSSIP_ITEM(0, "Weiter zu den Berufen", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
             Player->PlayerTalkClass->SendGossipMenu(30013, Creature->GetGUID());
             break;
         }
@@ -258,7 +261,7 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
             // SHAMANE - ELEMENTAR -fertig
             uint16 items[] = {16667, 22403, 16669, 0, 16666, 16673, 16668, 16670, 16671, 16672, 22433, 13345, 7734, 12930, 12968, 22335, 0, 22395};
             Player->EquipForPush(items);
-            Player->ADD_GOSSIP_ITEM(0, "Los gehts!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+            Player->ADD_GOSSIP_ITEM(0, "Weiter zu den Berufen", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
             Player->PlayerTalkClass->SendGossipMenu(30013, Creature->GetGUID());
             break;
         }
@@ -267,7 +270,7 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
             // SHAMANE - HEILER -ü
             uint16 items[] = {18807,18723,14548,0,15047,18721,14522,18318,13969, 18527,13178, 22334,12930,18471,18389,22380,22336,23200};
             Player->EquipForPush(items);
-            Player->ADD_GOSSIP_ITEM(0, "Los gehts!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+            Player->ADD_GOSSIP_ITEM(0, "Weiter zu den Berufen", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
             Player->PlayerTalkClass->SendGossipMenu(30013, Creature->GetGUID());
             break;
         }
@@ -276,7 +279,7 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
             // MAGE -fertig
             uint16 items[] = {16686, 22403, 16689, 0, 16688, 16685, 16687, 16682, 16683, 16684, 22433, 13345, 7734, 12930, 12968, 22335, 0, 13938};
             Player->EquipForPush(items);
-            Player->ADD_GOSSIP_ITEM(0, "Los gehts!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+            Player->ADD_GOSSIP_ITEM(0, "Weiter zu den Berufen", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
             Player->PlayerTalkClass->SendGossipMenu(30013, Creature->GetGUID());
             break;
         }
@@ -285,7 +288,7 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
             // WARLOCK -fertig
             uint16 items[] = {16698, 22403, 16701, 0, 16700, 16702, 16699, 16704, 16703, 16705, 22433, 13345, 7734, 12930, 12968, 22335, 0, 13938};
             Player->EquipForPush(items);
-            Player->ADD_GOSSIP_ITEM(0, "Los gehts!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+            Player->ADD_GOSSIP_ITEM(0, "Weiter zu den Berufen", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
             Player->PlayerTalkClass->SendGossipMenu(30013, Creature->GetGUID());
             break;
         }
@@ -294,7 +297,7 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
             // DRUID - KATZE -fertig
             uint16 items[] = {16720, 22340, 16718, 0, 16706, 16716, 16719, 16715, 16714, 16717, 18701, 13098, 7734, 22321, 13397, 13372, 0, 22397};
             Player->EquipForPush(items);
-            Player->ADD_GOSSIP_ITEM(0, "Los gehts!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+            Player->ADD_GOSSIP_ITEM(0, "Weiter zu den Berufen", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
             Player->PlayerTalkClass->SendGossipMenu(30013, Creature->GetGUID());
             break;
         }
@@ -303,7 +306,7 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
             // DRUID - EULE -ü
             uint16 items[] = {16720, 22403, 16718, 0, 16706, 16716, 16719, 16715, 16714, 16717, 22433, 13345, 7734, 12930, 12968, 22335, 0, 22398};
             Player->EquipForPush(items);
-            Player->ADD_GOSSIP_ITEM(0, "Los gehts!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+            Player->ADD_GOSSIP_ITEM(0, "Weiter zu den Berufen", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
             Player->PlayerTalkClass->SendGossipMenu(30013, Creature->GetGUID());
             break;
         }
@@ -312,7 +315,7 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
             // DRUID - BAUM -ü
             uint16 items[] = {17740,18723,15061,0,22272,18391,18682,22275,13208,12547,22334, 18395,18470,12930,18389,22380,18523,22398};
             Player->EquipForPush(items);
-            Player->ADD_GOSSIP_ITEM(0, "Los gehts!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+            Player->ADD_GOSSIP_ITEM(0, "Weiter zu den Berufen", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
             Player->PlayerTalkClass->SendGossipMenu(30013, Creature->GetGUID());
             break;
         }
@@ -321,8 +324,454 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
             // DRUID - BÄR -ü
             uint16 items[] = {14539,13091,15058,0,15056,20261,15057,19052,18700,18377,22680, 11669,21784,11810,19888,20556,0,23198};
             Player->EquipForPush(items);
-            Player->ADD_GOSSIP_ITEM(0, "Los gehts!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+            Player->ADD_GOSSIP_ITEM(0, "Weiter zu den Berufen", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
             Player->PlayerTalkClass->SendGossipMenu(30013, Creature->GetGUID());
+            break;
+        }
+        case GOSSIP_ACTION_INFO_DEF + 31:
+        {
+            professions = 0;
+            QueryResultAutoPtr result = RealmDataDatabase.PQuery("SELECT guid FROM characters WHERE account in (SELECT account FROM characters WHERE guid = '%u')", GUID_LOPART(Player->GetGUID()));
+            Field *fields = NULL;
+            uint32 maxchars = 0;
+
+            do
+            {
+                fields = result->Fetch();
+                QueryResultAutoPtr level = RealmDataDatabase.PQuery("SELECT level FROM characters WHERE guid = %u", fields->GetUInt32());
+                if (level->Fetch()->GetUInt32() >= 60)
+                    maxchars++;
+            } while (result->NextRow());
+            if (maxchars >= 2)
+            {
+                Player->ADD_GOSSIP_ITEM(0, "Weiter zum ausbilden :)", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+                Player->PlayerTalkClass->SendGossipMenu(30017, Creature->GetGUID());
+                break;
+            }
+                
+            if (Player->HasSkill(SKILL_ALCHEMY))
+                professions++;
+            if (Player->HasSkill(SKILL_BLACKSMITHING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENCHANTING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENGINERING))
+                professions++;
+            if (Player->HasSkill(SKILL_HERBALISM))
+                professions++;
+            if (Player->HasSkill(SKILL_JEWELCRAFTING))
+                professions++;
+            if (Player->HasSkill(SKILL_LEATHERWORKING))
+                professions++;
+            if (Player->HasSkill(SKILL_MINING))
+                professions++;
+            if (Player->HasSkill(SKILL_SKINNING))
+                professions++;
+            if (Player->HasSkill(SKILL_TAILORING))
+                professions++;
+            if (professions >= 2)
+            {
+                Player->ADD_GOSSIP_ITEM(0, "Weiter zum ausbilden!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+                Player->PlayerTalkClass->SendGossipMenu(30017, Creature->GetGUID());
+            }
+            else
+            {
+                Player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TRAINER, "Alchemie", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 401);
+                Player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TRAINER, "Bergbauer", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 402);
+                Player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TRAINER, "Ingenieurskunst", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 403);
+                Player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TRAINER, "Juwelenschleifen", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 404);
+                Player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TRAINER, "Kraeutersuche", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 405);
+                Player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TRAINER, "Kuerschnerei", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 406);
+                Player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TRAINER, "Lederverarbeitung", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 407);
+                Player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TRAINER, "Schmiedekunst", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 408);
+                Player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TRAINER, "Schneiderei", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 409);
+                Player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TRAINER, "Verzauberungskunst", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 410);
+                Player->ADD_GOSSIP_ITEM(0, "Ich will keinen Beruf", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+                Player->PlayerTalkClass->SendGossipMenu(30016, Creature->GetGUID());
+            }
+            break;
+        }
+        case GOSSIP_ACTION_INFO_DEF + 401: //Alchi
+        {
+            professions = 0;
+            if (Player->HasSkill(SKILL_ALCHEMY))
+                professions++;
+            if (Player->HasSkill(SKILL_BLACKSMITHING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENCHANTING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENGINERING))
+                professions++;
+            if (Player->HasSkill(SKILL_HERBALISM))
+                professions++;
+            if (Player->HasSkill(SKILL_JEWELCRAFTING))
+                professions++;
+            if (Player->HasSkill(SKILL_LEATHERWORKING))
+                professions++;
+            if (Player->HasSkill(SKILL_MINING))
+                professions++;
+            if (Player->HasSkill(SKILL_SKINNING))
+                professions++;
+            if (Player->HasSkill(SKILL_TAILORING))
+                professions++;
+            if (professions >= 2)
+            {
+                Player->ADD_GOSSIP_ITEM(0, "Weiter zum ausbilden!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+                Player->PlayerTalkClass->SendGossipMenu(30017, Creature->GetGUID());
+            }
+            else
+            {
+                Player->learnSpell(11611);
+                Player->SetSkill(171,300,300);
+                Player->AddItem(9149, 1);
+                Player->AddItem(8925, 20);
+                Player->AddItem(18256, 20);
+                Player->ADD_GOSSIP_ITEM(0, "Weiter", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
+                Player->PlayerTalkClass->SendGossipMenu(30019, Creature->GetGUID());
+            }
+            break;
+        }
+        case GOSSIP_ACTION_INFO_DEF + 402: //Bergbau
+        {
+            professions = 0;
+            if (Player->HasSkill(SKILL_ALCHEMY))
+                professions++;
+            if (Player->HasSkill(SKILL_BLACKSMITHING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENCHANTING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENGINERING))
+                professions++;
+            if (Player->HasSkill(SKILL_HERBALISM))
+                professions++;
+            if (Player->HasSkill(SKILL_JEWELCRAFTING))
+                professions++;
+            if (Player->HasSkill(SKILL_LEATHERWORKING))
+                professions++;
+            if (Player->HasSkill(SKILL_MINING))
+                professions++;
+            if (Player->HasSkill(SKILL_SKINNING))
+                professions++;
+            if (Player->HasSkill(SKILL_TAILORING))
+                professions++;
+            if (professions >= 2)
+            {
+                Player->ADD_GOSSIP_ITEM(0, "Weiter zum ausbilden!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+                Player->PlayerTalkClass->SendGossipMenu(30017, Creature->GetGUID());
+            }
+            else
+            {
+                Player->learnSpell(10248);
+                Player->SetSkill(186,300,300);
+                Player->AddItem(2901, 1);
+                Player->ADD_GOSSIP_ITEM(0, "Weiter", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
+                Player->PlayerTalkClass->SendGossipMenu(30019, Creature->GetGUID());
+            }
+            break;
+        }
+        case GOSSIP_ACTION_INFO_DEF + 403: //Ingi
+        {
+            professions = 0;
+            if (Player->HasSkill(SKILL_ALCHEMY))
+                professions++;
+            if (Player->HasSkill(SKILL_BLACKSMITHING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENCHANTING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENGINERING))
+                professions++;
+            if (Player->HasSkill(SKILL_HERBALISM))
+                professions++;
+            if (Player->HasSkill(SKILL_JEWELCRAFTING))
+                professions++;
+            if (Player->HasSkill(SKILL_LEATHERWORKING))
+                professions++;
+            if (Player->HasSkill(SKILL_MINING))
+                professions++;
+            if (Player->HasSkill(SKILL_SKINNING))
+                professions++;
+            if (Player->HasSkill(SKILL_TAILORING))
+                professions++;
+            if (professions >= 2)
+            {
+                Player->ADD_GOSSIP_ITEM(0, "Weiter zum ausbilden!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+                Player->PlayerTalkClass->SendGossipMenu(30017, Creature->GetGUID());
+            }
+            else
+            {
+                Player->learnSpell(12656);
+                Player->SetSkill(202,300,300);
+                Player->AddItem(6219, 1);
+                Player->AddItem(10498, 1);
+                professions++;
+                Player->ADD_GOSSIP_ITEM(0, "Weiter", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
+                Player->PlayerTalkClass->SendGossipMenu(30019, Creature->GetGUID());
+            }
+            break;
+        }
+        case GOSSIP_ACTION_INFO_DEF + 404: //Juwe
+        {
+            professions = 0;
+            if (Player->HasSkill(SKILL_ALCHEMY))
+                professions++;
+            if (Player->HasSkill(SKILL_BLACKSMITHING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENCHANTING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENGINERING))
+                professions++;
+            if (Player->HasSkill(SKILL_HERBALISM))
+                professions++;
+            if (Player->HasSkill(SKILL_JEWELCRAFTING))
+                professions++;
+            if (Player->HasSkill(SKILL_LEATHERWORKING))
+                professions++;
+            if (Player->HasSkill(SKILL_MINING))
+                professions++;
+            if (Player->HasSkill(SKILL_SKINNING))
+                professions++;
+            if (Player->HasSkill(SKILL_TAILORING))
+                professions++;
+            if (professions >= 2)
+            {
+                Player->ADD_GOSSIP_ITEM(0, "Weiter zum ausbilden!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+                Player->PlayerTalkClass->SendGossipMenu(30017, Creature->GetGUID());
+            }
+            else
+            {
+                Player->learnSpell(28895);
+                Player->SetSkill(755,300,300);
+                Player->AddItem(20815, 1);
+                Player->AddItem(20824, 1);
+                Player->ADD_GOSSIP_ITEM(0, "Weiter", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
+                Player->PlayerTalkClass->SendGossipMenu(30019, Creature->GetGUID());
+            }
+            break;
+        }
+        case GOSSIP_ACTION_INFO_DEF + 405: //Kräuter
+        {
+            professions = 0;
+            if (Player->HasSkill(SKILL_ALCHEMY))
+                professions++;
+            if (Player->HasSkill(SKILL_BLACKSMITHING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENCHANTING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENGINERING))
+                professions++;
+            if (Player->HasSkill(SKILL_HERBALISM))
+                professions++;
+            if (Player->HasSkill(SKILL_JEWELCRAFTING))
+                professions++;
+            if (Player->HasSkill(SKILL_LEATHERWORKING))
+                professions++;
+            if (Player->HasSkill(SKILL_MINING))
+                professions++;
+            if (Player->HasSkill(SKILL_SKINNING))
+                professions++;
+            if (Player->HasSkill(SKILL_TAILORING))
+                professions++;
+            if (professions >= 2)
+            {
+                Player->ADD_GOSSIP_ITEM(0, "Weiter zum ausbilden!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+                Player->PlayerTalkClass->SendGossipMenu(30017, Creature->GetGUID());
+            }
+            else
+            {
+                Player->learnSpell(11993);
+                Player->SetSkill(182,300,300);
+                Player->ADD_GOSSIP_ITEM(0, "Weiter", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
+                Player->PlayerTalkClass->SendGossipMenu(30019, Creature->GetGUID());
+            }
+            break;
+        }
+        case GOSSIP_ACTION_INFO_DEF + 406: //Kürschner
+        {
+            professions = 0;
+            if (Player->HasSkill(SKILL_ALCHEMY))
+                professions++;
+            if (Player->HasSkill(SKILL_BLACKSMITHING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENCHANTING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENGINERING))
+                professions++;
+            if (Player->HasSkill(SKILL_HERBALISM))
+                professions++;
+            if (Player->HasSkill(SKILL_JEWELCRAFTING))
+                professions++;
+            if (Player->HasSkill(SKILL_LEATHERWORKING))
+                professions++;
+            if (Player->HasSkill(SKILL_MINING))
+                professions++;
+            if (Player->HasSkill(SKILL_SKINNING))
+                professions++;
+            if (Player->HasSkill(SKILL_TAILORING))
+                professions++;
+            if (professions >= 2)
+            {
+                Player->ADD_GOSSIP_ITEM(0, "Weiter zum ausbilden!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+                Player->PlayerTalkClass->SendGossipMenu(30017, Creature->GetGUID());
+            }
+            else
+            {
+                Player->learnSpell(10768);
+                Player->SetSkill(393,300,300);
+                Player->AddItem(7005, 1);
+                Player->ADD_GOSSIP_ITEM(0, "Weiter", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
+                Player->PlayerTalkClass->SendGossipMenu(30019, Creature->GetGUID());
+            }
+            break;
+        }
+        case GOSSIP_ACTION_INFO_DEF + 407: //Leder
+        {
+            professions = 0;
+            if (Player->HasSkill(SKILL_ALCHEMY))
+                professions++;
+            if (Player->HasSkill(SKILL_BLACKSMITHING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENCHANTING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENGINERING))
+                professions++;
+            if (Player->HasSkill(SKILL_HERBALISM))
+                professions++;
+            if (Player->HasSkill(SKILL_JEWELCRAFTING))
+                professions++;
+            if (Player->HasSkill(SKILL_LEATHERWORKING))
+                professions++;
+            if (Player->HasSkill(SKILL_MINING))
+                professions++;
+            if (Player->HasSkill(SKILL_SKINNING))
+                professions++;
+            if (Player->HasSkill(SKILL_TAILORING))
+                professions++;
+            if (professions >= 2)
+            {
+                Player->ADD_GOSSIP_ITEM(0, "Weiter zum ausbilden!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+                Player->PlayerTalkClass->SendGossipMenu(30017, Creature->GetGUID());
+            }
+            else
+            {
+                Player->learnSpell(10662);
+                Player->SetSkill(165,300,300);
+                Player->ADD_GOSSIP_ITEM(0, "Weiter", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
+                Player->PlayerTalkClass->SendGossipMenu(30019, Creature->GetGUID());
+            }
+            break;
+        }
+        case GOSSIP_ACTION_INFO_DEF + 408: //Schmied
+        {
+            professions = 0;
+            if (Player->HasSkill(SKILL_ALCHEMY))
+                professions++;
+            if (Player->HasSkill(SKILL_BLACKSMITHING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENCHANTING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENGINERING))
+                professions++;
+            if (Player->HasSkill(SKILL_HERBALISM))
+                professions++;
+            if (Player->HasSkill(SKILL_JEWELCRAFTING))
+                professions++;
+            if (Player->HasSkill(SKILL_LEATHERWORKING))
+                professions++;
+            if (Player->HasSkill(SKILL_MINING))
+                professions++;
+            if (Player->HasSkill(SKILL_SKINNING))
+                professions++;
+            if (Player->HasSkill(SKILL_TAILORING))
+                professions++;
+            if (professions >= 2)
+            {
+                Player->ADD_GOSSIP_ITEM(0, "Weiter zum ausbilden!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+                Player->PlayerTalkClass->SendGossipMenu(30017, Creature->GetGUID());
+            }
+            else
+            {
+                Player->learnSpell(9785);
+                Player->SetSkill(164,300,300);
+                Player->AddItem(5956, 1);
+                Player->ADD_GOSSIP_ITEM(0, "Weiter", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
+                Player->PlayerTalkClass->SendGossipMenu(30019, Creature->GetGUID());
+            }
+            break;
+        }
+        case GOSSIP_ACTION_INFO_DEF + 409: //Schneider
+        {
+            professions = 0;
+            if (Player->HasSkill(SKILL_ALCHEMY))
+                professions++;
+            if (Player->HasSkill(SKILL_BLACKSMITHING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENCHANTING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENGINERING))
+                professions++;
+            if (Player->HasSkill(SKILL_HERBALISM))
+                professions++;
+            if (Player->HasSkill(SKILL_JEWELCRAFTING))
+                professions++;
+            if (Player->HasSkill(SKILL_LEATHERWORKING))
+                professions++;
+            if (Player->HasSkill(SKILL_MINING))
+                professions++;
+            if (Player->HasSkill(SKILL_SKINNING))
+                professions++;
+            if (Player->HasSkill(SKILL_TAILORING))
+                professions++;
+            if (professions >= 2)
+            {
+                Player->ADD_GOSSIP_ITEM(0, "Weiter zum ausbilden!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+                Player->PlayerTalkClass->SendGossipMenu(30017, Creature->GetGUID());
+            }
+            else
+            {
+                Player->learnSpell(12180);
+                Player->SetSkill(197,300,300);
+                Player->AddItem(14314, 20);
+                Player->ADD_GOSSIP_ITEM(0, "Weiter", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
+                Player->PlayerTalkClass->SendGossipMenu(30019, Creature->GetGUID());
+            }
+            break;
+        }
+        case GOSSIP_ACTION_INFO_DEF + 410: //VZ
+        {
+            professions = 0;
+            if (Player->HasSkill(SKILL_ALCHEMY))
+                professions++;
+            if (Player->HasSkill(SKILL_BLACKSMITHING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENCHANTING))
+                professions++;
+            if (Player->HasSkill(SKILL_ENGINERING))
+                professions++;
+            if (Player->HasSkill(SKILL_HERBALISM))
+                professions++;
+            if (Player->HasSkill(SKILL_JEWELCRAFTING))
+                professions++;
+            if (Player->HasSkill(SKILL_LEATHERWORKING))
+                professions++;
+            if (Player->HasSkill(SKILL_MINING))
+                professions++;
+            if (Player->HasSkill(SKILL_SKINNING))
+                professions++;
+            if (Player->HasSkill(SKILL_TAILORING))
+                professions++;
+            if (professions >= 2)
+            {
+                Player->ADD_GOSSIP_ITEM(0, "Weiter zum ausbilden!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 40);
+                Player->PlayerTalkClass->SendGossipMenu(30017, Creature->GetGUID());
+            }
+            else
+            {
+                Player->learnSpell(13920);
+                Player->SetSkill(333,300,300);
+                Player->AddItem(22461, 1);
+                Player->ADD_GOSSIP_ITEM(0, "Weiter", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
+                Player->PlayerTalkClass->SendGossipMenu(30019, Creature->GetGUID());
+            }
             break;
         }
         case GOSSIP_ACTION_INFO_DEF + 40:
