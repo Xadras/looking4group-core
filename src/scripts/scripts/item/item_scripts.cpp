@@ -520,22 +520,20 @@ bool ItemUse_item_reset_talents(Player *player, Item* _Item, SpellCastTargets co
         }
         else
         {
-            if (MapEntry const* mapEntry = sMapStore.LookupEntry(player->GetMapId()))
-                if (mapEntry->IsBattleArena())
-                {
-                    WorldPacket data(SMSG_CAST_FAILED, (4+2));              // prepare packet error message
-                    data << uint32(_Item->GetEntry());                      // itemId
-                    data << uint8(SPELL_FAILED_NOT_IN_ARENA);               // reason
-                    player->GetSession()->SendPacket(&data);                // send message: Invalid target
-                }
-                else
-                {
-                    player->resetTalents(true);
-                    player->DestroyItemCount(1000022, 1, true, false);
-                    ChatHandler(player).SendSysMessage("Your talents have been reset.");
-                    ChatHandler(player).SendSysMessage("Deine Talente wurden zurueckgesetzt.");
-                    return true;
-                }
+            if (player->GetMap()->IsBattleGroundOrArena())
+            {
+                WorldPacket data(SMSG_CAST_FAILED, (4+2));              // prepare packet error message
+                data << uint32(_Item->GetEntry());                      // itemId
+                data << uint8(SPELL_FAILED_NOT_IN_ARENA);               // reason
+                player->GetSession()->SendPacket(&data);                // send message: Invalid target
+            }
+            else
+            {
+                player->resetTalents(true);
+                player->DestroyItemCount(1000022, 1, true, false);
+                player->Say("Deine Talente wurden zurückgesetzt", LANG_UNIVERSAL);
+                return true;
+            }
         }
     }
     else
