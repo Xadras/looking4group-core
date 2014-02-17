@@ -2125,9 +2125,14 @@ void InstanceMap::InitVisibilityDistance()
 bool InstanceMap::EncounterInProgress(Player *player)
 {
     bool inProgress = GetInstanceData() && GetInstanceData()->IsEncounterInProgress();
+    bool CanEnterDuringEvent = false;
+    //Mapid 560 is instance_old_hillsbrad           Skarloc                                       Epoch_hunter                                    Leutenant_drake
+    if (GetId() == 560 && !(GetInstanceData()->GetData(10) == IN_PROGRESS || GetInstanceData()->GetData(12) == IN_PROGRESS || GetInstanceData()->GetData(11) == IN_PROGRESS))
+        CanEnterDuringEvent = true;
+
     if (player && inProgress)
     {
-        if (player->isGameMaster())
+        if (player->isGameMaster() || CanEnterDuringEvent)
             return false;
 
         sLog.outDebug("InstanceMap: Player '%s' can't enter instance '%s' while an encounter is in progress.", player->GetName(),GetMapName());

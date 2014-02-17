@@ -137,6 +137,7 @@ struct boss_lieutenant_drakeAI : public ScriptedAI
 
     void EnterCombat(Unit *who)
     {
+        pInstance->SetData(DATA_DRAKE_DEATH, IN_PROGRESS);
         DoScriptText(SAY_AGGRO, me);
         CanPatrol = false;
         me->SetWalk(false);

@@ -100,6 +100,7 @@ struct boss_epoch_hunterAI : public ScriptedAI
 
     void EnterCombat(Unit *who)
     {
+        pInstance->SetData(DATA_EPOCH_DEATH, IN_PROGRESS);
         DoScriptText(RAND(SAY_AGGRO1, SAY_AGGRO2), me);
     }
 
