@@ -472,7 +472,7 @@ class LOOKING4GROUP_IMPORT_EXPORT Creature : public Unit
         bool isTrigger() const { return GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_TRIGGER; }
 
         bool CanWalk() const { return GetCreatureInfo()->InhabitType & INHABIT_GROUND; }
-        bool CanSwim() const { return GetCreatureInfo()->InhabitType & INHABIT_WATER; }
+        bool CanSwim() const { return GetCreatureInfo()->InhabitType & INHABIT_WATER || isPet() ; }
         bool CanFly()  const;
 
         void SetWalk(bool enable);
