@@ -2373,6 +2373,9 @@ void SpellMgr::LoadSpellChains()
     mSpellChains[spell_id].last = 25898;
     mSpellChains[spell_id].rank = 1;
 
+    // Gebet der Willenskraft - Name in english?
+
+
     // Greater Blessing of Kings
     spell_id = 25898;
     mSpellChains[spell_id].prev = 20217;
@@ -2406,6 +2409,32 @@ void SpellMgr::LoadSpellChains()
     mSpellChains[20913].last = spell_id;
     mSpellChains[20914].last = spell_id;
     mSpellChains[27168].last = spell_id;
+
+    // Gebet der Willenskraft I
+    spell_id = 27681;
+    mSpellChains[spell_id].prev = 25312;    // GW V
+    mSpellChains[spell_id].next = 32999;    // GdW II
+    mSpellChains[spell_id].first = 14752;   // GW I
+    mSpellChains[spell_id].last = 32999;    // GdW II
+    mSpellChains[spell_id].rank = 6;
+
+    // linkGW V with GdW I
+    mSpellChains[25312].next = spell_id;
+
+    // Gebet der Willenskraft II
+    spell_id = 32999;
+    mSpellChains[spell_id].prev = 27681;    // GdW I
+    mSpellChains[spell_id].next = 0;        // none
+    mSpellChains[spell_id].first = 14752;   // GW I
+    mSpellChains[spell_id].last = 32999;    // GdW II
+    mSpellChains[spell_id].rank = 7;
+
+    // set GdW II as last for all GW ranks
+    mSpellChains[14752].last = spell_id;
+    mSpellChains[14818].last = spell_id;
+    mSpellChains[14819].last = spell_id;
+    mSpellChains[27841].last = spell_id;
+    mSpellChains[25312].last = spell_id;
 
 //uncomment these two lines to print yourself list of spell_chains on startup
 //    for (UNORDERED_MAP<uint32, SpellChainNode>::iterator itr=mSpellChains.begin();itr!=mSpellChains.end();itr++)
