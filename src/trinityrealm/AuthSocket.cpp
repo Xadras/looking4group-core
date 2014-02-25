@@ -411,7 +411,8 @@ bool AuthSocket::_HandleLogonChallenge()
     // No SQL injection possible (paste the IP address as passed by the socket)
     AccountsDatabase.Execute("DELETE FROM ip_banned WHERE unbandate<=UNIX_TIMESTAMP() AND unbandate<>bandate");
     AccountsDatabase.escape_string(address);
-	AccountsDatabase.Execute("DELETE FROM account_permissions WHERE unsetdate<=UNIX_TIMESTAMP() AND unsetdate<>setdate");
+    //Delete ViP
+	AccountsDatabase.Execute("UPDATE account_permissions SET permission_mask = 1 WHERE unsetdate<=UNIX_TIMESTAMP() AND unsetdate<>setdate");
     QueryResultAutoPtr result = AccountsDatabase.PQuery("SELECT * FROM ip_banned WHERE ip = '%s'", address.c_str());
 
     if (result) // ip banned
