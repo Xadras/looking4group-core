@@ -1,7 +1,7 @@
 /*
- * Copyright (C) 2005-2008 MaNGOS <http://getmangos.com/>
- * Copyright (C) 2008 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2008-2014 Looking4Group <http://looking4group.de/>
+ * Copyright (C) 2005-2008 MaNGOS <http://www.mangosproject.org/>
+ *
+ * Copyright (C) 2008 Trinity <http://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@
 #include "Player.h"
 #include "BattleGround.h"
 #include "BattleGroundWS.h"
-#include "BattleGroundMgr.h"
 #include "Creature.h"
 #include "GameObject.h"
 #include "Chat.h"
@@ -67,35 +66,6 @@ BattleGroundWS::~BattleGroundWS()
 void BattleGroundWS::Update(uint32 diff)
 {
     BattleGround::Update(diff);
-
-    if (sBattleGroundMgr.IsWSGEndAfterEnabled())
-    {
-        if (m_TimeElapsedSinceBeggining > sBattleGroundMgr.GetWSGEndAfterTime() && GetStatus() == STATUS_IN_PROGRESS)
-        {
-            if (!sBattleGroundMgr.IsWSGEndAfterAlwaysDraw())
-            {
-                if(GetTeamScore(HORDE) > GetTeamScore(ALLIANCE))
-                {
-                    EndBattleGround(HORDE);
-                    return;
-                }
-                else if (GetTeamScore(HORDE) < GetTeamScore(ALLIANCE))
-                {
-                    EndBattleGround(ALLIANCE);
-                    return;
-                }
-            }
-
-            EndBattleGround(0);
-            return;
-        }
-
-        if(m_TimeElapsedSinceBeggining> sBattleGroundMgr.GetWSGEndAfterTime()/2 &&
-            m_TimeElapsedSinceBeggining/180000 > (m_TimeElapsedSinceBeggining - diff)/180000) //warning every 3 mins
-            PrepareMessageToAll("This battleground will end in %u min.",
-            sBattleGroundMgr.GetWSGEndAfterTime() - m_TimeElapsedSinceBeggining /60000);
-
-    }
 
     // after bg start we get there (once)
     if (GetStatus() == STATUS_WAIT_JOIN && GetPlayersSize())
@@ -142,7 +112,6 @@ void BattleGroundWS::Update(uint32 diff)
         else if (GetStartDelayTime() < 0 && !(m_Events & 0x10))
         {
             m_Events |= 0x10;
-            
             for (uint32 i = BG_WS_OBJECT_DOOR_A_1; i <= BG_WS_OBJECT_DOOR_A_4; i++)
                 DoorOpen(i);
             for (uint32 i = BG_WS_OBJECT_DOOR_H_1; i <= BG_WS_OBJECT_DOOR_H_2; i++)
