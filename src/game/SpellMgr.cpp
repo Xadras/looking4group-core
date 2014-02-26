@@ -3140,6 +3140,13 @@ void SpellMgr::LoadSpellCustomAttr()
             case 24178: // Will of Hakkar
                 spellInfo->AttributesEx |= SPELL_ATTR_EX_CHANNELED_1;
                 break;
+            case 28282: // Ashbringer
+                spellInfo->Effect[2] = SPELL_EFFECT_APPLY_AURA;
+                spellInfo->EffectImplicitTargetA[2] = TARGET_UNIT_CASTER;
+                spellInfo->EffectApplyAuraName[2] = SPELL_AURA_FORCE_REACTION;
+                spellInfo->EffectMiscValue[2] = 56; // Scarlet Crusade
+                spellInfo->EffectBasePoints[2] = 4; // Friendly
+                break;
             // Leggins of BeastMastery
             case 38297:
                 spellInfo->Effect[0] = 0;
