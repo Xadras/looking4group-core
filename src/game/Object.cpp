@@ -1782,8 +1782,12 @@ void WorldObject::UpdateObjectVisibility(bool /*forced*/)
     //updates object's visibility for nearby players
     Looking4group::VisibleChangesNotifier notifier(*this);
     float radius = World::GetVisibleObjectGreyDistance();
-    if(Map* map = GetMap())
+
+    if ( Corpse* corpse = ToCorpse() )
+        radius = MAX_VISIBILITY_DISTANCE;
+    else if ( Map* map = GetMap() )
         radius += map->GetVisibilityDistance();
+
     Cell::VisitWorldObjects(this, notifier, radius);
 }
 
