@@ -378,6 +378,7 @@ enum SunbladeProtector
 
 #define PROTECTOR_YELL "Unit entering energy conservation mode."
 #define PROTECTOR_AGGRO "Enemy presence detected."
+#define PROTECTOR_AGGRO_2 "Local proximity threat detected. Exiting energy conservation mode."
 #define PROTECTOR_ACTIVATED "Unit is now operational and attacking targets."
 
 struct mob_sunblade_protectorAI : public ScriptedAI
@@ -408,7 +409,7 @@ struct mob_sunblade_protectorAI : public ScriptedAI
     void EnterEvadeMode()
     {
         if(isInactive)
-            DoYell(PROTECTOR_YELL, 0, me);
+            DoYell((urand(0,1) ? PROTECTOR_AGGRO : PROTECTOR_AGGRO_2), 0, me);
         CreatureAI::EnterEvadeMode();
     }
 
