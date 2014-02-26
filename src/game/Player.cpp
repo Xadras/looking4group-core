@@ -18804,7 +18804,7 @@ void Player::SendInitialVisiblePackets(Unit* target)
     if (target->isAlive())
     {
         if (target->hasUnitState(UNIT_STAT_MELEE_ATTACKING) && target->getVictim())
-            target->SendMeleeAttackStart(target->getVictim());
+            target->SendMeleeAttackStart(target->getVictimGUID());
     }
 }
 

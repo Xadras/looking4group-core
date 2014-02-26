@@ -3078,8 +3078,12 @@ float Map::GetVisibilityDistance(WorldObject* obj, Player* invoker) const
     if (invoker && invoker->getWatchingCinematic() != 0)
         return MAX_VISIBILITY_DISTANCE;
 
+    if (m_TerrainData == nullptr)
+        return DEFAULT_VISIBILITY_DISTANCE;
+
     float dist = m_TerrainData->GetVisibilityDistance();
-    if (obj)
+
+    if (obj != nullptr)
     {
         if (obj->GetObjectGuid().IsGameObject())
             return (dist + obj->ToGameObject()->GetDeterminativeSize());    // or maybe should be GetMaxVisibleDistanceForObject instead m_VisibleDistance ?

@@ -3277,7 +3277,7 @@ bool ChatHandler::HandleGuildRankCommand(const char *args)
     if (!plGuid || !glId)
         return false;
 
-    Guild* targetGuild = sObjectMgr.GetGuildById (glId);
+    Guild* targetGuild = sGuildMgr.GetGuildById (glId);
     if (!targetGuild)
         return false;
 
