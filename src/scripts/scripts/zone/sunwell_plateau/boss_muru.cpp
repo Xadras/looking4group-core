@@ -13,7 +13,7 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-*  Copyright (C) 2008 - 2013 Looking4Group <http://gamefreedom.pl/>
+*  Copyright (C) 2008 - 2014 Looking4Group <http://looking4group.de/>
 *
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -770,7 +770,7 @@ struct npc_blackholeAI : public ScriptedAI
 
     void Reset()
     {
-        DespawnTimer = urand(15000, 17000);
+        DespawnTimer = 17000;
         me->SetLevitate(true);
         me->SetSpeed(MOVE_FLIGHT, 0.5);
         me->setFaction(14);
@@ -840,7 +840,7 @@ struct npc_blackholeAI : public ScriptedAI
             {
                 if (Unit* victim = me->GetUnit(victimGUID))
                 {
-                    if(me->IsWithinDistInMap(victim, 6.0))
+                    if(me->IsWithinDistInMap(victim, 4.0))
                     {
                         if(Unit* victim = SelectUnit(SELECT_TARGET_NEAREST, 0, 200, true, me->getVictimGUID(), 10.0))
                             me->GetMotionMaster()->MovePoint(0, victim->GetPositionX(), victim->GetPositionY(), 72.0, false);
