@@ -2072,7 +2072,7 @@ struct npc_AkamaAI : public ScriptedAI
                         target->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
                         target->SetHealth(1);
                         ((Player*)target)->setRegenTimer(60000);
-                        target->GetUnitStateMgr().PushAction(UNIT_ACTION_STUN);
+                        target->GetUnitStateMgr().DropAction(UNIT_ACTION_STUN);
                     }
                 }
                 return 3000;
