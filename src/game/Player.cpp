@@ -497,8 +497,14 @@ Player::~Player ()
 
     // clean up player-instance binds, may unload some instance saves
     for (uint8 i = 0; i < TOTAL_DIFFICULTIES; i++)
+    {
         for (BoundInstancesMap::iterator itr = m_boundInstances[i].begin(); itr != m_boundInstances[i].end(); ++itr)
-            itr->second.save->RemovePlayer(this);
+        {
+            InstanceSave* save = itr->second.save;
+            if (save != nullptr && save->HasPlayer(GetGUID()))
+                save->RemovePlayer(GetGUID());
+        }
+    }
 
     delete m_declinedname;
 
@@ -15717,15 +15723,20 @@ void Player::UnbindInstance(BoundInstancesMap::iterator &itr, uint8 difficulty, 
 {
     if (itr != m_boundInstances[difficulty].end())
     {
-        if (!unload) RealmDataDatabase.PExecute("DELETE FROM character_instance WHERE guid = '%u' AND instance = '%u'", GetGUIDLow(), itr->second.save->GetInstanceId());
-        itr->second.save->RemovePlayer(this);               // save can become invalid
+        if (!unload)
+            RealmDataDatabase.PExecute("DELETE FROM character_instance WHERE guid = '%u' AND instance = '%u'", GetGUIDLow(), itr->second.save->GetInstanceId());
+        
+        InstanceSave* save = itr->second.save;
+        if (save != nullptr)
+            save->RemovePlayer(GetGUID());
+
         m_boundInstances[difficulty].erase(itr++);
     }
 }
 
 InstancePlayerBind* Player::BindToInstance(InstanceSave *save, bool permanent, bool load)
 {
-    if (save)
+    if (save != nullptr)
     {
         InstancePlayerBind& bind = m_boundInstances[save->GetDifficulty()][save->GetMapId()];
         if (bind.save)
@@ -15739,8 +15750,10 @@ InstancePlayerBind* Player::BindToInstance(InstanceSave *save, bool permanent, b
 
         if (bind.save != save)
         {
-            if (bind.save) bind.save->RemovePlayer(this);
-            save->AddPlayer(this);
+            if (bind.save != nullptr)
+                bind.save->RemovePlayer(GetGUID());
+
+            save->AddPlayer(GetGUID());
         }
 
         if (permanent) save->SetCanReset(false);
@@ -15751,7 +15764,7 @@ InstancePlayerBind* Player::BindToInstance(InstanceSave *save, bool permanent, b
         return &bind;
     }
     else
-        return NULL;
+        return nullptr;
 }
 
 void Player::SendRaidInfo()
@@ -16937,7 +16950,7 @@ void Player::ResetInstances(uint8 method)
     {
         InstanceSave *p = itr->second.save;
         const MapEntry *entry = sMapStore.LookupEntry(itr->first);
-        if (!entry || !p->CanReset())
+        if (!entry || !p->CanReset() || p == nullptr)
         {
             ++itr;
             continue;
@@ -16956,11 +16969,13 @@ void Player::ResetInstances(uint8 method)
         // if the map is loaded, reset it
         Map *map = sMapMgr.FindMap(p->GetMapId(), p->GetInstanceId());
         if (map && map->IsDungeon())
+        {
             if (!((InstanceMap*)map)->Reset(method))
             {
                 ++itr;
                 continue;
             }
+        }
 
         // since this is a solo instance there should not be any players inside
         if (method == INSTANCE_RESET_ALL || method == INSTANCE_RESET_CHANGE_DIFFICULTY)
@@ -16970,7 +16985,7 @@ void Player::ResetInstances(uint8 method)
         m_boundInstances[dif].erase(itr++);
 
         // the following should remove the instance save from the manager and delete it as well
-        p->RemovePlayer(this);
+        p->RemovePlayer(GetGUID());
     }
 }
 
