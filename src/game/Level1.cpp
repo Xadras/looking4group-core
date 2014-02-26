@@ -38,6 +38,7 @@
 #include "GridMap.h"
 #include "Guild.h"
 #include "AccountMgr.h"
+#include "GuildMgr.h"
 
 #ifdef _DEBUG_VMAPS
 #include "VMapFactory.h"
@@ -145,7 +146,7 @@ bool ChatHandler::HandleGuildAnnounceCommand(const char *args)
     SetSentErrorMessage(true);
     if (uint32 gId = m_session->GetPlayer()->GetGuildId())
     {
-        if (sObjectMgr.GetGuildAnnCooldown(gId) < time(NULL))
+        if (sGuildMgr.GetGuildAnnCooldown(gId) < time(NULL))
         {
             if (msg.size() > sWorld.getConfig(CONFIG_GUILD_ANN_LENGTH))
             {
@@ -153,7 +154,7 @@ bool ChatHandler::HandleGuildAnnounceCommand(const char *args)
                 return false;
             }
 
-            Guild * pGuild = sObjectMgr.GetGuildById(gId);
+            Guild * pGuild = sGuildMgr.GetGuildById(gId);
             if (!pGuild)
             {
                 PSendSysMessage("Error occured while sending guild announce.");
@@ -180,7 +181,7 @@ bool ChatHandler::HandleGuildAnnounceCommand(const char *args)
 
             PSendSysMessage("Your message has been queued and will be displayed soon, please wait: %u seconds before sending another one.", sWorld.getConfig(CONFIG_GUILD_ANN_COOLDOWN));
 
-            sObjectMgr.SaveGuildAnnCooldown(gId);
+            sGuildMgr.SaveGuildAnnCooldown(gId);
             sLog.outLog(LOG_GUILD_ANN, "Player %s (" UI64FMTD ") - guild: %s (%u) append guild announce: %s", m_session->GetPlayer()->GetName(), m_session->GetPlayer()->GetGUID(), pGuild->GetName().c_str(), gId, msg.c_str());
             sWorld.QueueGuildAnnounce(gId, m_session->GetPlayer()->GetTeam(), msg);
             return true;

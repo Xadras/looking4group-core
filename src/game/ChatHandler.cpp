@@ -39,6 +39,7 @@
 #include "Util.h"
 #include "GridNotifiersImpl.h"
 #include "CellImpl.h"
+#include "GuildMgr.h"
 
 enum ChatDenyMask
 {
@@ -359,7 +360,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recv_data)
 
             if (GetPlayer()->GetGuildId())
             {
-                Guild *guild = sObjectMgr.GetGuildById(GetPlayer()->GetGuildId());
+                Guild *guild = sGuildMgr.GetGuildById(GetPlayer()->GetGuildId());
                 if (guild)
                     guild->BroadcastToGuild(this, msg, lang == LANG_ADDON ? LANG_ADDON : LANG_UNIVERSAL);
             }
@@ -381,7 +382,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recv_data)
 
             if (GetPlayer()->GetGuildId())
             {
-                Guild *guild = sObjectMgr.GetGuildById(GetPlayer()->GetGuildId());
+                Guild *guild = sGuildMgr.GetGuildById(GetPlayer()->GetGuildId());
                 if (guild)
                     guild->BroadcastToOfficers(this, msg, lang == LANG_ADDON ? LANG_ADDON : LANG_UNIVERSAL);
             }

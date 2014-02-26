@@ -66,6 +66,7 @@
 #include "CreatureEventAIMgr.h"
 #include "WardenDataStorage.h"
 #include "WorldEventProcessor.h"
+#include "GuildMgr.h"
 
 //#include "Timer.h"
 
@@ -1409,7 +1410,7 @@ void World::SetInitialWorldSettings()
     sAuctionMgr.LoadAuctions();
 
     sLog.outString("Loading Guilds...");
-    sObjectMgr.LoadGuilds();
+    sGuildMgr.LoadGuilds();
 
     sLog.outString("Loading ArenaTeams...");
     sObjectMgr.LoadArenaTeams();
@@ -1839,7 +1840,7 @@ void World::Update(uint32 diff)
         if (!m_GuildAnnounces[0].empty())
         {
             std::list<std::pair<uint64, std::string> >::iterator itr = m_GuildAnnounces[0].begin();
-            std::string guildName = sObjectMgr.GetGuildNameById(PAIR64_LOPART(itr->first));
+            std::string guildName = sGuildMgr.GetGuildNameById(PAIR64_LOPART(itr->first));
 
             sWorld.SendGuildAnnounce(PAIR64_HIPART(itr->first), guildName.c_str(), itr->second.c_str());
             m_GuildAnnounces[0].pop_front();
@@ -1848,7 +1849,7 @@ void World::Update(uint32 diff)
         if (!m_GuildAnnounces[1].empty())
         {
             std::list<std::pair<uint64, std::string> >::iterator itr = m_GuildAnnounces[1].begin();
-            std::string guildName = sObjectMgr.GetGuildNameById(PAIR64_LOPART(itr->first));
+            std::string guildName = sGuildMgr.GetGuildNameById(PAIR64_LOPART(itr->first));
 
             sWorld.SendGuildAnnounce(PAIR64_HIPART(itr->first), guildName.c_str(), itr->second.c_str());
             m_GuildAnnounces[1].pop_front();

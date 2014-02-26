@@ -65,6 +65,7 @@
 #include "GameEvent.h"
 #include "GridMap.h"
 #include "WorldEventProcessor.h"
+#include "GuildMgr.h"
 
 #include "PlayerAI.h"
 
@@ -3928,7 +3929,7 @@ void Player::DeleteFromDB(uint64 playerguid, uint32 accountId, bool updateRealmC
     uint32 guildId = GetGuildIdFromDB(playerguid);
     if (guildId != 0)
     {
-        Guild* guild = sObjectMgr.GetGuildById(guildId);
+        Guild* guild = sGuildMgr.GetGuildById(guildId);
         if (guild)
             guild->DelMember(guid);
     }
@@ -4512,7 +4513,7 @@ uint32 Player::DurabilityRepair(uint16 pos, bool cost, float discountMod, bool g
                     return TotalCost;
                 }
 
-                Guild *pGuild = sObjectMgr.GetGuildById(GetGuildId());
+                Guild *pGuild = sGuildMgr.GetGuildById(GetGuildId());
                 if (!pGuild)
                     return TotalCost;
 

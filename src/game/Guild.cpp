@@ -29,6 +29,7 @@
 #include "Chat.h"
 #include "SocialMgr.h"
 #include "Util.h"
+#include "GuildMgr.h"
 
 Guild::Guild()
 {
@@ -61,7 +62,7 @@ bool Guild::create(uint64 lGuid, std::string gname)
 
     if (!sObjectMgr.GetPlayerNameByGUID(lGuid, lName))
         return false;
-    if (sObjectMgr.GetGuildByName(gname))
+    if (sGuildMgr.GetGuildByName(gname))
         return false;
 
     sLog.outLog(LOG_SPECIAL, "GUILD: creating guild %s to leader: %u", gname.c_str(), GUID_LOPART(lGuid));
@@ -73,7 +74,7 @@ bool Guild::create(uint64 lGuid, std::string gname)
     guildbank_money = 0;
     purchased_tabs = 0;
 
-    Id = sObjectMgr.GenerateGuildId();
+    Id = sGuildMgr.GenerateGuildId();
 
     // gname already assigned to Guild::name, use it to encode string for DB
     RealmDataDatabase.escape_string(gname);
@@ -725,7 +726,7 @@ void Guild::Disband()
     RealmDataDatabase.PExecute("DELETE FROM guild_bank_eventlog WHERE guildid = '%u'",Id);
     RealmDataDatabase.PExecute("DELETE FROM guild_eventlog WHERE guildid = '%u'",Id);
     RealmDataDatabase.CommitTransaction();
-    sObjectMgr.RemoveGuild(Id);
+    sGuildMgr.RemoveGuild(Id);
 }
 
 void Guild::WriteMemberRosterPacket(Player *sessionPlayer, const MemberSlot &member, Player *pl, WorldPacket &data)
