@@ -22,10 +22,7 @@
 #include "Log.h"
 #include "Player.h"
 
-Camera::Camera(Player* pl) : _owner(*pl), _source(pl)
-{
-    _source->GetViewPoint().Attach(this);
-}
+Camera::Camera(Player* pl) : _owner(*pl), _source(pl){}
 
 Camera::~Camera()
 {
@@ -35,6 +32,13 @@ Camera::~Camera()
     // for symmetry with constructor and way to make viewpoint's list empty
     _source->GetViewPoint().Detach(this);
 }
+
+void Camera::Init()
+{
+    _source->GetViewPoint().Attach(this);
+}
+
+
 
 void Camera::ReceivePacket(WorldPacket *data)
 {
@@ -149,6 +153,11 @@ void Camera::UpdateVisibilityForOwner()
     notifier.SendToSelf();
 }
 
+const uint64& Camera::getOwnerGuid()
+{
+    return _owner.GetGUID();
+}
+
 //////////////////
 
 ViewPoint::~ViewPoint()
@@ -159,3 +168,18 @@ ViewPoint::~ViewPoint()
         _cameras.clear();
     }
 }
+
+
+void ViewPoint::CameraCall(void (Camera::*handler)())
+{
+    if (!_cameras.empty())
+    {
+        for (CameraList::iterator itr = _cameras.begin(); itr != _cameras.end(); ++itr)
+        {
+            Player* owner = ObjectAccessor::GetPlayer( *itr );
+            if (owner)
+                (owner->GetCamera().*handler)();
+        }
+    }
+}
+
