@@ -7431,3 +7431,152 @@ bool ChatHandler::HandleDelVIPAccountCommand(const char* args)
     PSendSysMessage("%s%s%u|r", "|cff00ff00", "Delete vip account id: ", idaccvip);
     return true;
 }
+
+bool ChatHandler::HandleCharacterImportCommand(const char* args)
+{
+    if (!*args)
+        return false;
+/*
+    Player *chr = getSelectedPlayer();
+    if (!chr)
+    {
+        SendSysMessage(LANG_NO_CHAR_SELECTED);
+        SetSentErrorMessage(true);
+        return false;
+    }
+*/
+    
+    char* guid_oldchar = strtok((char*)args, " ");
+    char* guid_new = strtok((char*)NULL, " ");
+    uint64 guidnew = atoi(guid_new);
+    Player *chr = ObjectAccessor::GetPlayer(guidnew);
+    chr->GetSession()->KickPlayer();
+    uint32 guid = atoi(guid_oldchar);
+    if (!guid)
+        return false;
+
+    //Give Money, xp, level and so on to player!
+    QueryResultAutoPtr char_stats = RealmDataDatabase.PQuery ("SELECT money, level, xp, totalHonorPoints, totalKills FROM characters_b2tbc WHERE guid = %u", guid);
+    if (char_stats)
+    {
+        do
+        {
+            Field* field = char_stats->Fetch();
+            chr->GiveLevel(field[1].GetUInt32());
+            chr->ModifyMoney(field[0].GetUInt32());
+            chr->SetUInt32Value(PLAYER_XP, field[2].GetUInt32());
+            chr->ModifyHonorPoints(field[3].GetUInt32());
+            chr->SetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS, field[4].GetUInt32());
+        }
+        while (char_stats->NextRow());
+    }
+
+    //Give Quests to player!
+        QueryResultAutoPtr quests = RealmDataDatabase.PQuery ("SELECT quest, status, rewarded, explored, timer, mobcount1, mobcount2, mobcount3, mobcount4, itemcount1, itemcount2, itemcount3, itemcount4 FROM character_queststatus_b2tbc WHERE guid = %u", guid);
+    if (quests)
+    {
+        do
+        {
+            Field* field =quests->Fetch();
+            RealmDataDatabase.PExecute("INSERT INTO character_queststatus SET guid='%u', quest='%u', status='%u', rewarded='%u', explored='%u', timer='%u', mobcount1='%u', mobcount2='%u', mobcount3='%u', mobcount4='%u', itemcount1='%u', itemcount2='%u', itemcount3='%u', itemcount4='%u'", chr->GetGUID(), field[0].GetUInt32(), field[1].GetUInt32(), field[2].GetUInt32(), field[3].GetUInt32(), field[4].GetUInt32(), field[5].GetUInt32(), field[6].GetUInt32(), field[7].GetUInt32(), field[8].GetUInt32(), field[9].GetUInt32(), field[10].GetUInt32(), field[11].GetUInt32(), field[12].GetUInt32());
+        }
+        while (quests->NextRow());
+    }
+
+    //Give Items to player! - only put in bags so far...
+    QueryResultAutoPtr items = RealmDataDatabase.PQuery ("SELECT item_template FROM character_inventory_b2tbc WHERE guid = %u", guid);
+    if (items)
+    {
+        do
+        {
+            Field* field = items->Fetch();
+            chr->AddItem(field[0].GetUInt32(), 1);
+        }
+        while (items->NextRow());
+    }
+
+    //Giv Skillzzz to player!
+    QueryResultAutoPtr skill = RealmDataDatabase.PQuery ("SELECT skill, value, max FROM character_skills_b2tbc WHERE guid = %u", guid);
+    if (skill)
+    {
+        do
+        {
+            Field* field = skill->Fetch();
+            if (!chr->HasSkill(field[0].GetUInt32()))
+                chr->SetSkill(field[0].GetUInt32(), field[1].GetUInt32(), field[2].GetUInt32());
+        }
+        while (skill->NextRow());
+    }
+
+    //Give Spells to player!
+    QueryResultAutoPtr spell = RealmDataDatabase.PQuery ("SELECT spell FROM character_spell_b2tbc WHERE guid = %u AND active = 1 AND disabled = 0", guid);
+    if (spell)
+    {
+        do
+        {
+            Field* field = spell->Fetch();
+            if (!chr->HasSpell(field[0].GetUInt32()))
+                chr->learnSpell(field[0].GetUInt32());
+        }
+        while (spell->NextRow());
+    }
+
+    //Give repuatation to player!
+    QueryResultAutoPtr reputation = RealmDataDatabase.PQuery ("SELECT faction, standing, flags FROM character_reputation_b2tbc WHERE guid = '%u'", guid);
+    if (reputation)
+    {
+        do
+        {
+            Field* field = reputation->Fetch();
+            RealmDataDatabase.PExecute("REPLACE INTO character_reputation SET guid='%u', faction='%u', standing='%u', flags='%u'", chr->GetGUID(), field[0].GetUInt32(), field[1].GetUInt32(), field[2].GetUInt32());
+        }
+        while (reputation->NextRow());
+    }
+
+    //Give pets to players!
+    QueryResultAutoPtr pet = RealmDataDatabase.PQuery ("SELECT entry, owner, modelid, CreatedBySpell, PetType, level, exp, Reactstate, loyaltypoints, loyalty, trainpoint, name, renamed, slot, curhealth, curmana, curhappiness, savetime, resettalents_cost, resettalents_time, abdata, teachspelldata FROM character_pet_b2tbc WHERE owner = %u", guid);
+    if (pet)
+    {
+        QueryResultAutoPtr pet_guid = RealmDataDatabase.PQuery("SELECT MAX(id) FROM character_pet");
+        if (pet_guid)
+        {
+            Field* petguid = pet_guid->Fetch();
+            uint32 pet_id = petguid[0].GetUInt32();
+            pet_id++;
+            do
+            {
+                Field* field = pet->Fetch();
+                RealmDataDatabase.PExecute("INSERT INTO character_pet SET id='%u', entry='%u', owner='%u', modelid='%u', CreatedBySpell='%u', PetType='%u', level='%u', exp='%u', Reactstate='%u', loyaltypoints='%u', loyalty='%u', trainpoint='%u', name='%s', renamed='%u', slot='%u', curhealth='%u', curmana='%u', curhappiness='%u', savetime='%u', resettalents_cost='%u', resettalents_time='%u', abdata='%s', teachspelldata='%s' ", pet_id, field[0].GetUInt32(), chr->GetGUID(), field[2].GetUInt32(), field[3].GetUInt32(), field[4].GetUInt32(), field[5].GetUInt32(), field[6].GetUInt32(), field[7].GetUInt32(), field[8].GetUInt32(), field[9].GetUInt32(), field[10].GetUInt32(), field[11].GetString(), field[12].GetUInt32(), field[13].GetUInt32(), field[14].GetUInt32(), field[15].GetUInt32(), field[16].GetUInt32(), field[17].GetUInt32(), field[18].GetUInt32(), field[19].GetUInt32(), field[20].GetString(), field[21].GetString());
+            }
+            while (pet->NextRow());
+        }
+    }
+
+    //Set homestone!
+    QueryResultAutoPtr homebind = RealmDataDatabase.PQuery ("SELECT map, zone, position_x, position_y, position_z FROM character_homebind_b2tbc WHERE guid = %u", guid);
+    if (homebind)
+    {
+        do
+        {
+            Field* field = homebind->Fetch();
+
+            RealmDataDatabase.PExecute("UPDATE character_homebind SET map='%u', zone='%u', position_x='%f', position_y='%f', position_z='%f' WHERE guid='%u'", field[0].GetUInt32(), field[1].GetUInt32(), field[2].GetFloat(), field[3].GetFloat(), field[4].GetFloat(), chr->GetGUID());
+            uint16 m_homebindMapId = field[0].GetUInt32();
+            uint32 m_homebindZoneId = field[1].GetUInt32();
+            float m_homebindX = field[2].GetFloat();
+            float m_homebindY = field[3].GetFloat();
+            float m_homebindZ = field[4].GetFloat();
+
+            WorldPacket data(SMSG_BINDPOINTUPDATE, (4 + 4 + 4 + 4 + 4));
+            data << float(m_homebindX);
+            data << float(m_homebindY);
+            data << float(m_homebindZ);
+            data << uint32(m_homebindMapId);
+            data << uint32(m_homebindZoneId);
+            chr->GetSession()->SendPacket(&data);
+
+            chr->SaveToDB();
+        }
+        while (homebind->NextRow());
+    }
+}
