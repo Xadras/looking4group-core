@@ -7444,6 +7444,15 @@ bool ChatHandler::HandleCharacterImportCommand(const char* args)
         SetSentErrorMessage(true);
         return false;
     }
+    You will need the tables in char database specified below:
+    -characters_b2tbc
+    -character_queststatus_b2tbc
+    -character_inventory_b2tbc
+    -character_skills_b2tbc
+    -character_spell_b2tbc
+    -character_reputation_b2tbc
+    -character_pet_b2tbc
+    -character_homebind_b2tbc
 */
     
     char* guid_oldchar = strtok((char*)args, " ");
