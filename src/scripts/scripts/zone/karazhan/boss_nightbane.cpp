@@ -85,6 +85,7 @@ struct boss_nightbaneAI : public ScriptedAI
     uint32 FireballBarrageTimer;
     uint32 SearingCindersTimer;
     uint32 Cleave_Timer;
+    uint32 NoGround_Timer;
 
     uint32 FlyCount;
     uint32 FlyTimer;
@@ -120,6 +121,7 @@ struct boss_nightbaneAI : public ScriptedAI
         SearingCindersTimer = 14000;
         WaitTimer = 1000;
         Cleave_Timer = 6000;
+        NoGround_Timer = 1000;
 
         Phase =1;
         FlyCount = 0;
@@ -388,6 +390,14 @@ struct boss_nightbaneAI : public ScriptedAI
         //Phase 2 "FLYING FIGHT"
         if (Phase == 2)
         {
+            if (NoGround_Timer < diff)
+            {
+                (*m_creature).GetMotionMaster()->MovePoint(0,IntroWay[2][0],IntroWay[2][1],IntroWay[2][2]);
+                NoGround_Timer = 1000;
+            }
+            else
+                NoGround_Timer -= diff;
+
             if (!RainBones)
             {
                 if (!Skeletons)
