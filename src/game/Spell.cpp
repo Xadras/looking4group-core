@@ -1165,7 +1165,7 @@ void Spell::DoSpellHitOnUnit(Unit *unit, const uint32 effectMask)
                 //m_caster->UpdatePvP(true);
             }
 
-            if (unit->isInCombat() && !(GetSpellInfo()->AttributesEx3 & SPELL_ATTR_EX3_NO_INITIAL_AGGRO))
+            if (!unit->isInCombat() && !((GetSpellInfo()->AttributesEx & SPELL_ATTR_EX_NO_THREAT) || (GetSpellInfo()->AttributesEx3 & SPELL_ATTR_EX3_NO_INITIAL_AGGRO)))
             {
                 m_caster->SetInCombatState(unit->GetCombatTimer() > 0, unit);
                 unit->getHostilRefManager().threatAssist(m_caster, 0.0f);
