@@ -1935,7 +1935,7 @@ void WorldObject::GetValidPointInAngle(Position &pos, float dist, float angle, b
     if (meAsSourcePos)
         GetPosition(pos);
 
-    pos.z += 2.0f;
+    //pos.z += 2.0f;
 
     Position dest;
     dest.x = pos.x + dist * cos(angle);
