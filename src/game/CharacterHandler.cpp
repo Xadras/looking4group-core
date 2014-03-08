@@ -628,8 +628,6 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder * holder)
         }
     }
 
-    sObjectAccessor.AddPlayer(pCurrChar);
-
     if (!pCurrChar->GetMap()->Add(pCurrChar))
     {
         // normal delayed teleport protection not applied (and this correct) for this case (Player object just created)
@@ -640,6 +638,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder * holder)
             pCurrChar->TeleportToHomebind();
     }
 
+    sObjectAccessor.AddPlayer(pCurrChar);
     //sLog.outDebug("Player %s added to Map.",pCurrChar->GetName());
     pCurrChar->GetSocial()->SendSocialList();
 
