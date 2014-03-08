@@ -1783,7 +1783,7 @@ void WorldObject::UpdateObjectVisibility(bool /*forced*/)
     Looking4group::VisibleChangesNotifier notifier(*this);
     float radius = World::GetVisibleObjectGreyDistance();
 
-    if ( ToCorpse() != nullptr || !IsInWorld() )
+    if ( Corpse* corpse = ToCorpse() )
         radius = MAX_VISIBILITY_DISTANCE;
     else if ( Map* map = GetMap() )
         radius += map->GetVisibilityDistance();
