@@ -1080,54 +1080,42 @@ float TerrainInfo::GetWaterLevel(float x, float y, float z, float* pGround /*= N
 
 bool TerrainInfo::IsLineOfSightEnabled() const
 {
-    const TerrainSpecifics* specifics = GetSpecifics();
-    if (specifics == nullptr)
-        return true;
-
-    if (specifics->lineofsight == F_ALWAYS_DISABLED)
+    if (GetSpecifics()->lineofsight == F_ALWAYS_DISABLED)
         return false;
 
-    if (specifics->lineofsight == F_ALWAYS_ENABLED)
+    if (GetSpecifics()->lineofsight == F_ALWAYS_ENABLED)
         return sWorld.getConfig(CONFIG_VMAP_LOS_ENABLED);
 
     if (sWorld.getConfig(CONFIG_COREBALANCER_ENABLED))
     {
-        if (specifics->lineofsight <= sWorld.GetCoreBalancerTreshold())
+        if (GetSpecifics()->lineofsight <= sWorld.GetCoreBalancerTreshold())
             return false;
     }
 
-    return specifics->lineofsight != F_ALWAYS_DISABLED && sWorld.getConfig(CONFIG_VMAP_LOS_ENABLED);
+    return GetSpecifics()->lineofsight != F_ALWAYS_DISABLED && sWorld.getConfig(CONFIG_VMAP_LOS_ENABLED);
 }
 
 bool TerrainInfo::IsPathFindingEnabled() const
 {
-    const TerrainSpecifics* specifics = GetSpecifics();
-    if (specifics == nullptr)
-        return true;
-
-    if (specifics->pathfinding == F_ALWAYS_DISABLED)
+    if (GetSpecifics()->pathfinding == F_ALWAYS_DISABLED)
         return false;
 
-    if (specifics->pathfinding == F_ALWAYS_ENABLED)
+    if (GetSpecifics()->pathfinding == F_ALWAYS_ENABLED)
         return sWorld.getConfig(CONFIG_MMAP_ENABLED);
 
     if (sWorld.getConfig(CONFIG_COREBALANCER_ENABLED))
     {
-        if (specifics->pathfinding <= sWorld.GetCoreBalancerTreshold())
+        if (GetSpecifics()->pathfinding <= sWorld.GetCoreBalancerTreshold())
             return false;
     }
 
-    return specifics->pathfinding != F_ALWAYS_DISABLED && sWorld.getConfig(CONFIG_MMAP_ENABLED);
+    return GetSpecifics()->pathfinding != F_ALWAYS_DISABLED && sWorld.getConfig(CONFIG_MMAP_ENABLED);
 }
 
 float TerrainInfo::GetVisibilityDistance()
 {
     const TerrainSpecifics* specifics = GetSpecifics();
-    if (specifics == nullptr)
-        return DEFAULT_VISIBILITY_DISTANCE;
-
-    float visibility = specifics->visibility;
-
+    float visibility = specifics ? specifics->visibility : DEFAULT_VISIBILITY_DISTANCE;
     if (sWorld.GetCoreBalancerTreshold() >= CB_VISIBILITY_PENALTY)
         visibility -= sWorld.getConfig(CONFIG_COREBALANCER_VISIBILITY_PENALTY);
 

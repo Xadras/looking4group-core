@@ -1782,12 +1782,15 @@ void WorldObject::UpdateObjectVisibility(bool /*forced*/)
     //updates object's visibility for nearby players
     Looking4group::VisibleChangesNotifier notifier(*this);
     float radius = World::GetVisibleObjectGreyDistance();
+<<<<<<< HEAD
 
     if ( ToCorpse() != nullptr || !IsInWorld() )
         radius = MAX_VISIBILITY_DISTANCE;
     else if ( Map* map = GetMap() )
+=======
+    if(Map* map = GetMap())
+>>>>>>> parent of 7227ed3... Core/Grid: try fix crash related to GetVisiblity called by removing corpse from map
         radius += map->GetVisibilityDistance();
-
     Cell::VisitWorldObjects(this, notifier, radius);
 }
 
