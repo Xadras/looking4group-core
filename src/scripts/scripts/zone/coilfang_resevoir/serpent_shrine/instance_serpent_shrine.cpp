@@ -472,12 +472,19 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
 
         if (trashCheckTimer < diff)
         {
-            //uint64 tmpPriestessGuid = instance->GetCreatureGUID(TRASHMOB_COILFANG_PRIESTESS, GET_ALIVE_CREATURE_GUID);
-            uint64 tmpTechniGuid = instance->GetCreatureGUID(TRASHMOB_COILFANG_TECHNI, GET_ALIVE_CREATURE_GUID);
-            if (/*!tmpPriestessGuid && */!tmpTechniGuid)
-                Water = WATERSTATE_SCALDING;
-            else
-                Water = WATERSTATE_FRENZY;
+            if (Encounters[2] == NOT_STARTED)
+            {
+                //uint64 tmpPriestessGuid = instance->GetCreatureGUID(TRASHMOB_COILFANG_PRIESTESS, GET_ALIVE_CREATURE_GUID);
+                uint64 tmpTechniGuid = instance->GetCreatureGUID(TRASHMOB_COILFANG_TECHNI, GET_ALIVE_CREATURE_GUID);
+                if (/*!tmpPriestessGuid && */!tmpTechniGuid)
+                    Water = WATERSTATE_SCALDING;
+                else
+                    Water = WATERSTATE_FRENZY;
+            }
+            else if (Encounters[2] == DONE)
+            {
+                Water = WATERSTATE_NONE;
+            }
 
             trashCheckTimer = 2000;
         }
@@ -513,6 +520,10 @@ struct instance_serpentshrine_cavern : public ScriptedInstance
                                     frenzy->AI()->AttackStart(pPlayer);
                                 }
                             }
+                        }
+                        else if (Water == WATERSTATE_NONE)
+                        {
+                            break;
                         }
                     }
                 }
