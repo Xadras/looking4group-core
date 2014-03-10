@@ -7459,6 +7459,8 @@ bool ChatHandler::HandleCharacterImportCommand(const char* args)
     char* guid_new = strtok((char*)NULL, " ");
     uint64 guidnew = atoi(guid_new);
     Player *chr = ObjectAccessor::GetPlayer(guidnew);
+    if (!chr)
+        return false;
     chr->GetSession()->KickPlayer();
     uint32 guid = atoi(guid_oldchar);
     if (!guid)
@@ -7469,10 +7471,12 @@ bool ChatHandler::HandleCharacterImportCommand(const char* args)
     if (char_stats)
     {
         do
-        {
+        {            
             Field* field = char_stats->Fetch();
+            uint32 money = field[0].GetUInt32();
+            money = int32(money*1.5);
             chr->GiveLevel(field[1].GetUInt32());
-            chr->ModifyMoney(field[0].GetUInt32());
+            chr->ModifyMoney(money);
             chr->SetUInt32Value(PLAYER_XP, field[2].GetUInt32());
             chr->ModifyHonorPoints(field[3].GetUInt32());
             chr->SetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS, field[4].GetUInt32());
@@ -7559,6 +7563,18 @@ bool ChatHandler::HandleCharacterImportCommand(const char* args)
             }
             while(pet->NextRow());
         }
+    }
+
+    //Give Mail Items
+    QueryResultAutoPtr mail_item = RealmDataDatabase.PQuery("SELECT item_template FROM mail_items_b2tbc WHERE receiver = %u", guid);
+    if (spell)
+    {
+        do
+        {
+            Field* field = mail_item->Fetch();
+            chr->AddItem(field[0].GetUInt32(), 1);                
+        }
+        while(mail_item->NextRow());
     }
 
     //Set homestone!
