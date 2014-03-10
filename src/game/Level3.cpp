@@ -7567,7 +7567,7 @@ bool ChatHandler::HandleCharacterImportCommand(const char* args)
 
     //Give Mail Items
     QueryResultAutoPtr mail_item = RealmDataDatabase.PQuery("SELECT item_template FROM mail_items_b2tbc WHERE receiver = %u", guid);
-    if (spell)
+    if (mail_item)
     {
         do
         {
