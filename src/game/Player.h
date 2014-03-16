@@ -1047,7 +1047,7 @@ class LOOKING4GROUP_EXPORT Player : public Unit
         void UpdateInnerTime (int time) { time_inn_enter = time; };
 
         Pet* SummonPet(uint32 entry, float x, float y, float z, float ang, PetType petType, uint32 despwtime);
-        void RemovePet(Pet* pet, PetSaveMode mode, bool returnreagent = false);
+        void RemovePet(Pet* pet, PetSaveMode mode, bool returnreagent = false, bool isDying = false);
         void RemoveMiniPet();
         Pet* GetMiniPet();
         void SetMiniPet(Pet* pet) { m_miniPet = pet->GetGUID(); }
