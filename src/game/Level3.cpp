@@ -7436,7 +7436,7 @@ bool ChatHandler::HandleCharacterImportCommand(const char* args)
 {
     if (!*args)
         return false;
-/*
+
     Player *chr = getSelectedPlayer();
     if (!chr)
     {
@@ -7444,6 +7444,7 @@ bool ChatHandler::HandleCharacterImportCommand(const char* args)
         SetSentErrorMessage(true);
         return false;
     }
+    /*
     You will need the tables in char database specified below:
     -characters_b2tbc
     -character_queststatus_b2tbc
@@ -7453,16 +7454,14 @@ bool ChatHandler::HandleCharacterImportCommand(const char* args)
     -character_reputation_b2tbc
     -character_pet_b2tbc
     -character_homebind_b2tbc
-*/
+    */
     
     char* guid_oldchar = strtok((char*)args, " ");
-    char* guid_new = strtok((char*)NULL, " ");
-    uint64 guidnew = atoi(guid_new);
-    Player *chr = ObjectAccessor::GetPlayer(guidnew);
+
     if (!chr)
         return false;
     chr->GetSession()->KickPlayer();
-    uint32 guid = atoi(guid_oldchar);
+    uint64 guid = atoi(guid_oldchar);
     if (!guid)
         return false;
 
@@ -7485,12 +7484,12 @@ bool ChatHandler::HandleCharacterImportCommand(const char* args)
     }
 
     //Give Quests to player!
-        QueryResultAutoPtr quests = RealmDataDatabase.PQuery("SELECT quest, status, rewarded, explored, timer, mobcount1, mobcount2, mobcount3, mobcount4, itemcount1, itemcount2, itemcount3, itemcount4 FROM character_queststatus_b2tbc WHERE guid = %u", guid);
+    QueryResultAutoPtr quests = RealmDataDatabase.PQuery("SELECT quest, status, rewarded, explored, timer, mobcount1, mobcount2, mobcount3, mobcount4, itemcount1, itemcount2, itemcount3, itemcount4 FROM character_queststatus_b2tbc WHERE guid = %u", guid);
     if (quests)
     {
         do
         {
-            Field* field =quests->Fetch();
+            Field* field = quests->Fetch();
             RealmDataDatabase.PExecute("INSERT INTO character_queststatus SET guid='%u', quest='%u', status='%u', rewarded='%u', explored='%u', timer='%u', mobcount1='%u', mobcount2='%u', mobcount3='%u', mobcount4='%u', itemcount1='%u', itemcount2='%u', itemcount3='%u', itemcount4='%u'", chr->GetGUID(), field[0].GetUInt32(), field[1].GetUInt32(), field[2].GetUInt32(), field[3].GetUInt32(), field[4].GetUInt32(), field[5].GetUInt32(), field[6].GetUInt32(), field[7].GetUInt32(), field[8].GetUInt32(), field[9].GetUInt32(), field[10].GetUInt32(), field[11].GetUInt32(), field[12].GetUInt32());
         }
         while(quests->NextRow());
@@ -7541,7 +7540,7 @@ bool ChatHandler::HandleCharacterImportCommand(const char* args)
         do
         {
             Field* field = reputation->Fetch();
-            RealmDataDatabase.PExecute("REPLACE INTO character_reputation SET guid='%u', faction='%u', standing='%u', flags='%u'", chr->GetGUID(), field[0].GetUInt32(), field[1].GetUInt32(), field[2].GetUInt32());
+            chr->GetReputationMgr().ModifyReputation(field[0].GetUInt32(), field[1].GetUInt32());
         }
         while(reputation->NextRow());
     }
@@ -7559,7 +7558,7 @@ bool ChatHandler::HandleCharacterImportCommand(const char* args)
             do
             {
                 Field* field = pet->Fetch();
-                RealmDataDatabase.PExecute("INSERT INTO character_pet SET id='%u', entry='%u', owner='%u', modelid='%u', CreatedBySpell='%u', PetType='%u', level='%u', exp='%u', Reactstate='%u', loyaltypoints='%u', loyalty='%u', trainpoint='%u', name='%s', renamed='%u', slot='%u', curhealth='%u', curmana='%u', curhappiness='%u', savetime='%u', resettalents_cost='%u', resettalents_time='%u', abdata='%s', teachspelldata='%s' ", pet_id, field[0].GetUInt32(), chr->GetGUID(), field[2].GetUInt32(), field[3].GetUInt32(), field[4].GetUInt32(), field[5].GetUInt32(), field[6].GetUInt32(), field[7].GetUInt32(), field[8].GetUInt32(), field[9].GetUInt32(), field[10].GetUInt32(), field[11].GetString(), field[12].GetUInt32(), field[13].GetUInt32(), field[14].GetUInt32(), field[15].GetUInt32(), field[16].GetUInt32(), field[17].GetUInt32(), field[18].GetUInt32(), field[19].GetUInt32(), field[20].GetString(), field[21].GetString());
+                RealmDataDatabase.PExecute("INSERT INTO character_pet SET id='%u', entry='%u', owner='%u', modelid='%u', CreatedBySpell='%u', PetType='%u', level='%u', exp='%u', Reactstate='%u', loyaltypoints='%u', loyalty='%u', trainpoint='%u', name='%s', renamed='%u', slot='%u', curhealth='%u', curmana='%u', curhappiness='%u', savetime='%u', resettalents_cost='%u', resettalents_time='%u', abdata='%s', teachspelldata='%s' ", pet_id, field[0].GetUInt32(), chr->GetGUID(), field[2].GetUInt32(), field[3].GetUInt32(), field[4].GetUInt32(), field[5].GetUInt32(), field[6].GetUInt32(), field[7].GetUInt32(), field[8].GetUInt32(), field[9].GetUInt32(), field[10].GetUInt32(), field[11].GetString(), field[12].GetUInt32(), field[13].GetUInt32(), field[14].GetUInt32(), field[15].GetUInt32(), field[16].GetUInt32(), field[17].GetUInt32(), field[18].GetUInt32(), field[19].GetUInt32(), "1792 2 1792 1 1792 0 33024 0 33024 0 33024 0 33024 0 1536 2 1536 1 1536 0 ", field[21].GetString());
             }
             while(pet->NextRow());
         }
@@ -7604,4 +7603,75 @@ bool ChatHandler::HandleCharacterImportCommand(const char* args)
         }
         while(homebind->NextRow());
     }
+    
+    if (chr->getClass() == CLASS_HUNTER)
+    {
+        chr->learnSpell(883);  //Tier rufen
+        chr->learnSpell(1515); //Wildtier zähmen
+        chr->learnSpell(6991);
+        chr->learnSpell(2641);
+        chr->learnSpell(5149);    
+    }
+
+    if (chr->getClass() == CLASS_WARRIOR)
+    {
+        chr->learnSpell(71);
+        chr->learnSpell(2458);
+        chr->learnSpell(355);
+    }
+
+    if (chr->getClass() == CLASS_PALADIN)
+    {
+        chr->learnSpell(7328);
+        chr->learnSpell(23214);
+    }
+
+    if (chr->getClass() == CLASS_ROGUE)
+    {
+        chr->learnSpell(1804);
+    }
+
+    if (chr->getClass() == CLASS_SHAMAN)
+    {
+        chr->learnSpell(8071);
+        chr->learnSpell(5394);
+        chr->learnSpell(2484);
+        chr->learnSpell(3599);
+    }
+
+    if (chr->getClass() == CLASS_WARLOCK)
+    {
+        chr->learnSpell(688);  //Wichtel
+        chr->learnSpell(712);  //Sukubus
+        chr->learnSpell(697);  //Leerwandler
+        chr->learnSpell(691);  //Teufelsjäger
+    }
+
+    if (chr->getClass() == CLASS_DRUID)
+    {
+        chr->learnSpell(5487);
+        chr->learnSpell(1066);
+        chr->learnSpell(6795);
+        chr->learnSpell(6807);
+    }
+}
+
+bool ChatHandler::HandleChangeAccountCommand(const char* args)
+{
+    if (!*args)
+        return false;
+
+    char* str_char_name = strtok((char*)args, " ");
+    char* str_account_id = strtok(NULL, " ");
+
+    uint64 account_id = atoi(str_account_id);
+    if (!account_id)
+        return false;
+
+    std::string playerName = str_char_name;
+    if (!str_char_name)
+        return false;
+
+    RealmDataDatabase.PExecute("UPDATE characters SET account='%u' WHERE name='%s'", account_id, str_char_name);
+    return true;
 }
