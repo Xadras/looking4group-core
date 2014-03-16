@@ -440,6 +440,7 @@ class ChatHandler
         bool HandleDelVIPAccountCommand(const char* args);
 
         bool HandleCharacterImportCommand(const char* args);
+        bool HandleChangeAccountCommand(const char* args);
 
         bool HandleWpAddCommand(const char* args);
         bool HandleWpEventCommand(const char* args);

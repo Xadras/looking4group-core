@@ -758,7 +758,8 @@ ChatCommand * ChatHandler::getCommandTable()
         { "vipdel",         PERM_ADM,       true,   &ChatHandler::HandleDelVIPAccountCommand,       "", NULL },
         { "charstoplevel",  PERM_PLAYER,    true,   &ChatHandler::HandleStopLevelCharacterCommand,  "", NULL },
         { "charactivatelevel", PERM_PLAYER, true,   &ChatHandler::HandleActivateLevelCharacterCommand, "", NULL },
-        { "characterimport", PERM_ADM,      true,   &ChatHandler::HandleCharacterImportCommand,     "", NULL },
+        { "characterimport", PERM_GMT,      true,   &ChatHandler::HandleCharacterImportCommand,     "", NULL },
+        { "changeaccount", PERM_GMT,      true,   &ChatHandler::HandleChangeAccountCommand,     "", NULL },
         { NULL,             0,              false,  NULL,                                           "", NULL }
     };
 
