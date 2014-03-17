@@ -21466,3 +21466,52 @@ bool Player::ShowLowLevelQuest(){
     }
     return false;
 }
+
+void Player::EnchantItem(uint32 spellid, uint8 slot)
+{
+    Item* pItem = GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
+
+	if (spellid == 0)
+		return;
+
+    if (!pItem)
+    {
+        ChatHandler(GetSession()).PSendSysMessage("%s[VZ NPC]%s Dein Item konnte leider nicht verzaubert werden, da sich kein Item in dem angegebenen Slot befindet.",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
+        return;
+    }
+	/*Special cases für die Schilde, die sind doof ._.*/
+	if(pItem->GetProto()->Class == 4 && pItem->GetProto()->SubClass == 6)
+		if (spellid == 44383 || spellid == 34009 || spellid == 27945 || spellid == 27947 || spellid == 27946 || spellid == 20016 || spellid == 11224 || spellid == 13464 || spellid == 23530){}
+		else
+		{
+			ChatHandler(GetSession()).PSendSysMessage("%s[VZ NPC]%s Dein Item konnte nicht verzaubert werden, da ein falsches item angelegt ist.",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
+			return;
+		}
+    if (pItem->GetEntry() == 33681 || pItem->GetEntry() == 33736 || pItem->GetEntry() == 34033)
+	    return;
+
+    SpellEntry const* spellInfo = sSpellStore.LookupEntry(spellid);
+    if (!spellInfo)
+    {
+        ChatHandler(GetSession()).PSendSysMessage("Invalid spellid %u report to devs",spellid);
+        return;
+    }
+    uint32 enchantid = spellInfo->EffectMiscValue[0];
+    if (!enchantid)
+    {
+        ChatHandler(GetSession()).PSendSysMessage("Invalid enchantid %u report to devs", enchantid);
+        return;
+    }
+
+    if (!((1 << pItem->GetProto()->SubClass) & spellInfo->EquippedItemSubClassMask) &&
+        !((1 << pItem->GetProto()->InventoryType) & spellInfo->EquippedItemInventoryTypeMask))
+    {
+        ChatHandler(GetSession()).PSendSysMessage("%s[VZ NPC]%s Dein Item konnte nicht verzaubert werden, da ein falsches Item angelegt ist.",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
+        return;
+    }
+	//Item *item, EnchantmentSlot slot, bool apply, bool apply_dur, bool ignore_condition
+    ApplyEnchantment(pItem, PERM_ENCHANTMENT_SLOT, false);
+    pItem->SetEnchantment(PERM_ENCHANTMENT_SLOT, enchantid, 0, 0);
+    ApplyEnchantment(pItem, PERM_ENCHANTMENT_SLOT, true);
+	ChatHandler(GetSession()).PSendSysMessage("%s[VZ NPC]%s Dein Item wurde erfolgreich verzaubert!",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
+}
