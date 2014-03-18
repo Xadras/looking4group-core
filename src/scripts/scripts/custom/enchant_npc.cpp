@@ -266,7 +266,7 @@ bool GossipSelect_enchant_npc(Player* Player, Creature* Creature, uint32 sender,
 	return true;
 }
 
-void AddSC_custom_example()
+void AddSC_enchant_npc()
 {
 	Script *newscript;
 
