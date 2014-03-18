@@ -12,7 +12,7 @@ UPDATE `creature_template` SET `npcflag`='1', `scale`='0.5'	 WHERE (`entry`='100
 #include "Chat.h"
 #include "Player.h"
 
-bool GossipHello_custom_example(Player *Player, Creature *Creature)
+bool GossipHello_enchant_npc(Player *Player, Creature *Creature)
 {
 	if (Player->isInCombat())
 	{
@@ -40,7 +40,7 @@ bool GossipHello_custom_example(Player *Player, Creature *Creature)
 	return true;
 }
 
-bool GossipSelect_custom_example(Player* Player, Creature* Creature, uint32 sender, uint32 action)
+bool GossipSelect_enchant_npc(Player* Player, Creature* Creature, uint32 sender, uint32 action)
 {
 	if (Player->isInCombat())
 	{
@@ -257,11 +257,11 @@ bool GossipSelect_custom_example(Player* Player, Creature* Creature, uint32 send
 		Player->PlayerTalkClass->SendGossipMenu(1,Creature->GetGUID());
 	}
 	else if (action == GOSSIP_ACTION_INFO_DEF+0)
-		GossipHello_custom_example(Player,Creature);
+		GossipHello_enchant_npc(Player,Creature);
 	else
 	{
 		Player->EnchantItem(action,sender);
-		GossipHello_custom_example(Player,Creature);
+		GossipHello_enchant_npc(Player,Creature);
 	}
 	return true;
 }
@@ -271,8 +271,8 @@ void AddSC_custom_example()
 	Script *newscript;
 
 	newscript = new Script;
-	newscript->Name="custom_example";
-	newscript->pGossipHello =           &GossipHello_custom_example;
-	newscript->pGossipSelect =          &GossipSelect_custom_example;
+	newscript->Name="enchant_npc";
+	newscript->pGossipHello =           &GossipHello_enchant_npc;
+	newscript->pGossipSelect =          &GossipSelect_enchant_npc;
 	newscript->RegisterSelf();
 }
