@@ -730,7 +730,7 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
             {
                 Player->learnSpell(12180);
                 Player->SetSkill(197,300,300);
-                Player->AddItem(14314, 20);
+                Player->AddItem(14341, 20);
                 Player->ADD_GOSSIP_ITEM(0, "Weiter", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 31);
                 Player->PlayerTalkClass->SendGossipMenu(30019, Creature->GetGUID());
             }
