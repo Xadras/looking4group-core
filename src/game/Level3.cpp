@@ -7496,13 +7496,22 @@ bool ChatHandler::HandleCharacterImportCommand(const char* args)
     }
 
     //Give Items to player! - only put in bags so far...
-    QueryResultAutoPtr items = RealmDataDatabase.PQuery("SELECT item_template FROM character_inventory_b2tbc WHERE guid = %u", guid);
+    QueryResultAutoPtr items = RealmDataDatabase.PQuery("SELECT item_template, item FROM character_inventory_b2tbc WHERE guid = %u", guid);
     if (items)
     {
         do
         {
             Field* field = items->Fetch();
-            chr->AddItem(field[0].GetUInt32(), 1);
+            QueryResultAutoPtr amount = RealmDataDatabase.PQuery("SELECT CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(`data`, ' ', 14 + 1), ' ', -1) AS UNSIGNED) AS `amount` FROM `item_instance_b2tbc` where guid = '%u'", field[1].GetUInt32());
+            if (amount)
+            {
+                do
+                {
+                    Field* fields = amount->Fetch();
+                    chr->AddItem(field[0].GetUInt32(), fields[0].GetUInt32());
+                }
+                while (amount->NextRow());
+            }
         }
         while(items->NextRow());
     }
@@ -7565,13 +7574,22 @@ bool ChatHandler::HandleCharacterImportCommand(const char* args)
     }
 
     //Give Mail Items
-    QueryResultAutoPtr mail_item = RealmDataDatabase.PQuery("SELECT item_template FROM mail_items_b2tbc WHERE receiver = %u", guid);
+    QueryResultAutoPtr mail_item = RealmDataDatabase.PQuery("SELECT item_template, item_guid FROM mail_items_b2tbc WHERE receiver = %u", guid);
     if (mail_item)
     {
         do
         {
             Field* field = mail_item->Fetch();
-            chr->AddItem(field[0].GetUInt32(), 1);                
+            QueryResultAutoPtr amount = RealmDataDatabase.PQuery("SELECT CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(`data`, ' ', 14 + 1), ' ', -1) AS UNSIGNED) AS `amount` FROM `item_instance_b2tbc` where guid = '%u'", field[1].GetUInt32());
+            if (amount)
+            {
+                do
+                {
+                    Field* fields = amount->Fetch();
+                    chr->AddItem(field[0].GetUInt32(), fields[0].GetUInt32());
+                }
+                while (amount->NextRow());
+            }
         }
         while(mail_item->NextRow());
     }
@@ -7663,8 +7681,6 @@ bool ChatHandler::HandleChangeAccountCommand(const char* args)
 
     char* str_char_name = strtok((char*)args, " ");
     char* str_account_id = strtok(NULL, " ");
-    if (!str_account_id)
-        return false;
 
     uint64 account_id = atoi(str_account_id);
     if (!account_id)
