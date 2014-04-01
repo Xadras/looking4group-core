@@ -304,13 +304,13 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
             // and reseting equipment
             m_creature->LoadEquipment(m_creature->GetEquipmentId());
 
-            if(pInstance && pInstance->GetData64(DATA_LEOTHERAS_EVENT_STARTER))
-            {
+            //if(pInstance && pInstance->GetData64(DATA_LEOTHERAS_EVENT_STARTER))
+           // {
                 Unit *victim = Unit::GetUnit(*m_creature, pInstance->GetData64(DATA_LEOTHERAS_EVENT_STARTER));
                 if(victim)
                     m_creature->getThreatManager().addThreat(victim, 1);
                 StartEvent();
-            }
+            //}
         }
         else if(AliveChannelers != 0 && !m_creature->HasAura(AURA_BANISH, 0))
         {
