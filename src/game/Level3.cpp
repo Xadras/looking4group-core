@@ -7682,6 +7682,9 @@ bool ChatHandler::HandleChangeAccountCommand(const char* args)
     char* str_char_name = strtok((char*)args, " ");
     char* str_account_id = strtok(NULL, " ");
 
+    if (!str_account_id)
+        return false;
+
     uint64 account_id = atoi(str_account_id);
     if (!account_id)
         return false;
