@@ -39,6 +39,7 @@
 #include "WorldPacket.h"
 #include "ProgressBar.h"
 #include "GameEvent.h"
+#include "BattleGround.h"
 
 /*********************************************************/
 /***            BATTLEGROUND QUEUE SYSTEM              ***/
@@ -145,7 +146,7 @@ GroupQueueInfo * BattleGroundQueue::AddGroup(Player *leader, BattleGroundTypeId 
     ginfo->IsRated                   = isRated;
     ginfo->IsInvitedToBGInstanceGUID = 0;
     ginfo->JoinTime                  = WorldTimer::getMSTime();
-    ginfo->Team                      = leader->GetTeam();
+    ginfo->Team                      = leader->GetBGTeam();
     ginfo->ArenaTeamRating           = arenaRating;
     ginfo->HiddenRating              = hiddenRating;
     ginfo->OpponentsTeamRating       = 0;
@@ -277,7 +278,7 @@ void BattleGroundQueue::RemovePlayer(const uint64& guid, bool decreaseInvitedCou
             plr2->RemoveBattleGroundQueueId(bgQueueTypeId); // must be called this way, because if you move this call to
                                                             // queue->removeplayer, it causes bugs
             WorldPacket data;
-            sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, bg, plr2->GetTeam(), queueSlot, STATUS_NONE, 0, 0);
+            sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, bg, plr2->GetBGTeam(), queueSlot, STATUS_NONE, 0, 0);
             plr2->SendPacketToSelf(&data);
         }
         // then actually delete, this may delete the group as well!
@@ -320,7 +321,7 @@ bool BattleGroundQueue::InviteGroupToBG(GroupQueueInfo * ginfo, BattleGround * b
             DEBUG_LOG("Battleground: invited plr %s (%u) to BG instance %u queueindex %u bgtype %u, I can't help it if they don't press the enter battle button.",plr->GetName(),plr->GetGUIDLow(),bg->GetInstanceID(),queueSlot,bg->GetTypeID());
 
             // send status packet
-            sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, bg, side?side:plr->GetTeam(), queueSlot, STATUS_WAIT_JOIN, INVITE_ACCEPT_WAIT_TIME, 0);
+            sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, bg, side?side:plr->GetBGTeam(), queueSlot, STATUS_WAIT_JOIN, INVITE_ACCEPT_WAIT_TIME, 0);
             plr->SendPacketToSelf(&data);
         }
         return true;
@@ -549,7 +550,7 @@ bool BattleGroundQueue::CheckNormalMatch(BattleGround* bg_template, BattleGround
     if (m_SelectionPools[BG_TEAM_HORDE].GetPlayerCount() < m_SelectionPools[BG_TEAM_ALLIANCE].GetPlayerCount())
         j = BG_TEAM_HORDE;
     if( sWorld.getConfig(CONFIG_BATTLEGROUND_INVITATION_TYPE) != 0
-        && m_SelectionPools[BG_TEAM_HORDE].GetPlayerCount() >= minPlayers && m_SelectionPools[BG_TEAM_ALLIANCE].GetPlayerCount() >= minPlayers )
+        && ((m_SelectionPools[BG_TEAM_HORDE].GetPlayerCount() + m_SelectionPools[BG_TEAM_ALLIANCE].GetPlayerCount()) >= minPlayers*2) )
     {
         //we will try to invite more groups to team with less players indexed by j
         ++(itr_team[j]);                                         //this will not cause a crash, because for cycle above reached break;
@@ -567,7 +568,7 @@ bool BattleGroundQueue::CheckNormalMatch(BattleGround* bg_template, BattleGround
     if (sBattleGroundMgr.isTesting() && bg_template->isBattleGround() && (m_SelectionPools[BG_TEAM_ALLIANCE].GetPlayerCount() || m_SelectionPools[BG_TEAM_HORDE].GetPlayerCount()))
         return true;
     //return true if there are enough players in selection pools - enable to work .debug bg command correctly
-    return m_SelectionPools[BG_TEAM_ALLIANCE].GetPlayerCount() >= minPlayers && m_SelectionPools[BG_TEAM_HORDE].GetPlayerCount() >= minPlayers;
+    return ((m_SelectionPools[BG_TEAM_ALLIANCE].GetPlayerCount() + m_SelectionPools[BG_TEAM_HORDE].GetPlayerCount()) >= (minPlayers*2));
 }
 
 // this method will check if we can invite players to same faction skirmish match
@@ -1293,9 +1294,9 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
         else
         {
             Player *plr = sObjectMgr.GetPlayer(itr->first);
-            uint32 team = bg->GetPlayerTeam(itr->first);
+            uint32 team = plr->GetBGTeam();
             if (!team && plr)
-                team = plr->GetTeam();
+                team = plr->GetBGTeam();
             if (( bg->GetWinner()==0 && team == ALLIANCE ) || ( bg->GetWinner()==1 && team==HORDE ))
                 *data << uint8(1);
             else
@@ -1805,11 +1806,12 @@ void BattleGroundMgr::SendToBattleGround(Player *pl, uint32 instanceId, BattleGr
     BattleGround *bg = GetBattleGround(instanceId, bgTypeId);
     if (bg)
     {
+        HandleCrossfactionSendToBattle(pl, bg, instanceId, bgTypeId);
         uint32 mapid = bg->GetMapId();
         float x, y, z, O;
         uint32 team = pl->GetBGTeam();
         if (team==0)
-            team = pl->GetTeam();
+            team = pl->GetBGTeam();
         bg->GetTeamStartLoc(team, x, y, z, O);
 
         sLog.outDetail("BATTLEGROUND: Sending %s to map %u, X %f, Y %f, Z %f, O %f", pl->GetName(), mapid, x, y, z, O);
