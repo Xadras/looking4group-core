@@ -81,6 +81,17 @@ struct boss_doomlordkazzakAI : public BossAI
         events.ScheduleEvent(EVENT_TWIST_REFLECT, 33000);
 
         events.ScheduleEvent(EVENT_ENRAGE, 60000);
+
+        QueryResultAutoPtr resultWorldBossRespawn = QueryResultAutoPtr(NULL); 
+        resultWorldBossRespawn = GameDataDatabase.PQuery("SELECT RespawnTime FROM worldboss_respawn WHERE BossEntry = %i", m_creature->GetEntry());
+        if (resultWorldBossRespawn)
+        {
+            Field* fieldsWBR = resultWorldBossRespawn->Fetch();
+            uint64 last_time_killed = fieldsWBR[0].GetUInt64();
+            last_time_killed += 259200;
+            if (last_time_killed >= time(0))
+                me->DisappearAndDie();
+        }
     }
 
     void JustRespawned()
@@ -107,6 +118,7 @@ struct boss_doomlordkazzakAI : public BossAI
     void JustDied(Unit *victim)
     {
         DoScriptText(SAY_DEATH, me);
+        GameDataDatabase.PExecute("REPLACE INTO worldboss_respawn VALUES (%i, UNIX_TIMESTAMP())", m_creature->GetEntry());
     }
 
     void UpdateAI(const uint32 diff)

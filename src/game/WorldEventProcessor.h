@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 HellGround <http://www.hellground.pl/>
+ * Copyright (C) 2012 Looking4Group <http://www.looking4group.pl/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 
 class Player;
 
-class HELLGROUND_IMPORT_EXPORT WorldEvent
+class LOOKING4GROUP_IMPORT_EXPORT WorldEvent
 {
     public:
         WorldEvent(Player* player) : _owner(player) {}
@@ -39,7 +39,7 @@ class HELLGROUND_IMPORT_EXPORT WorldEvent
         Player* _owner;
 };
 
-class HELLGROUND_IMPORT_EXPORT WorldEventProcessor
+class LOOKING4GROUP_IMPORT_EXPORT WorldEventProcessor
 {
     friend class ACE_Singleton<WorldEventProcessor, ACE_Thread_Mutex>;
     WorldEventProcessor() {}

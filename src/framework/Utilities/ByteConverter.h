@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef HELLGROUND_BYTECONVERTER_H
-#define HELLGROUND_BYTECONVERTER_H
+#ifndef LOOKING4GROUP_BYTECONVERTER_H
+#define LOOKING4GROUP_BYTECONVERTER_H
 
 /** ByteConverter reverse your byte order.  This is use
     for cross platform where they have different endians.
@@ -46,7 +46,7 @@ namespace ByteConverter
     }
 }
 
-#if HELLGROUND_ENDIAN == HELLGROUND_BIGENDIAN
+#if LOOKING4GROUP_ENDIAN == LOOKING4GROUP_BIGENDIAN
 template<typename T> inline void EndianConvert(T& val) { ByteConverter::apply<T>(&val); }
 template<typename T> inline void EndianConvertReverse(T&) { }
 #else

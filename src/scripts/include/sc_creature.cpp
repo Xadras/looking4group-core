@@ -329,7 +329,7 @@ void ScriptedAI::CastNextSpellIfAnyAndReady(uint32 diff)
 
     bool casted = false;
 
-    if (m_creature->hasUnitState(UNIT_STAT_CASTING))
+    if (m_creature->hasUnitState(UNIT_STAT_CASTING) || me->IsNonMeleeSpellCasted(true))
         casted = true;
 
     if (!spellList.empty() && !casted)
@@ -369,7 +369,7 @@ void ScriptedAI::CastNextSpellIfAnyAndReady(uint32 diff)
             if (tempU && tempU->IsInWorld() && tempU->isAlive() && tempU->IsInMap(m_creature))
                 if (temp.spellId)
                 {
-                    if(temp.setAsTarget)
+                    if(temp.setAsTarget && !m_creature->hasIgnoreVictimSelection())
                         m_creature->SetSelection(temp.targetGUID);
                     if(temp.hasCustomValues)
                         m_creature->CastCustomSpell(tempU, temp.spellId, &temp.damage[0], &temp.damage[1], &temp.damage[2], temp.triggered);
@@ -435,7 +435,7 @@ void ScriptedAI::CastNextSpellIfAnyAndReady(uint32 diff)
                         }
                 }
 
-                if (victim)
+                if (victim && !m_creature->hasIgnoreVictimSelection())
                 {
                     m_creature->SetSelection(victim->GetGUID());    // for autocast always target actual victim
                     m_creature->CastSpell(victim, autocastId, false);
@@ -546,7 +546,7 @@ void ScriptedAI::ForceSpellCast(Unit *victim, uint32 spellId, interruptSpell int
             m_creature->InterruptNonMeleeSpells(false);
             break;
         case INTERRUPT_AND_CAST_INSTANTLY:
-            if(visualTarget)
+            if(visualTarget && !m_creature->hasIgnoreVictimSelection())
                 m_creature->SetSelection(victim->GetGUID());
 
             m_creature->CastSpell(victim, spellId, triggered);
@@ -571,7 +571,7 @@ void ScriptedAI::ForceSpellCastWithScriptText(Unit *victim, uint32 spellId, int3
             if (scriptTextEntry)
                 DoScriptText(scriptTextEntry, m_creature, victim);
 
-            if (visualTarget)
+            if (visualTarget && !m_creature->hasIgnoreVictimSelection())
                 m_creature->SetSelection(victim->GetGUID());
 
             m_creature->CastSpell(victim, spellId, triggered);
@@ -994,8 +994,8 @@ Unit* FindCreature(uint32 entry, float range, Unit* Finder)
         return NULL;
 
     Creature* target = NULL;
-    Hellground::AllCreaturesOfEntryInRange check(Finder, entry, range);
-    Hellground::ObjectSearcher<Creature, Hellground::AllCreaturesOfEntryInRange> searcher(target, check);
+    Looking4group::AllCreaturesOfEntryInRange check(Finder, entry, range);
+    Looking4group::ObjectSearcher<Creature, Looking4group::AllCreaturesOfEntryInRange> searcher(target, check);
 
     Cell::VisitAllObjects(Finder, searcher, range);
     return target;
@@ -1006,8 +1006,8 @@ GameObject* FindGameObject(uint32 entry, float range, Unit* Finder)
     if(!Finder)
         return NULL;
     GameObject* target = NULL;
-    Hellground::AllGameObjectsWithEntryInGrid go_check(entry);
-    Hellground::ObjectSearcher<GameObject, Hellground::AllGameObjectsWithEntryInGrid> searcher(target, go_check);
+    Looking4group::AllGameObjectsWithEntryInGrid go_check(entry);
+    Looking4group::ObjectSearcher<GameObject, Looking4group::AllGameObjectsWithEntryInGrid> searcher(target, go_check);
     Cell::VisitGridObjects(Finder, searcher, range);
     return target;
 }
@@ -1115,8 +1115,8 @@ void BossAI::SummonedCreatureDespawn(Creature *summon)
 Creature* GetClosestCreatureWithEntry(WorldObject* pSource, uint32 Entry, float MaxSearchRange, bool alive, bool inLoS)
 {
     Creature *pCreature = NULL;
-    Hellground::NearestCreatureEntryWithLiveStateInObjectRangeCheck creature_check(*pSource, Entry, alive, MaxSearchRange, inLoS);
-    Hellground::ObjectLastSearcher<Creature, Hellground::NearestCreatureEntryWithLiveStateInObjectRangeCheck> searcher(pCreature, creature_check);
+    Looking4group::NearestCreatureEntryWithLiveStateInObjectRangeCheck creature_check(*pSource, Entry, alive, MaxSearchRange, inLoS);
+    Looking4group::ObjectLastSearcher<Creature, Looking4group::NearestCreatureEntryWithLiveStateInObjectRangeCheck> searcher(pCreature, creature_check);
 
     Cell::VisitGridObjects(pSource, searcher, MaxSearchRange);
     return pCreature;
@@ -1125,8 +1125,8 @@ Creature* GetClosestCreatureWithEntry(WorldObject* pSource, uint32 Entry, float 
 GameObject* GetClosestGameObjectWithEntry(WorldObject* source, uint32 entry, float maxSearchRange)
 {
     GameObject *pGameObject = NULL;
-    Hellground::NearestGameObjectEntryInObjectRangeCheck go_check(*source, entry, maxSearchRange);
-    Hellground::ObjectLastSearcher<GameObject, Hellground::NearestGameObjectEntryInObjectRangeCheck> searcher(pGameObject, go_check);
+    Looking4group::NearestGameObjectEntryInObjectRangeCheck go_check(*source, entry, maxSearchRange);
+    Looking4group::ObjectLastSearcher<GameObject, Looking4group::NearestGameObjectEntryInObjectRangeCheck> searcher(pGameObject, go_check);
 
     Cell::VisitGridObjects(source, searcher, maxSearchRange);
     return pGameObject;
@@ -1149,7 +1149,7 @@ Player* GetClosestPlayer(WorldObject* source, float maxSearchRange)
 {
     Player* player = NULL;
     AnyAlivePlayerExceptGm check(source);
-    Hellground::ObjectSearcher<Player, AnyAlivePlayerExceptGm> checker(player, check);
+    Looking4group::ObjectSearcher<Player, AnyAlivePlayerExceptGm> checker(player, check);
 
     Cell::VisitWorldObjects(source, checker, maxSearchRange);
     return player;

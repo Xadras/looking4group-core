@@ -95,11 +95,10 @@ typedef UNORDERED_MAP<uint32/*cell_id*/,CellObjectGuids> CellObjectGuidsMap;
 typedef UNORDERED_MAP<uint32/*(mapid,spawnMode) pair*/,CellObjectGuidsMap> MapObjectGuids;
 
 typedef UNORDERED_MAP<uint64/*(instance,guid) pair*/,time_t> RespawnTimes;
-typedef UNORDERED_MAP<uint32,time_t> GuildCooldowns;
 
 // trinity string ranges
-#define MIN_HELLGROUND_STRING_ID           1                    // 'HELLGROUND_string'
-#define MAX_HELLGROUND_STRING_ID           2000000000
+#define MIN_LOOKING4GROUP_STRING_ID           1                    // 'LOOKING4GROUP_string'
+#define MAX_LOOKING4GROUP_STRING_ID           2000000000
 
 #define MIN_CREATURE_AI_TEXT_STRING_ID (-1)                 // 'creature_ai_texts'
 #define MAX_CREATURE_AI_TEXT_STRING_ID (-1000000)
@@ -118,7 +117,7 @@ typedef UNORDERED_MAP<uint32,ItemLocale> ItemLocaleMap;
 typedef UNORDERED_MAP<uint32,QuestLocale> QuestLocaleMap;
 typedef UNORDERED_MAP<uint32,NpcTextLocale> NpcTextLocaleMap;
 typedef UNORDERED_MAP<uint32,PageTextLocale> PageTextLocaleMap;
-typedef UNORDERED_MAP<uint32,TrinityStringLocale> HellgroundStringLocaleMap;
+typedef UNORDERED_MAP<uint32,TrinityStringLocale> Looking4groupStringLocaleMap;
 typedef UNORDERED_MAP<uint32,NpcOptionLocale> NpcOptionLocaleMap;
 typedef UNORDERED_MAP<uint16,ShortIntervalTimer> OpcodesCooldown;
 
@@ -248,7 +247,7 @@ SkillRangeType GetSkillRangeType(SkillLineEntry const *pSkill, bool racial);
 
 bool normalizePlayerName(std::string& name);
 
-struct HELLGROUND_IMPORT_EXPORT LanguageDesc
+struct LOOKING4GROUP_IMPORT_EXPORT LanguageDesc
 {
     Language lang_id;
     uint32   spell_id;
@@ -256,7 +255,7 @@ struct HELLGROUND_IMPORT_EXPORT LanguageDesc
 };
 
 extern LanguageDesc lang_description[LANGUAGES_COUNT];
-HELLGROUND_IMPORT_EXPORT LanguageDesc const* GetLanguageDescByID(uint32 lang);
+LOOKING4GROUP_IMPORT_EXPORT LanguageDesc const* GetLanguageDescByID(uint32 lang);
 
 class ObjectMgr
 {
@@ -270,7 +269,6 @@ class ObjectMgr
 
         typedef std::set< Group * > GroupSet;
 
-        typedef UNORDERED_MAP<uint32, Guild *> GuildMap;
         typedef UNORDERED_MAP<uint32, ArenaTeam*> ArenaTeamMap;
         typedef UNORDERED_MAP<uint32, Quest*> QuestMap;
         typedef UNORDERED_MAP<uint32, AreaTrigger> AreaTriggerMap;
@@ -298,14 +296,6 @@ class ObjectMgr
         void RemoveGroup(Group* group) { mGroupSet.erase(group); }
         GroupSet::iterator GetGroupSetBegin() { return mGroupSet.begin(); }
         GroupSet::iterator GetGroupSetEnd()   { return mGroupSet.end(); }
-
-
-        Guild* GetGuildByLeader(uint64 const&guid) const;
-        Guild* GetGuildById(const uint32 GuildId) const;
-        Guild* GetGuildByName(const std::string& guildname) const;
-        std::string GetGuildNameById(const uint32 GuildId) const;
-        void AddGuild(Guild* guild);
-        void RemoveGuild(uint32 Id);
 
         ArenaTeam* GetArenaTeamById(const uint32 arenateamid) const;
         ArenaTeam* GetArenaTeamByName(const std::string& arenateamname) const;
@@ -449,7 +439,6 @@ class ObjectMgr
             return NULL;
         }
 
-        void LoadGuilds();
         void LoadArenaTeams();
         void LoadGroups();
         void LoadQuests();
@@ -472,8 +461,8 @@ class ObjectMgr
 
         void LoadTransportEvents();
 
-        bool LoadHellgroundStrings(DatabaseType& db, char const* table, int32 min_value, int32 max_value);
-        bool LoadHellgroundStrings() { return LoadHellgroundStrings(GameDataDatabase,"hellground_string",MIN_HELLGROUND_STRING_ID,MAX_HELLGROUND_STRING_ID); }
+        bool LoadLooking4groupStrings(DatabaseType& db, char const* table, int32 min_value, int32 max_value);
+        bool LoadLooking4groupStrings() { return LoadLooking4groupStrings(GameDataDatabase,"looking4group_string",MIN_LOOKING4GROUP_STRING_ID,MAX_LOOKING4GROUP_STRING_ID); }
 
         void LoadPetCreateSpells();
         void LoadCreatureLocales();
@@ -483,7 +472,6 @@ class ObjectMgr
         bool CheckCreatureLinkedRespawn(uint32 guid, uint32 linkedGuid) const;
         bool SetCreatureLinkedRespawn(uint32 guid, uint32 linkedGuid);
         void LoadCreatureRespawnTimes();
-        void LoadGuildAnnCooldowns();
         void LoadUnqueuedAccountList();
         bool IsUnqueuedAccount(uint64 accid);
         void LoadCreatureAddons();
@@ -552,7 +540,6 @@ class ObjectMgr
         uint32 GenerateItemTextID();
         uint32 GeneratePetNumber();
         uint32 GenerateArenaTeamId();
-        uint32 GenerateGuildId();
 
         uint32 CreateItemText(std::string text);
         std::string GetItemText(uint32 id)
@@ -669,8 +656,8 @@ class ObjectMgr
 
         TrinityStringLocale const* GetTrinityStringLocale(int32 entry) const
         {
-            HellgroundStringLocaleMap::const_iterator itr = mHellgroundStringLocaleMap.find(entry);
-            if (itr==mHellgroundStringLocaleMap.end()) return NULL;
+            Looking4groupStringLocaleMap::const_iterator itr = mLooking4groupStringLocaleMap.find(entry);
+            if (itr==mLooking4groupStringLocaleMap.end()) return NULL;
             return &itr->second;
         }
         const char *GetTrinityString(int32 entry, int locale_idx) const;
@@ -686,9 +673,6 @@ class ObjectMgr
         time_t GetGORespawnTime(uint32 loguid, uint32 instance) { return mGORespawnTimes[MAKE_PAIR64(loguid,instance)]; }
         void SaveGORespawnTime(uint32 loguid, uint32 instance, time_t t);
         void DeleteRespawnTimeForInstance(uint32 instance);
-
-        time_t GetGuildAnnCooldown(uint32 guild_id) { return mGuildCooldownTimes[guild_id]; }
-        void SaveGuildAnnCooldown(uint32 guild_id);
 
         // grid objects
         void AddCreatureToGrid(uint32 guid, CreatureData const* data);
@@ -720,8 +704,6 @@ class ObjectMgr
 
         int GetIndexForLocale(LocaleConstant loc);
         LocaleConstant GetLocaleForIndex(int i);
-        // guild bank tabs
-        uint32 GetGuildBankTabPrice(uint8 Index) const { return Index < GUILD_BANK_MAX_TABS ? mGuildBankTabPrice[Index] : 0; }
 
         uint16 GetConditionId(ConditionType condition, uint32 value1, uint32 value2);
         bool IsPlayerMeetToCondition(Player const* player, uint16 condition_id) const
@@ -782,7 +764,6 @@ class ObjectMgr
         uint32 m_mailid;
         uint32 m_ItemTextId;
         uint32 m_arenaTeamId;
-        uint32 m_guildId;
         uint32 m_hiPetNumber;
 
         // first free low guid for seelcted guid type
@@ -794,7 +775,7 @@ class ObjectMgr
         uint32 m_hiDoGuid;
         uint32 m_hiCorpseGuid;
 
-        QuestMap            mQuestTemplates;
+        QuestMap                mQuestTemplates;
 
         typedef UNORDERED_MAP<uint32, GossipText> GossipTextMap;
         typedef UNORDERED_MAP<uint32, uint32> QuestAreaTriggerMap;
@@ -802,41 +783,40 @@ class ObjectMgr
         typedef std::set<uint32> TavernAreaTriggerSet;
         typedef std::set<uint32> GameObjectForQuestSet;
 
-        GroupSet            mGroupSet;
-        GuildMap            mGuildMap;
-        ArenaTeamMap        mArenaTeamMap;
+        GroupSet                mGroupSet;
+        ArenaTeamMap            mArenaTeamMap;
 
-        ItemTextMap         mItemTexts;
+        ItemTextMap             mItemTexts;
 
-        QuestAreaTriggerMap mQuestAreaTriggerMap;
-        TavernAreaTriggerSet mTavernAreaTriggerSet;
-        GossipTextMap       mGossipText;
-        AreaTriggerMap      mAreaTriggers;
-        AccessRequirementMap  mAccessRequirements;
+        QuestAreaTriggerMap     mQuestAreaTriggerMap;
+        TavernAreaTriggerSet    mTavernAreaTriggerSet;
+        GossipTextMap           mGossipText;
+        AreaTriggerMap          mAreaTriggers;
+        AccessRequirementMap    mAccessRequirements;
 
-        RepRewardRateMap    m_RepRewardRateMap;
-        RepOnKillMap        mRepOnKill;
+        RepRewardRateMap        m_RepRewardRateMap;
+        RepOnKillMap            mRepOnKill;
         RepSpilloverTemplateMap m_RepSpilloverTemplateMap;
 
-        WeatherZoneMap      mWeatherZoneMap;
+        WeatherZoneMap          mWeatherZoneMap;
 
-        PetCreateSpellMap   mPetCreateSpell;
+        PetCreateSpellMap       mPetCreateSpell;
 
         //character reserved names
         typedef std::set<std::string> ReservedNamesMap;
-        ReservedNamesMap    m_ReservedNames;
+        ReservedNamesMap        m_ReservedNames;
 
-        std::set<uint32>    m_DisabledPlayerSpells;
-        std::set<uint32>    m_DisabledCreatureSpells;
-        std::set<uint32>    m_DisabledPetSpells;
-        std::set<uint64>    m_UnqueuedAccounts;
+        std::set<uint32>        m_DisabledPlayerSpells;
+        std::set<uint32>        m_DisabledCreatureSpells;
+        std::set<uint32>        m_DisabledPetSpells;
+        std::set<uint64>        m_UnqueuedAccounts;
 
-        GraveYardMap        mGraveYardMap;
+        GraveYardMap            mGraveYardMap;
 
-        GameTeleMap         m_GameTeleMap;
+        GameTeleMap             m_GameTeleMap;
 
-        typedef             std::vector<LocaleConstant> LocalForIndex;
-        LocalForIndex        m_LocalForIndex;
+        typedef                 std::vector<LocaleConstant> LocalForIndex;
+        LocalForIndex           m_LocalForIndex;
         int GetOrNewIndexForLocale(LocaleConstant loc);
 
         int DBCLocaleIndex;
@@ -874,16 +854,12 @@ class ObjectMgr
         QuestLocaleMap mQuestLocaleMap;
         NpcTextLocaleMap mNpcTextLocaleMap;
         PageTextLocaleMap mPageTextLocaleMap;
-        HellgroundStringLocaleMap mHellgroundStringLocaleMap;
+        Looking4groupStringLocaleMap mLooking4groupStringLocaleMap;
         NpcOptionLocaleMap mNpcOptionLocaleMap;
         RespawnTimes mCreatureRespawnTimes;
         RespawnTimes mGORespawnTimes;
 
-        GuildCooldowns mGuildCooldownTimes;
         OpcodesCooldown _opcodesCooldown;
-
-        typedef std::vector<uint32> GuildBankTabPriceMap;
-        GuildBankTabPriceMap mGuildBankTabPrice;
 
         // Storage for Conditions. First element (index 0) is reserved for zero-condition (nothing required)
         typedef std::vector<PlayerCondition> ConditionStore;
@@ -898,10 +874,10 @@ class ObjectMgr
 #define sObjectMgr (*ACE_Singleton<ObjectMgr, ACE_Null_Mutex>::instance())
 
 // scripting access functions
-HELLGROUND_IMPORT_EXPORT bool LoadHellgroundStrings(DatabaseType& db, char const* table,int32 start_value = MAX_CREATURE_AI_TEXT_STRING_ID, int32 end_value = std::numeric_limits<int32>::min());
-HELLGROUND_IMPORT_EXPORT GameObjectInfo const *GetGameObjectInfo(uint32 id);
-HELLGROUND_IMPORT_EXPORT CreatureInfo const *GetCreatureInfo(uint32 id);
-HELLGROUND_IMPORT_EXPORT CreatureInfo const* GetCreatureTemplateStore(uint32 entry);
-HELLGROUND_IMPORT_EXPORT Quest const* GetQuestTemplateStore(uint32 entry);
+LOOKING4GROUP_IMPORT_EXPORT bool LoadLooking4groupStrings(DatabaseType& db, char const* table,int32 start_value = MAX_CREATURE_AI_TEXT_STRING_ID, int32 end_value = std::numeric_limits<int32>::min());
+LOOKING4GROUP_IMPORT_EXPORT GameObjectInfo const *GetGameObjectInfo(uint32 id);
+LOOKING4GROUP_IMPORT_EXPORT CreatureInfo const *GetCreatureInfo(uint32 id);
+LOOKING4GROUP_IMPORT_EXPORT CreatureInfo const* GetCreatureTemplateStore(uint32 entry);
+LOOKING4GROUP_IMPORT_EXPORT Quest const* GetQuestTemplateStore(uint32 entry);
 
 #endif

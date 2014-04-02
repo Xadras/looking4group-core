@@ -102,6 +102,7 @@ class ChatHandler
         bool HandleAccountSetAddonCommand(const char* args);
         bool HandleAccountSetPermissionsCommand(const char* args);
         bool HandleAccountSetPasswordCommand(const char* args);
+        bool HandleAccountSetMultiaccCommand(const char* args);
         bool HandleAccountWeatherCommand(const char*args);
         bool HandleAccountSpecialLogCommand(const char* args);
         bool HandleAccountWhispLogCommand(const char* args);
@@ -110,6 +111,7 @@ class ChatHandler
         bool HandleAccountXPToggleCommand(const char* args);
         bool HandleAccountBattleGroundAnnCommand(const char* args);
         bool HandleAccountAnnounceBroadcastCommand(const char* args);
+        bool HandleAccountDelMultiaccCommand(const char* args);
 
         bool HandleBanAccountCommand(const char* args);
         bool HandleBanCharacterCommand(const char* args);
@@ -250,6 +252,7 @@ class ChatHandler
         bool HandleLookupItemSetCommand(const char * args);
         bool HandleLookupObjectCommand(const char* args);
         bool HandleLookupPlayerIpCommand(const char* args);
+        bool HandleLookupPlayerIpListCommand(const char* args);
         bool HandleLookupPlayerAccountCommand(const char* args);
         bool HandleLookupPlayerEmailCommand(const char* args);
         bool HandleLookupQuestCommand(const char* args);
@@ -353,7 +356,7 @@ class ChatHandler
         bool HandleReloadLootTemplatesReferenceCommand(const char* args);
         bool HandleReloadLootTemplatesQuestMailCommand(const char* args);
         bool HandleReloadLootTemplatesSkinningCommand(const char* args);
-        bool HandleReloadHellgroundStringCommand(const char* args);
+        bool HandleReloadLooking4groupStringCommand(const char* args);
         bool HandleReloadNpcGossipCommand(const char* args);
         bool HandleReloadNpcOptionCommand(const char* args);
         bool HandleReloadNpcTrainerCommand(const char* args);
@@ -435,6 +438,9 @@ class ChatHandler
 
         bool HandleAddVIPAccountCommand(const char* args);
         bool HandleDelVIPAccountCommand(const char* args);
+
+        bool HandleCharacterImportCommand(const char* args);
+        bool HandleChangeAccountCommand(const char* args);
 
         bool HandleWpAddCommand(const char* args);
         bool HandleWpEventCommand(const char* args);
@@ -534,6 +540,7 @@ class ChatHandler
         bool HandleGroupRemoveCommand(const char* args);
 
         bool HandleBankCommand(const char* args);
+        bool HandleShowLowLevelQuestCommand(const char* args);
         bool HandleChangeWeather(const char* args);
         bool HandleKickPlayerCommand(const char * args);
 

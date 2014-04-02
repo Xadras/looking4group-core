@@ -1,4 +1,4 @@
-/* Copyright (C) 2008 - 2010 HellgroundDev <http://gamefreedom.pl/>
+/* Copyright (C) 2008 - 2010 Looking4groupDev <http://gamefreedom.pl/>
 *
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -335,8 +335,8 @@ struct npc_ice_spear_bunnyAI : public Scripted_NoMovementAI
     {
         std::list<Unit*> PlayerList;
         uint32 knockbackRadius = 3;
-        Hellground::AnyUnitInObjectRangeCheck  check(me, knockbackRadius);
-        Hellground::UnitListSearcher<Hellground::AnyUnitInObjectRangeCheck > searcher(PlayerList, check);
+        Looking4group::AnyUnitInObjectRangeCheck  check(me, knockbackRadius);
+        Looking4group::UnitListSearcher<Looking4group::AnyUnitInObjectRangeCheck > searcher(PlayerList, check);
         Cell::VisitWorldObjects(me, searcher, knockbackRadius);
 
         for(std::list<Unit*>::iterator i = PlayerList.begin(); i != PlayerList.end(); i++)

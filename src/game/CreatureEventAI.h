@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef HELLGROUND_CREATURE_EAI_H
-#define HELLGROUND_CREATURE_EAI_H
+#ifndef LOOKING4GROUP_CREATURE_EAI_H
+#define LOOKING4GROUP_CREATURE_EAI_H
 
 #include "Common.h"
 #include "Creature.h"
@@ -603,7 +603,7 @@ struct CreatureEventAIHolder
     bool UpdateRepeatTimer(Creature* creature, uint32 repeatMin, uint32 repeatMax);
 };
 
-class HELLGROUND_IMPORT_EXPORT CreatureEventAI : public CreatureAI
+class LOOKING4GROUP_IMPORT_EXPORT CreatureEventAI : public CreatureAI
 {
 
     public:

@@ -28,7 +28,7 @@ namespace Movement
 {
     /*  Initializes and launches spline movement
      */
-    class HELLGROUND_IMPORT_EXPORT MoveSplineInit
+    class LOOKING4GROUP_IMPORT_EXPORT MoveSplineInit
     {
     public:
 
@@ -110,18 +110,19 @@ namespace Movement
 
     inline void MoveSplineInit::MoveTo(const Vector3& dest, bool generatePath, bool forceDestination)
     {
-        if(generatePath)
+        if (generatePath)
         {
             PathFinder path(&unit);
-            path.calculate(dest.x, dest.y, dest.z, forceDestination);
-            MovebyPath(path.getPath());
+            bool result = path.calculate(dest.x, dest.y, dest.z, forceDestination);
+            if (result && path.getPathType() & ~PATHFIND_NOPATH)
+            {
+                MovebyPath(path.getPath());
+                return;
+            }
         }
-        else
-        {
-            args.path_Idx_offset = 0;
-            args.path.resize(2);
-            args.path[1] = dest;
-        }
+        args.path_Idx_offset = 0;
+        args.path.resize(2);
+        args.path[1] = dest;
     }
 
     inline void MoveSplineInit::SetFacing(Vector3 const& spot)

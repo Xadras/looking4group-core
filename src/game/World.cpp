@@ -66,6 +66,7 @@
 #include "CreatureEventAIMgr.h"
 #include "WardenDataStorage.h"
 #include "WorldEventProcessor.h"
+#include "GuildMgr.h"
 
 //#include "Timer.h"
 
@@ -1179,8 +1180,8 @@ void World::SetInitialWorldSettings()
 
     ///- Loading strings. Getting no records means core load has to be canceled because no error message can be output.
     sLog.outString("");
-    sLog.outString("Loading Hellground strings...");
-    if (!sObjectMgr.LoadHellgroundStrings())
+    sLog.outString("Loading Looking4group strings...");
+    if (!sObjectMgr.LoadLooking4groupStrings())
         exit(1);                                            // Error message displayed in function already
 
     ///- Update the realm entry in the database with the realm type from the config file
@@ -1411,7 +1412,7 @@ void World::SetInitialWorldSettings()
     sAuctionMgr.LoadAuctions();
 
     sLog.outString("Loading Guilds...");
-    sObjectMgr.LoadGuilds();
+    sGuildMgr.LoadGuilds();
 
     sLog.outString("Loading ArenaTeams...");
     sObjectMgr.LoadArenaTeams();
@@ -1484,7 +1485,7 @@ void World::SetInitialWorldSettings()
     sCreatureEAIMgr.LoadCreatureEventAI_Scripts();
 
     sLog.outString("Initializing Scripts...");
-    sScriptMgr.LoadScriptLibrary(HELLGROUND_SCRIPT_NAME);
+    sScriptMgr.LoadScriptLibrary(LOOKING4GROUP_SCRIPT_NAME);
 
     ///- Initialize game time and timers
     sLog.outDebug("DEBUG:: Initialize game time and timers");
@@ -1841,7 +1842,7 @@ void World::Update(uint32 diff)
         if (!m_GuildAnnounces[0].empty())
         {
             std::list<std::pair<uint64, std::string> >::iterator itr = m_GuildAnnounces[0].begin();
-            std::string guildName = sObjectMgr.GetGuildNameById(PAIR64_LOPART(itr->first));
+            std::string guildName = sGuildMgr.GetGuildNameById(PAIR64_LOPART(itr->first));
 
             sWorld.SendGuildAnnounce(PAIR64_HIPART(itr->first), guildName.c_str(), itr->second.c_str());
             m_GuildAnnounces[0].pop_front();
@@ -1850,7 +1851,7 @@ void World::Update(uint32 diff)
         if (!m_GuildAnnounces[1].empty())
         {
             std::list<std::pair<uint64, std::string> >::iterator itr = m_GuildAnnounces[1].begin();
-            std::string guildName = sObjectMgr.GetGuildNameById(PAIR64_LOPART(itr->first));
+            std::string guildName = sGuildMgr.GetGuildNameById(PAIR64_LOPART(itr->first));
 
             sWorld.SendGuildAnnounce(PAIR64_HIPART(itr->first), guildName.c_str(), itr->second.c_str());
             m_GuildAnnounces[1].pop_front();
@@ -2098,7 +2099,7 @@ void World::SendWorldText(int32 string_id, uint32 preventFlags, ...)
             char buf[1000];
 
             va_list argptr;
-            va_start(argptr, string_id);
+            va_start(argptr, preventFlags);
             vsnprintf(buf,1000, text, argptr);
             va_end(argptr);
 

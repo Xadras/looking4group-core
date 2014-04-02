@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef HELLGROUND_GRIDSTATES_H
-#define HELLGROUND_GRIDSTATES_H
+#ifndef LOOKING4GROUP_GRIDSTATES_H
+#define LOOKING4GROUP_GRIDSTATES_H
 
 #include "Map.h"
 #include "Object.h"
@@ -27,7 +27,7 @@
 class GridState
 {
     public:
-#ifdef HELLGROUND_DEBUG
+#ifdef LOOKING4GROUP_DEBUG
 #define MAGIC_TESTVAL 0xFBE823BA
         GridState() { i_Magic = MAGIC_TESTVAL; }
         bool checkMagic()

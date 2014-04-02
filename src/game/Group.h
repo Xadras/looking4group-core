@@ -43,6 +43,15 @@ enum RollVote
     NOT_VALID         = 4
 };
 
+enum GroupMemberFlags
+{
+    MEMBER_FLAG_NONE        = 0x00,
+    MEMBER_FLAG_ASSISTANT   = 0x01,
+    MEMBER_FLAG_MAINTANK    = 0x02,
+    MEMBER_FLAG_MAINASSIST  = 0x04
+};
+
+
 enum GroupMemberOnlineStatus
 {
     MEMBER_STATUS_OFFLINE   = 0x0000,
@@ -140,7 +149,7 @@ struct GroupMemberSlot
 
 /** request member stats checken **/
 /** todo: uninvite people that not accepted invite **/
-class HELLGROUND_IMPORT_EXPORT Group
+class LOOKING4GROUP_IMPORT_EXPORT Group
 {
     public:
 
@@ -243,6 +252,7 @@ class HELLGROUND_IMPORT_EXPORT Group
         GroupReference* GetFirstMember() { return m_memberMgr.getFirst(); }
         uint32 GetMembersCount() const { return m_memberSlots.size(); }
         void GetDataForXPAtKill(Unit const* victim, uint32& count,uint32& sum_level, Player* & member_with_max_level, Player* & not_gray_member_with_max_level);
+        uint8 GetMemberFlags(member_citerator &citr) const;
         uint8  GetMemberGroup(uint64 guid) const
         {
             member_citerator mslot = _getMemberCSlot(guid);

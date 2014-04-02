@@ -62,6 +62,35 @@ typedef std::deque<Mail*> PlayerMails;
 
 #define PLAYER_MAX_SKILLS       127
 
+//lovely colors :>
+#define MSG_COLOR_LIGHTRED     "|cffff6060"
+#define MSG_COLOR_LIGHTBLUE    "|cff00ccff"
+#define MSG_COLOR_ANN_GREEN    "|c1f40af20"
+#define MSG_COLOR_RED          "|cffff0000"
+#define MSG_COLOR_GOLD         "|cffffcc00"
+#define MSG_COLOR_SUBWHITE     "|cffbbbbbb"
+#define MSG_COLOR_MAGENTA      "|cffff00ff"
+#define MSG_COLOR_YELLOW       "|cffffff00"
+#define MSG_COLOR_CYAN         "|cff00ffff"
+#define MSG_COLOR_DARKBLUE     "|cff0000ff"
+
+#define MSG_COLOR_GREY         "|cff9d9d9d"
+#define MSG_COLOR_WHITE        "|cffffffff"
+#define MSG_COLOR_GREEN        "|cff1eff00"
+#define MSG_COLOR_BLUE         "|cff0080ff"
+#define MSG_COLOR_PURPLE       "|cffb048f8"
+#define MSG_COLOR_ORANGE       "|cffff8000"
+
+#define MSG_COLOR_DRUID        "|cffff7d0a"
+#define MSG_COLOR_HUNTER       "|cffabd473"
+#define MSG_COLOR_MAGE         "|cff69ccf0"
+#define MSG_COLOR_PALADIN      "|cfff58cba"
+#define MSG_COLOR_PRIEST       "|cffffffff"
+#define MSG_COLOR_ROGUE        "|cfffff569"
+#define MSG_COLOR_SHAMAN       "|cff0070de"
+#define MSG_COLOR_WARLOCK      "|cff9482c9"
+#define MSG_COLOR_WARRIOR      "|cffc79c6e"
+
 // Note: SPELLMOD_* values is aura types in fact
 enum SpellModType
 {
@@ -830,7 +859,7 @@ struct InstancePlayerBind
     /* permanent PlayerInstanceBinds are created in Raid/Heroic instances for players
        that aren't already permanently bound when they are inside when a boss is killed
        or when they enter an instance that the group leader is permanently bound to. */
-    InstancePlayerBind() : save(NULL), perm(false) {}
+    InstancePlayerBind() : save(nullptr), perm(false) {}
 };
 
 struct AccessRequirement
@@ -849,7 +878,7 @@ struct AccessRequirement
     std::string missingAuraText;
 };
 
-class HELLGROUND_IMPORT_EXPORT PlayerTaxi
+class LOOKING4GROUP_IMPORT_EXPORT PlayerTaxi
 {
     public:
         PlayerTaxi();
@@ -912,7 +941,7 @@ class HELLGROUND_IMPORT_EXPORT PlayerTaxi
         std::deque<uint32> m_TaxiDestinations;
 };
 
-class HELLGROUND_EXPORT Player : public Unit
+class LOOKING4GROUP_EXPORT Player : public Unit
 {
     friend class WorldSession;
     friend void Item::AddToUpdateQueueOf(Player *player);
@@ -1047,7 +1076,7 @@ class HELLGROUND_EXPORT Player : public Unit
         void UpdateInnerTime (int time) { time_inn_enter = time; };
 
         Pet* SummonPet(uint32 entry, float x, float y, float z, float ang, PetType petType, uint32 despwtime);
-        void RemovePet(Pet* pet, PetSaveMode mode, bool returnreagent = false);
+        void RemovePet(Pet* pet, PetSaveMode mode, bool returnreagent = false, bool isDying = false);
         void RemoveMiniPet();
         Pet* GetMiniPet();
         void SetMiniPet(Pet* pet) { m_miniPet = pet->GetGUID(); }
@@ -1190,6 +1219,7 @@ class HELLGROUND_EXPORT Player : public Unit
         void ApplyEnchantment(Item *item,EnchantmentSlot slot,bool apply, bool apply_dur = true, bool ignore_condition = false);
         void ApplyEnchantment(Item *item,bool apply);
         void SendEnchantmentDurations();
+        void EnchantItem(uint32 spellid, uint8 slot); //Neue enchant funktion für den NPC :>
         void AddItemDurations(Item *item);
         void RemoveItemDurations(Item *item);
         void SendItemDurations();
@@ -1506,7 +1536,7 @@ class HELLGROUND_EXPORT Player : public Unit
         }
         void AddSpellCooldown(uint32 spell_id, uint32 itemid, time_t end_time);
         void SendCooldownEvent(SpellEntry const *spellInfo);
-        void ProhibitSpellScholl(SpellSchoolMask idSchoolMask, uint32 unTimeMs);
+        void ProhibitSpellSchool(SpellSchoolMask idSchoolMask, uint32 unTimeMs);
         void RemoveSpellCooldown(uint32 spell_id, bool update = false);
         void RemoveArenaSpellCooldowns();
         void RemoveAllSpellCooldown();
@@ -2217,6 +2247,7 @@ class HELLGROUND_EXPORT Player : public Unit
 
         Camera& GetCamera() { return m_camera; }
         bool StopLevel(uint64 charid);
+        bool ShowLowLevelQuest();
 
         void SendItemByMail(Player *plr,uint32 item, uint32 count);
 

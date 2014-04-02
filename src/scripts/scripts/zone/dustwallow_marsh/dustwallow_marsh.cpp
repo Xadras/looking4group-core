@@ -266,13 +266,7 @@ bool GossipSelect_npc_nat_pagle(Player *player, Creature *_Creature, uint32 send
 
 struct npc_theramore_combat_dummyAI : public Scripted_NoMovementAI
 {
-    npc_theramore_combat_dummyAI(Creature *c) : Scripted_NoMovementAI(c)
-    {
-        // niech ktoœ to przepisze na zapytanie plx
-        CreatureInfo *cInfo = (CreatureInfo *)m_creature->GetCreatureInfo();
-        if (cInfo)
-            cInfo->flags_extra |= CREATURE_FLAG_EXTRA_NO_DAMAGE_TAKEN;
-    }
+    npc_theramore_combat_dummyAI(Creature *c) : Scripted_NoMovementAI(c)  { }
 
     uint64 AttackerGUID;
     uint32 Check_Timer;

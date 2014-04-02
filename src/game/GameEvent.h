@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef HELLGROUND_GAMEEVENT_H
-#define HELLGROUND_GAMEEVENT_H
+#ifndef LOOKING4GROUP_GAMEEVENT_H
+#define LOOKING4GROUP_GAMEEVENT_H
 
 #include "ace/Singleton.h"
 
@@ -36,6 +36,12 @@ enum GameEventState
     GAMEEVENT_WORLD_CONDITIONS,  // condition matching phase
     GAMEEVENT_WORLD_NEXTPHASE,   // conditions are met, now 'lenght' timer to start next event
     GAMEEVENT_WORLD_FINISHED    // next events are started, unapply this one
+};
+
+enum GameEventFlag
+{
+    GAMEEVENT_FLAG_NONE = 0x0,
+    GAMEEVENT_FLAG_REMOVE_QUESTS_AT_END = 0x01
 };
 
 struct GameEventFinishCondition
@@ -55,7 +61,7 @@ struct GameEventQuestToEventConditionNum
 
 struct GameEventData
 {
-    GameEventData() : start(1),end(0),nextstart(0),occurence(0),length(0),state(GAMEEVENT_NORMAL) {}
+    GameEventData() : start(1),end(0),nextstart(0),occurence(0),length(0),state(GAMEEVENT_NORMAL), flags(GAMEEVENT_FLAG_NONE) {}
     time_t start;   // occurs after this time
     time_t end;     // occurs before this time
     time_t nextstart; // after this time the follow-up events count this phase completed
@@ -65,6 +71,7 @@ struct GameEventData
     std::map<uint32 /*condition id*/, GameEventFinishCondition> conditions;  // conditions to finish
     std::set<uint16 /*gameevent id*/> prerequisite_events;  // events that must be completed before starting this event
     std::string description;
+    GameEventFlag flags;
 
     bool isValid() const { return ((length > 0) || (state > GAMEEVENT_NORMAL)); }
 };
@@ -170,5 +177,5 @@ class GameEventMgr
 #define sGameEventMgr (*ACE_Singleton<GameEventMgr, ACE_Null_Mutex>::instance())
 #endif
 
-HELLGROUND_IMPORT_EXPORT bool isGameEventActive(uint16 event_id);
-HELLGROUND_IMPORT_EXPORT void HandleWorldEventGossip(Player*, Creature*);
+LOOKING4GROUP_IMPORT_EXPORT bool isGameEventActive(uint16 event_id);
+LOOKING4GROUP_IMPORT_EXPORT void HandleWorldEventGossip(Player*, Creature*);

@@ -53,6 +53,7 @@ EndScriptData */
 #define SPELL_TOXIC_SPORES          38575
 #define SPELL_MAGIC_BARRIER         38112
 #define SPELL_PARALYZE              38132
+#define SPELL_PERSUASION            38511   //Mindcontrol
 
 #define MIDDLE_X                    30.134
 #define MIDDLE_Y                    -923.65
@@ -156,6 +157,7 @@ struct boss_lady_vashjAI : public ScriptedAI
     uint32 ForkedLightning_Timer;
     uint32 Check_Timer;
     uint32 ParalyzeCheck_Timer;
+    uint32 Persuasion_Timer;
     uint32 EnchantedElemental_Timer;
     uint32 TaintedElemental_Timer;
     uint32 CoilfangElite_Timer;
@@ -181,6 +183,7 @@ struct boss_lady_vashjAI : public ScriptedAI
         ForkedLightning_Timer = 2000;
         Check_Timer = 15000;
         ParalyzeCheck_Timer = 1000;
+        Persuasion_Timer = 30000;
         EnchantedElemental_Timer = 5000;
         TaintedElemental_Timer = 50000;
         CoilfangElite_Timer = 45000;
@@ -207,6 +210,41 @@ struct boss_lady_vashjAI : public ScriptedAI
         instance->SetData(DATA_LADYVASHJEVENT, NOT_STARTED);
 
         me->SetCorpseDelay(1000*60*60);
+    }
+
+    void MindcontrolEffect()
+    {
+
+        std::list<HostilReference *> t_list = m_creature->getThreatManager().getThreatList();
+        std::vector<Unit *> targets;
+
+        if(!t_list.size())
+            return;
+
+        //begin + 1 , so we don't target the one with the highest threat
+        std::list<HostilReference *>::iterator itr = t_list.begin();
+        std::advance(itr, 1);
+        for( ; itr!= t_list.end(); ++itr)                   //store the threat list in a different container
+        {
+            Unit *target = Unit::GetUnit(*m_creature, (*itr)->getUnitGuid());
+                                                            //only on alive players
+            if(target && target->isAlive() && target->GetTypeId() == TYPEID_PLAYER )
+                targets.push_back( target);
+        }
+
+        //cut down to size if we have more than 5 targets
+        while(targets.size() > 5)
+            targets.erase(targets.begin()+rand()%targets.size());
+
+        int i = 0;
+        for(std::vector<Unit *>::iterator itr = targets.begin(); itr!= targets.end(); ++itr, ++i)
+        {
+            Unit *target = *itr;
+            if(target)
+            {
+                m_creature->AddAura(SPELL_PERSUASION, target);
+            }
+        }
     }
 
     void Paralyze(bool apply)
@@ -478,6 +516,15 @@ struct boss_lady_vashjAI : public ScriptedAI
                 }
                 else
                     SummonSporebat_Timer -= diff;
+
+                //Mindcontroll
+                if(Persuasion_Timer < diff)
+                {
+                    MindcontrolEffect();
+                    Persuasion_Timer = 120000;
+                }
+                else
+                    Persuasion_Timer -= diff;
             }
 
             //Melee attack
@@ -838,13 +885,18 @@ struct mob_toxic_sporebatAI : public ScriptedAI
         //toxic spores
         if(bolt_timer < diff)
         {
-            if(Unit *target = SelectUnit(SELECT_TARGET_RANDOM, 0, 300, true))
+            Unit *Vashj = Unit::GetUnit((*me), instance->GetData64(DATA_LADYVASHJ));
+            if (Vashj)
             {
-                if(Creature* trig = me->SummonCreature(TOXIC_SPORES_TRIGGER,target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN,30000))
-                {
-                    trig->setFaction(14);
-                    trig->CastSpell(trig, SPELL_TOXIC_SPORES,true);
-                }
+
+                Unit *tar = ((boss_lady_vashjAI*)((Creature*)Vashj)->AI())->SelectUnit(SELECT_TARGET_RANDOM,0,300,true);
+                if (tar)
+                    if (Creature *tempsum = tar->SummonCreature(TOXIC_SPORES_TRIGGER,tar->GetPositionX(), tar->GetPositionY(), tar->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN, 30000))
+                    {   
+                        tempsum->setFaction(14); 
+                        tempsum->CastSpell(tar, SPELL_TOXIC_SPORES,true);
+                    }
+
             }
             bolt_timer = 10000+rand()%5000;
         }

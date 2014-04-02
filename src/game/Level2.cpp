@@ -46,6 +46,7 @@
 #include "TicketMgr.h"
 #include "CreatureAI.h"
 #include "ChannelMgr.h"
+#include "GuildMgr.h"
 
 #include "TargetedMovementGenerator.h"                      // for HandleNpcUnFollowCommand
 #include "MoveMap.h"                                        // for mmap manager
@@ -3645,6 +3646,49 @@ bool ChatHandler::HandleLookupPlayerIpCommand(const char* args)
     return LookupPlayerSearchCommand(result, limit);
 }
 
+bool ChatHandler::HandleLookupPlayerIpListCommand(const char* /*args*/)
+{
+    QueryResultAutoPtr result = AccountsDatabase.PQuery("SELECT account_id, username, last_ip "
+        "FROM account "
+        "WHERE EXISTS ("
+            "SELECT account_id FROM account Dup "
+            "WHERE account.last_ip = Dup.last_ip AND account.account_id <> Dup.account_id "
+            "AND account.online ='1') "
+        "AND NOT EXISTS ("
+            "SELECT acc_id FROM account_multi WHERE account.account_id = account_multi.acc_id) "
+        "ORDER BY last_ip;");
+
+    if (result){
+        int i = 0;
+        do
+        {
+            Field* fields = result->Fetch();
+            uint32 acc_id = fields[0].GetUInt32();
+            std::string acc_name = fields[1].GetCppString();
+            std::string ip = fields[2].GetCppString();
+
+            PSendSysMessage(LANG_IP_LIST,acc_name.c_str(),acc_id, ip.c_str());
+            ++i;
+
+        } while (result->NextRow());
+        PSendSysMessage("Sofern keine 2 gleichen IPs ausgegeben wurden, ist einer der Doppelaccounts offline und der andere online.");
+
+        if (i == 0)                                                // empty accounts only
+        {
+            PSendSysMessage(LANG_NO_PLAYERS_FOUND);
+            SetSentErrorMessage(true);
+            return false;
+        }
+    }
+    else
+    {
+        PSendSysMessage(LANG_NO_PLAYERS_FOUND);
+        SetSentErrorMessage(true);
+        return false;
+    }
+    return true;
+}
+
 bool ChatHandler::HandleLookupPlayerAccountCommand(const char* args)
 {
     if (!*args)
@@ -4536,7 +4580,7 @@ bool ChatHandler::HandleGuildDisableAnnounceCommand(const char *args)
 
     std::string guildName = args;
 
-    Guild* guild = sObjectMgr.GetGuildByName(guildName);
+    Guild* guild = sGuildMgr.GetGuildByName(guildName);
     if (!guild)
         return false;
 
@@ -4554,7 +4598,7 @@ bool ChatHandler::HandleGuildEnableAnnounceCommand(const char *args)
 
     std::string guildName = args;
 
-    Guild* guild = sObjectMgr.GetGuildByName(guildName);
+    Guild* guild = sGuildMgr.GetGuildByName(guildName);
     if (!guild)
         return false;
 
@@ -4562,5 +4606,60 @@ bool ChatHandler::HandleGuildEnableAnnounceCommand(const char *args)
     guild->BroadcastToGuild(m_session, "Guild announce system has been enabled for that guild");
     PSendSysMessage("Guild announce system has been enabled for guild %s", guildName.c_str());
 
+    return true;
+}
+
+bool ChatHandler::HandleAccountSetMultiaccCommand(const char* args)
+{
+    if (!args)
+        return false;   
+    
+    char* accid = strtok ((char*)args, " ");
+    if (!accid || !atoi(accid))
+        return false;
+
+    uint32 id = atoi(accid);
+
+    char* reason = strtok (NULL," ");
+    if (!reason)
+        return false;
+    std::string acc_reason = reason;
+
+    QueryResultAutoPtr result = AccountsDatabase.PQuery("SELECT username FROM account WHERE account_id = %u", id);
+    if (!result)
+    {
+        PSendSysMessage(LANG_NO_PLAYERS_FOUND);
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    Field *fields = result->Fetch();
+    std::string username = fields[0].GetCppString();
+    QueryResultAutoPtr exist = AccountsDatabase.PQuery("SELECT acc_id, reason FROM account_multi WHERE acc_id = %u", id);
+    if (exist)
+    {
+        Field *exists = exist->Fetch();
+        std::string exist_reason = exists[1].GetCppString();
+        PSendSysMessage("Account %s (Id: %u) already in multiacc list for reason: %s", username.c_str(), id, exist_reason.c_str());
+        return false;
+    }
+    AccountsDatabase.PExecute("INSERT INTO account_multi (`acc_id`, `acc_name`, `reason`) VALUES (%u, '%s', '%s')", id, username.c_str(), reason);
+    PSendSysMessage("Account %s (Id: %u) for reason '%s' was successful added to Multiaccount list.", username.c_str(), id, reason);
+    return true;
+}
+
+bool ChatHandler::HandleAccountDelMultiaccCommand(const char* args)
+{
+    if (!args)
+        return false;   
+    
+    char* accid = strtok ((char*)args, " ");
+    if (!accid || !atoi(accid))
+        return false;
+
+    uint32 id = atoi(accid);
+
+    AccountsDatabase.PExecute("DELETE FROM account_multi WHERE acc_id = %u", id);
+    PSendSysMessage("Account-Id %u removed from Multiacc List.", id);
     return true;
 }

@@ -94,8 +94,8 @@ GameObject* SearchMausoleumGo(Unit *source, uint32 entry, float range)
 {
     GameObject* pGo = NULL;
 
-    Hellground::NearestGameObjectEntryInObjectRangeCheck go_check(*source, entry, range);
-    Hellground::ObjectLastSearcher<GameObject, Hellground::NearestGameObjectEntryInObjectRangeCheck> searcher(pGo, go_check);
+    Looking4group::NearestGameObjectEntryInObjectRangeCheck go_check(*source, entry, range);
+    Looking4group::ObjectLastSearcher<GameObject, Looking4group::NearestGameObjectEntryInObjectRangeCheck> searcher(pGo, go_check);
 
     Cell::VisitGridObjects(source, searcher, range);
 

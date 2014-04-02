@@ -175,6 +175,10 @@ struct boss_aranAI : public ScriptedAI
 
         if(pInstance)
             pInstance->SetData(DATA_SHADEOFARAN_EVENT, DONE);
+        
+        Unit *Blizzard = FindCreature(17161, 40, me);
+        if (Blizzard)
+            Blizzard->ToCreature()->DisappearAndDie();
     }
 
     bool PlayerHaveAtiesh()
@@ -332,7 +336,7 @@ struct boss_aranAI : public ScriptedAI
                         break;
                     case SUPER_FLAME:
                         Available[0] = SUPER_BLIZZARD;
-                        Available[1] = SUPER_BLIZZARD;
+                        Available[1] = SUPER_AE;
                         break;
                     case SUPER_BLIZZARD:
                         Available[0] = SUPER_FLAME;
@@ -368,11 +372,9 @@ struct boss_aranAI : public ScriptedAI
             else
                 SuperCastTimer -= diff;
 
-            if (!ElementalsSpawned && HealthBelowPct(40))
+            if (!ElementalsSpawned && ((m_creature->GetHealth()*100)/ m_creature->GetMaxHealth()) <= 40)
             {
                 ElementalsSpawned = true;
-                AddSpellToCast(SPELL_TELEPORT_MIDDLE, CAST_SELF);
-                AddSpellToCast(SPELL_MAGNETIC_PULL, CAST_SELF); 
                 AddSpellToCastWithScriptText(SPELL_ELEMENTAL1, CAST_SELF, SAY_ELEMENTALS);
                 AddSpellToCast(SPELL_ELEMENTAL2, CAST_SELF);
                 AddSpellToCast(SPELL_ELEMENTAL3, CAST_SELF);

@@ -18,13 +18,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef HELLGROUND_FORMULAS_H
-#define HELLGROUND_FORMULAS_H
+#ifndef LOOKING4GROUP_FORMULAS_H
+#define LOOKING4GROUP_FORMULAS_H
 
 #include "World.h"
 #include "DBCStores.h"
 
-namespace Hellground
+namespace Looking4group
 {
     namespace Honor
     {

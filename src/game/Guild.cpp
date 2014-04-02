@@ -29,6 +29,7 @@
 #include "Chat.h"
 #include "SocialMgr.h"
 #include "Util.h"
+#include "GuildMgr.h"
 
 Guild::Guild()
 {
@@ -61,7 +62,7 @@ bool Guild::create(uint64 lGuid, std::string gname)
 
     if (!sObjectMgr.GetPlayerNameByGUID(lGuid, lName))
         return false;
-    if (sObjectMgr.GetGuildByName(gname))
+    if (sGuildMgr.GetGuildByName(gname))
         return false;
 
     sLog.outLog(LOG_SPECIAL, "GUILD: creating guild %s to leader: %u", gname.c_str(), GUID_LOPART(lGuid));
@@ -73,7 +74,7 @@ bool Guild::create(uint64 lGuid, std::string gname)
     guildbank_money = 0;
     purchased_tabs = 0;
 
-    Id = sObjectMgr.GenerateGuildId();
+    Id = sGuildMgr.GenerateGuildId();
 
     // gname already assigned to Guild::name, use it to encode string for DB
     RealmDataDatabase.escape_string(gname);
@@ -725,7 +726,7 @@ void Guild::Disband()
     RealmDataDatabase.PExecute("DELETE FROM guild_bank_eventlog WHERE guildid = '%u'",Id);
     RealmDataDatabase.PExecute("DELETE FROM guild_eventlog WHERE guildid = '%u'",Id);
     RealmDataDatabase.CommitTransaction();
-    sObjectMgr.RemoveGuild(Id);
+    sGuildMgr.RemoveGuild(Id);
 }
 
 void Guild::WriteMemberRosterPacket(Player *sessionPlayer, const MemberSlot &member, Player *pl, WorldPacket &data)
@@ -751,7 +752,7 @@ void Guild::WriteMemberRosterPacket(Player *sessionPlayer, const MemberSlot &mem
 
         data << pZoneId;
         data << member.Pnote;
-        data << member.OFFnote;
+        data << (HasRankRight(sessionPlayer->GetRank(), GR_RIGHT_VIEWOFFNOTE) ? member.OFFnote : "");
     }else{
         data << uint64(MAKE_NEW_GUID(member.guid, 0, HIGHGUID_PLAYER));
         data << uint8(0);
@@ -763,7 +764,7 @@ void Guild::WriteMemberRosterPacket(Player *sessionPlayer, const MemberSlot &mem
         data << uint32(member.zoneId);
         data << float((time(NULL)-member.logout_time)) / DAY;
         data << member.Pnote;
-        data << member.OFFnote;
+        data << (HasRankRight(sessionPlayer->GetRank(), GR_RIGHT_VIEWOFFNOTE) ? member.OFFnote : "");
     }
 }
 
@@ -936,7 +937,7 @@ void Guild::LoadGuildEventLogFromDB()
     if (m_eventlogloaded)
         return;
 
-    QueryResultAutoPtr result = RealmDataDatabase.PQuery("SELECT LogGuid, EventType, PlayerGuid1, PlayerGuid2, NewRank, TimeStamp FROM guild_eventlog WHERE guildid=%u ORDER BY LogGuid DESC LIMIT %u", Id, GUILD_EVENTLOG_MAX_ENTRIES);
+    QueryResultAutoPtr result = RealmDataDatabase.PQuery("SELECT LogGuid, EventType, PlayerGuid1, PlayerGuid2, NewRank, TimeStamp FROM guild_eventlog WHERE guildid=%u ORDER BY TimeStamp DESC,LogGuid DESC LIMIT %u", Id, GUILD_EVENTLOG_MAX_ENTRIES);
     if (!result)
         return;
     do

@@ -1,4 +1,4 @@
-/* Copyright (C) 2008 - 2011 HellgroundDev <http://gamefreedom.pl/>
+/* Copyright (C) 2008 - 2011 Looking4groupDev <http://gamefreedom.pl/>
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -378,6 +378,7 @@ enum SunbladeProtector
 
 #define PROTECTOR_YELL "Unit entering energy conservation mode."
 #define PROTECTOR_AGGRO "Enemy presence detected."
+#define PROTECTOR_AGGRO_2 "Local proximity threat detected. Exiting energy conservation mode."
 #define PROTECTOR_ACTIVATED "Unit is now operational and attacking targets."
 
 struct mob_sunblade_protectorAI : public ScriptedAI
@@ -408,7 +409,7 @@ struct mob_sunblade_protectorAI : public ScriptedAI
     void EnterEvadeMode()
     {
         if(isInactive)
-            DoYell(PROTECTOR_YELL, 0, me);
+            DoYell((urand(0,1) ? PROTECTOR_AGGRO : PROTECTOR_AGGRO_2), 0, me);
         CreatureAI::EnterEvadeMode();
     }
 
@@ -2256,7 +2257,7 @@ CreatureAI* GetAI_mob_priestess_of_torment(Creature *_Creature)
 enum ShadowswordGuardian
 {
     SPELL_BEAR_DOWN                 = 46239,
-    SPELL_EARTHQUAKE                = 46240
+    SPELL_EARTHQUAKE                = 46932
 };
 
 struct mob_shadowsword_guardianAI : public ScriptedAI
@@ -2285,6 +2286,11 @@ struct mob_shadowsword_guardianAI : public ScriptedAI
 
     void EnterCombat(Unit*)
     {
+        if (pInstance->GetData(DATA_MURU_EVENT) != DONE)
+        {
+            EnterEvadeMode();
+            return;
+        }
         DoCast(me, SPELL_EARTHQUAKE);
         DoZoneInCombat(80.0f);
     }

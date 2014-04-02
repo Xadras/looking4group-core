@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef HELLGROUND_IDLEMOVEMENTGENERATOR_H
-#define HELLGROUND_IDLEMOVEMENTGENERATOR_H
+#ifndef LOOKING4GROUP_IDLEMOVEMENTGENERATOR_H
+#define LOOKING4GROUP_IDLEMOVEMENTGENERATOR_H
 
 #include "MovementGenerator.h"
 
-class HELLGROUND_IMPORT_EXPORT IdleMovementGenerator : public MovementGenerator
+class LOOKING4GROUP_IMPORT_EXPORT IdleMovementGenerator : public MovementGenerator
 {
     public:
         void Initialize(Unit &) {}
@@ -38,7 +38,7 @@ class HELLGROUND_IMPORT_EXPORT IdleMovementGenerator : public MovementGenerator
 
 extern IdleMovementGenerator si_idleMovement;
 
-class HELLGROUND_IMPORT_EXPORT RotateMovementGenerator : public MovementGenerator
+class LOOKING4GROUP_IMPORT_EXPORT RotateMovementGenerator : public MovementGenerator
 {
     public:
         explicit RotateMovementGenerator(uint32 time, RotateDirection direction) : m_duration(time), m_maxDuration(time), m_direction(direction) {}
@@ -57,7 +57,7 @@ class HELLGROUND_IMPORT_EXPORT RotateMovementGenerator : public MovementGenerato
         RotateDirection m_direction;
 };
 
-class HELLGROUND_IMPORT_EXPORT DistractMovementGenerator : public MovementGenerator
+class LOOKING4GROUP_IMPORT_EXPORT DistractMovementGenerator : public MovementGenerator
 {
     public:
         explicit DistractMovementGenerator(uint32 timer) : m_timer(timer) {}
@@ -75,7 +75,7 @@ class HELLGROUND_IMPORT_EXPORT DistractMovementGenerator : public MovementGenera
         uint32 m_timer;
 };
 
-class HELLGROUND_IMPORT_EXPORT AssistanceDistractMovementGenerator : public DistractMovementGenerator
+class LOOKING4GROUP_IMPORT_EXPORT AssistanceDistractMovementGenerator : public DistractMovementGenerator
 {
     public:
         AssistanceDistractMovementGenerator(uint32 timer) :

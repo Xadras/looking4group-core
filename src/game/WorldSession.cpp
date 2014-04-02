@@ -46,6 +46,7 @@
 #include "WardenWin.h"
 #include "WardenMac.h"
 #include "WardenChat.h"
+#include "GuildMgr.h"
 
 bool MapSessionFilter::Process(WorldPacket * packet)
 {
@@ -207,7 +208,7 @@ void WorldSession::SendPacket(WorldPacket const* packet)
     if (!m_Socket)
         return;
 
-    #ifdef HELLGROUND_DEBUG
+    #ifdef LOOKING4GROUP_DEBUG
 
     // Code for network use statistic
     static uint64 sendPacketCount = 0;
@@ -241,7 +242,7 @@ void WorldSession::SendPacket(WorldPacket const* packet)
         sendLastPacketBytes = packet->wpos();               // wpos is real written size
     }
 
-    #endif                                                  // !HELLGROUND_DEBUG
+    #endif                                                  // !LOOKING4GROUP_DEBUG
 
     if (m_Socket->SendPacket(*packet) == -1)
         m_Socket->CloseSocket();
@@ -575,7 +576,7 @@ void WorldSession::LogoutPlayer(bool Save)
         }
 
         ///- If the player is in a guild, update the guild roster and broadcast a logout message to other guild members
-        Guild *guild = sObjectMgr.GetGuildById(_player->GetGuildId());
+        Guild *guild = sGuildMgr.GetGuildById(_player->GetGuildId());
         if (guild)
         {
             guild->LoadPlayerStatsByGuid(_player->GetGUID());
@@ -613,6 +614,9 @@ void WorldSession::LogoutPlayer(bool Save)
         ///- If the player is in a group (or invited), remove him. If the group if then only 1 person, disband the group.
         _player->UninviteFromGroup();
 
+       if (_player->GetGroup() && !_player->GetGroup()->isRaidGroup() && m_Socket)
+            _player->RemoveFromGroup();
+
         ///- Send update to group
         if (_player->GetGroup())
         {
@@ -632,8 +636,8 @@ void WorldSession::LogoutPlayer(bool Save)
         // the player may not be in the world when logging out
         // e.g if he got disconnected during a transfer to another map
         // calls to GetMap in this case may cause crashes
-        if (_player->IsInWorld())
-            _player->GetMap()->Remove(_player, false);
+        _player->GetMap()->Remove(_player, false);
+
 
         // RemoveFromWorld does cleanup that requires the player to be in the accessor
         sObjectAccessor.RemovePlayer(_player);

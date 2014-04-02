@@ -31,7 +31,7 @@
 #include "CellImpl.h"
 #include "SpellAuras.h"
 
-using namespace Hellground;
+using namespace Looking4group;
 
 void VisibleNotifier::SendToSelf()
 {

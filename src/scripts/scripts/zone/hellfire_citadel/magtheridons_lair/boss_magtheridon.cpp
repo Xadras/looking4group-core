@@ -278,7 +278,7 @@ struct boss_magtheridonAI : public BossAI
                 {
                     Unit * tar = SelectUnit(SELECT_TARGET_RANDOM, 0, 0, true);
                     if (tar){
-                        m_creature->SummonCreature(MOB_BLAZE_FIRE, tar->GetPositionX(), tar->GetPositionY(), tar->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN, 120000);
+                        //m_creature->SummonCreature(MOB_BLAZE_FIRE, tar->GetPositionX(), tar->GetPositionY(), tar->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN, 120000);
                         AddSpellToCast(tar, SPELL_BLAZE_TARGET);
                     }
                     events.ScheduleEvent(MAGTHERIDON_EVENT_BLAZE, urand(20000, 40000));

@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef HELLGROUND_LOOTMGR_H
-#define HELLGROUND_LOOTMGR_H
+#ifndef LOOKING4GROUP_LOOTMGR_H
+#define LOOKING4GROUP_LOOTMGR_H
 
 #include "ItemEnchantmentMgr.h"
 #include "ByteBuffer.h"
@@ -296,7 +296,7 @@ struct Loot
     // Inserts the item into the loot (called by LootTemplate processors)
     void AddItem(LootStoreItem const & item);
 
-    void setItemLooted(LootItem *pLootItem);
+    void setItemLooted(LootItem *pLootItem, Player* looter);
     void removeItemFromSavedLoot(LootItem *pLootItem);
 
     void setCreatureGUID(Creature *pCreature);

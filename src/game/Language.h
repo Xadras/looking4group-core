@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef __HELLGROUND_LANGUAGE_H
-#define __HELLGROUND_LANGUAGE_H
+#ifndef __LOOKING4GROUP_LANGUAGE_H
+#define __LOOKING4GROUP_LANGUAGE_H
 
 enum TrinityStrings
 {
@@ -330,6 +330,7 @@ enum TrinityStrings
     LANG_MUTEINFO_HISTORYENTRY          = 349,
     LANG_MUTEINFO_YES                   = 350,
     LANG_MUTEINFO_NO                    = 351,
+    LANG_IP_LIST                        = 352,
 
     // Room for more level 2              346-399 not used
 

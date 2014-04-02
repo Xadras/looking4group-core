@@ -154,8 +154,8 @@ struct boss_nalorakkAI : public ScriptedAI
         float x, y, z;
         m_creature->GetPosition(x, y, z);
         {
-            Hellground::AllFriendlyCreaturesInGrid check(m_creature);
-            Hellground::ObjectListSearcher<Creature, Hellground::AllFriendlyCreaturesInGrid> searcher(templist, check);
+            Looking4group::AllFriendlyCreaturesInGrid check(m_creature);
+            Looking4group::ObjectListSearcher<Creature, Looking4group::AllFriendlyCreaturesInGrid> searcher(templist, check);
 
             Cell::VisitGridObjects(me, searcher, me->GetMap()->GetVisibilityDistance());
         }
@@ -332,6 +332,7 @@ struct boss_nalorakkAI : public ScriptedAI
                     return;
                 case 7:
                     m_creature->SetOrientation(3.1415*0.5);
+                    m_creature->SetHomePosition(NalorakkWay[7][0], NalorakkWay[7][1], NalorakkWay[7][2], m_creature->GetOrientation());
                     inMove = false;
                     return;
             }

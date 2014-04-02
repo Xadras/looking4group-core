@@ -183,7 +183,7 @@ struct boss_captain_skarlocAI : public ScriptedAI
 
     void EnterCombat(Unit *who)
     {
-
+        pInstance->SetData(DATA_SKARLOC_DEATH, IN_PROGRESS);
         DoScriptText(SAY_TAUNT1, me);
         DoScriptText(SAY_TAUNT2, me);
     }

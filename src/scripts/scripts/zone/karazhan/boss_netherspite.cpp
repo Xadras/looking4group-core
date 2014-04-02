@@ -88,7 +88,8 @@ struct boss_netherspiteAI : public ScriptedAI
             BeamerGUID[i] = 0;
         }
 
-        m_creature->GetMotionMaster()->MovePath(NETHER_PATROL_PATH, true);
+        //temporary commented out due to mysterious invisible bug
+        //m_creature->GetMotionMaster()->MovePath(NETHER_PATROL_PATH, true);
 
         if(pInstance && pInstance->GetData(DATA_NETHERSPITE_EVENT) != DONE)
             pInstance->SetData(DATA_NETHERSPITE_EVENT, NOT_STARTED);
@@ -246,18 +247,13 @@ struct boss_netherspiteAI : public ScriptedAI
         HandleDoors(false);
         SwitchToPortalPhase();
 
-        m_creature->GetMotionMaster()->Clear();
+        //m_creature->GetMotionMaster()->Clear();
         DoStartMovement(who);
 
         if (pInstance)
             pInstance->SetData(DATA_NETHERSPITE_EVENT, IN_PROGRESS);
     }
 
-    void MoveInLineOfSight(Unit *who)
-    {
-        if (!m_creature->isInCombat() && m_creature->IsWithinDistInMap(who, 25.0) && m_creature->IsHostileTo(who))
-            AttackStart(who);
-    }
 
     void JustDied(Unit* killer)
     {

@@ -1100,7 +1100,7 @@ uint32 Unit::DealDamage(DamageLog *damageInfo, DamageEffectType damagetype, cons
                         if (spell->getState() == SPELL_STATE_CASTING)
                         {
                             uint32 channelInterruptFlags = spell->GetSpellInfo()->ChannelInterruptFlags;
-                            if (damagetype != DOT && channelInterruptFlags & CHANNEL_FLAG_DELAY)
+                            if (damagetype != DOT && channelInterruptFlags & CHANNEL_INTERRUPT_FLAG_DELAY)
                                 spell->DelayedChannel();
                         }
                     }
@@ -2258,10 +2258,6 @@ void Unit::RollMeleeHit(MeleeDamageLog *damageInfo) const
 
     // stunned target cannot dodge and this is check in GetUnitDodgeChance() (returned 0 in this case)
     float dodge_chance = damageInfo->target->GetUnitDodgeChance();
-    if(HasAuraType(SPELL_AURA_MOD_ENEMY_DODGE))
-        dodge_chance += GetTotalAuraModifier(SPELL_AURA_MOD_ENEMY_DODGE);
-    if(dodge_chance < 0)
-        dodge_chance = 0;
     float block_chance = damageInfo->target->GetUnitBlockChance();
     float parry_chance = damageInfo->target->GetUnitParryChance();
 
@@ -2364,6 +2360,8 @@ void Unit::RollMeleeHit(MeleeDamageLog *damageInfo, int32 crit_chance, int32 mis
         dodge_chance -= expertise_reduction + skillBonus;
         // Modify dodge chance by attacker SPELL_AURA_MOD_COMBAT_RESULT_CHANCE
         dodge_chance += GetTotalAuraModifierByMiscValue(SPELL_AURA_MOD_COMBAT_RESULT_CHANCE, VICTIMSTATE_DODGE)*100;
+        // Modify dodge chance by SPELL_AURA_MOD_ENEMY_DODGE
+        dodge_chance += GetTotalAuraModifier(SPELL_AURA_MOD_ENEMY_DODGE) * 100;        
         if (dodge_chance > 0)
         {
             SendCombatStats("RollMeleeHit: dodge chance = %d", pVictim, dodge_chance);
@@ -2787,7 +2785,7 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell, 
     bool canParry = !isCasting && !lostControl;
     bool canBlock = spell->AttributesEx3 & SPELL_ATTR_EX3_UNK3 && !isCasting && !lostControl;
 
-    if (Player* player = ToPlayer())
+    if (Player* player = pVictim->ToPlayer())
     {
         Item *tmpitem = player->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND);
         if (!tmpitem || !tmpitem->GetProto()->Block)
@@ -2799,7 +2797,8 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell, 
         canBlock = false;
 
     //We use SPELL_ATTR_UNAFFECTED_BY_INVULNERABILITY until right Attribute was found
-    bool canMiss = !(spell->Attributes & SPELL_ATTR_UNAFFECTED_BY_INVULNERABILITY) && cMiss || spell->AttributesEx3 & SPELL_ATTR_EX3_CANT_MISS;
+        bool canMiss = !(spell->Attributes & SPELL_ATTR_UNAFFECTED_BY_INVULNERABILITY) && cMiss ||
+            spell->AttributesEx3 & SPELL_ATTR_EX3_CANT_MISS || spell->AttributesEx3 & SPELL_ATTR_EX3_UNK15;
 
     if (canMiss)
     {
@@ -2819,13 +2818,22 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell, 
     if (roll < tmp)
         return SPELL_MISS_RESIST;
 
-    // Same spells cannot be parry/dodge
+    // Some spells cannot be parried, dodged nor blocked
     if (spell->Attributes & SPELL_ATTR_IMPOSSIBLE_DODGE_PARRY_BLOCK)
         return SPELL_MISS_NONE;
 
-    // Ranged attack can`t miss too
+    // Handle ranged attacks
     if (attType == RANGED_ATTACK)
-        return SPELL_MISS_NONE;
+    {
+        // Wand attacks can't miss
+        if (spell->Category == 351)
+            return SPELL_MISS_NONE;
+        // Other ranged attacks cannot be parried or dodged
+        // Can be blocked under suitable circumstances
+        canParry = false;
+        canDodge = false;
+    }
+
 
     // Check for attack from behind
     if (!pVictim->HasInArc(M_PI,this))
@@ -3025,7 +3033,7 @@ SpellMissInfo Unit::SpellHitResult(Unit *pVictim, SpellEntry const *spell, bool 
         Unit::AuraList const& mReflectSpellsSchool = pVictim->GetAurasByType(SPELL_AURA_REFLECT_SPELLS_SCHOOL);
         for (Unit::AuraList::const_iterator i = mReflectSpellsSchool.begin(); i != mReflectSpellsSchool.end(); ++i)
             if ((*i)->GetModifier()->m_miscvalue & SpellMgr::GetSpellSchoolMask(spell))
-                reflectchance = (*i)->GetModifierValue();
+                reflectchance += (*i)->GetModifierValue();
 
         if (reflectchance > 0 && roll_chance_i(reflectchance))
         {
@@ -3589,7 +3597,7 @@ bool Unit::isInAccessiblePlacefor (Creature const* c) const
 
 bool Unit::IsInWater() const
 {
-    if (!Hellground::IsValidMapCoord(GetPositionX(),GetPositionY(), GetPositionZ()))
+    if (!Looking4group::IsValidMapCoord(GetPositionX(),GetPositionY(), GetPositionZ()))
         return false;
 
     return GetTerrain()->IsInWater(GetPositionX(),GetPositionY(), GetPositionZ());
@@ -3597,7 +3605,7 @@ bool Unit::IsInWater() const
 
 bool Unit::IsUnderWater() const
 {
-    if (!Hellground::IsValidMapCoord(GetPositionX(),GetPositionY(), GetPositionZ()))
+    if (!Looking4group::IsValidMapCoord(GetPositionX(),GetPositionY(), GetPositionZ()))
         return false;
 
     return GetTerrain()->IsUnderWater(GetPositionX(),GetPositionY(),GetPositionZ());
@@ -9744,8 +9752,8 @@ void Unit::DestroyForNearbyPlayers()
         return;
 
     std::list<Player*> targets;
-    Hellground::AnyUnitInObjectRangeCheck check(this, GetMap()->GetVisibilityDistance() + World::GetVisibleObjectGreyDistance());
-    Hellground::ObjectListSearcher<Player, Hellground::AnyUnitInObjectRangeCheck> searcher(targets, check);
+    Looking4group::AnyUnitInObjectRangeCheck check(this, GetMap()->GetVisibilityDistance() + World::GetVisibleObjectGreyDistance());
+    Looking4group::ObjectListSearcher<Player, Looking4group::AnyUnitInObjectRangeCheck> searcher(targets, check);
     Cell::VisitWorldObjects(this, searcher, GetMap()->GetVisibilityDistance() + World::GetVisibleObjectGreyDistance());
 
     for (std::list<Player*>::iterator iter = targets.begin(); iter != targets.end(); ++iter)
@@ -10187,7 +10195,7 @@ Unit* Creature::SelectVictim()
     if (HasReactState(REACT_AGGRESSIVE))
     {
         target = SelectNearestTarget(25.0f);
-        if (target)
+        if (target && !IsOutOfThreatArea(target))
             return target;
     }
 
@@ -11125,7 +11133,7 @@ void Unit::ProcDamageAndSpellfor (bool isVictim, Unit * pTarget, uint32 procFlag
             }
             // Update defence if player is victim and parry/dodge/block
             if (isVictim && procExtra&(PROC_EX_DODGE|PROC_EX_PARRY|PROC_EX_BLOCK))
-                ((Player*)this)->UpdateCombatSkills(pTarget,attType,false);
+                ((Player*)this)->UpdateCombatSkills(pTarget,attType,true);
         }
         // If exist crit/parry/dodge/block need update aura state (for victim and attacker)
         if (procExtra & (PROC_EX_CRITICAL_HIT|PROC_EX_PARRY|PROC_EX_DODGE|PROC_EX_BLOCK))
@@ -11496,7 +11504,7 @@ void Unit::SendPetAIReaction(uint64 guid)
 bool Unit::SetPosition(float x, float y, float z, float orientation, bool teleport)
 {
     // prevent crash when a bad coord is sent by the client
-    if (!Hellground::IsValidMapCoord(x,y,z,orientation))
+    if (!Looking4group::IsValidMapCoord(x,y,z,orientation))
     {
         sLog.outDebug("Unit::SetPosition(%f, %f, %f) .. bad coordinates!",x,y,z);
         return false;
@@ -11677,8 +11685,8 @@ void Unit::UpdateReactives(uint32 p_time)
 Unit* Unit::SelectNearbyTarget(float dist, Unit* erase) const
 {
     std::list<Unit *> targets;
-    Hellground::AnyUnfriendlyUnitInObjectRangeCheck u_check(this, this, dist);
-    Hellground::UnitListSearcher<Hellground::AnyUnfriendlyUnitInObjectRangeCheck> searcher(targets, u_check);
+    Looking4group::AnyUnfriendlyUnitInObjectRangeCheck u_check(this, this, dist);
+    Looking4group::UnitListSearcher<Looking4group::AnyUnfriendlyUnitInObjectRangeCheck> searcher(targets, u_check);
 
     Cell::VisitAllObjects(this, searcher, dist);
 
@@ -12228,12 +12236,12 @@ class RelocationNotifyEvent : public BasicEvent
             float radius = _owner.GetMap()->GetVisibilityDistance(&_owner);
             if (_owner.GetObjectGuid().IsPlayer())
             {
-                 Hellground::PlayerRelocationNotifier notify(*_owner.ToPlayer());
+                 Looking4group::PlayerRelocationNotifier notify(*_owner.ToPlayer());
                  Cell::VisitAllObjects(&_owner,notify,radius);
             }
             else
             {
-                Hellground::CreatureRelocationNotifier notify(*_owner.ToCreature());
+                Looking4group::CreatureRelocationNotifier notify(*_owner.ToCreature());
                 Cell::VisitAllObjects(&_owner,notify,radius);
             }
 
@@ -12958,8 +12966,8 @@ void Unit::GetPartyMember(std::list<Unit*> &TagUnitMap, float radius)
         {
             // for Creatures, grid search friendly units in radius
             std::list<Creature*> pList;
-            Hellground::AllFriendlyCreaturesInGrid u_check(owner);
-            Hellground::ObjectListSearcher<Creature, Hellground::AllFriendlyCreaturesInGrid> searcher(pList, u_check);
+            Looking4group::AllFriendlyCreaturesInGrid u_check(owner);
+            Looking4group::ObjectListSearcher<Creature, Looking4group::AllFriendlyCreaturesInGrid> searcher(pList, u_check);
             Cell::VisitAllObjects(owner, searcher, radius);
 
             for (std::list<Creature*>::iterator i = pList.begin(); i != pList.end(); ++i)

@@ -1390,8 +1390,8 @@ struct npc_warmaul_pyreAI : public ScriptedAI
     {
         SaboteurList.clear();
 
-        Hellground::AllCreaturesOfEntryInRange check(me, NPC_SABOTEUR, 25.0f);
-        Hellground::ObjectListSearcher<Creature, Hellground::AllCreaturesOfEntryInRange> searcher(SaboteurList, check);
+        Looking4group::AllCreaturesOfEntryInRange check(me, NPC_SABOTEUR, 25.0f);
+        Looking4group::ObjectListSearcher<Creature, Looking4group::AllCreaturesOfEntryInRange> searcher(SaboteurList, check);
         Cell::VisitGridObjects(me, searcher, 25.0f);
     }
 

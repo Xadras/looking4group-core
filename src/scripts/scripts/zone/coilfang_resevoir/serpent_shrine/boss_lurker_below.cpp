@@ -1,18 +1,18 @@
 /* Copyright (C) 2006 - 2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
 
 #include "precompiled.h"
 #include "def_serpent_shrine.h"
@@ -20,6 +20,17 @@
 #include "Spell.h"
 
 #define EMOTE_SPOUT "takes a deep breath."
+
+#define SPELL_SPOUT_ANIM    42835
+#define SPELL_SPOUT         37433
+#define SPOUT_DIST  100
+
+enum RotationType
+{
+    NOROTATE = 0,
+    CLOCKWISE = 1,
+    COUNTERCLOCKWISE = 2,
+};
 
 enum lurkerAdds
 {
@@ -65,7 +76,21 @@ enum LurkerEvents
 
 struct boss_the_lurker_belowAI : public BossAI
 {
-    boss_the_lurker_belowAI(Creature *c) : BossAI(c, DATA_THELURKERBELOW) { }
+    boss_the_lurker_belowAI(Creature *c) : BossAI(c, DATA_THELURKERBELOW) { 
+        SpellEntry *TempSpell = (SpellEntry*)GetSpellStore()->LookupEntry(36151);
+        if(TempSpell)
+        {
+            TempSpell->SpellVisual = 0;
+            TempSpell->DurationIndex = 564;
+        }
+    
+    }
+
+    double SpoutAngle;
+    uint8 RotType;
+    uint32 RotTimer;
+    uint32 SpoutAnimTimer;
+    uint32 SpoutTimer;
 
     bool m_rotating;
     bool m_submerged;
@@ -94,8 +119,14 @@ struct boss_the_lurker_belowAI : public BossAI
 
         events.ScheduleEvent(LURKER_EVENT_SPOUT_EMOTE, 42000);
         events.ScheduleEvent(LURKER_EVENT_WHIRL, 18000);
-        events.ScheduleEvent(LURKER_EVENT_GEYSER, 0);
+        events.ScheduleEvent(LURKER_EVENT_GEYSER, rand()%5000 + 15000);
         events.ScheduleEvent(LURKER_EVENT_SUBMERGE, 90000);
+
+        RotType = NOROTATE;
+        SpoutAngle = 0;
+        SpoutAnimTimer = 1000;
+        RotTimer = 20000;
+        SpoutTimer = 15000;
 
         // Timers
         m_checkTimer = 3000;
@@ -106,6 +137,96 @@ struct boss_the_lurker_belowAI : public BossAI
 
         summons.DespawnAll();
         me->CastSpell(me, SPELL_SUBMERGE, false);
+    }
+
+    void Rotate(const uint32 diff)
+    {
+        bool Spout = false;
+        switch (RotType)
+        {
+        case NOROTATE:
+            return;
+        case CLOCKWISE://20secs for 360turn
+            //no target if rotating!
+            m_rotating = true;
+            me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
+            SpoutAngle += (double)diff/20000*(double)M_PI*2;
+            if (SpoutAngle >= M_PI*2)SpoutAngle = 0;
+            me->SetOrientation(SpoutAngle);
+            me->SendHeartBeat();
+            me->StopMoving();
+            Spout = true;
+            break;
+        case COUNTERCLOCKWISE://20secs for 360turn
+            //no target if rotating!
+            m_rotating = true;
+            me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
+            SpoutAngle -= (double)diff/20000*(double)M_PI*2;
+            if (SpoutAngle <= 0)SpoutAngle = M_PI*2;
+            me->SetOrientation(SpoutAngle);
+            me->SendHeartBeat();
+            me->StopMoving();
+            Spout = true;
+            break;
+        }
+
+        if(!Spout)
+            return;
+
+        if(RotTimer<diff)//end rotate
+        {
+            RotType = NOROTATE;//set norotate state
+            me->clearUnitState(UNIT_STAT_ROTATING);
+            RotTimer=20000;
+            me->SetReactState(REACT_AGGRESSIVE);
+            m_rotating = false;
+            me->InterruptNonMeleeSpells(false);
+            events.ScheduleEvent(LURKER_EVENT_WHIRL, 4000); //whirl directly after spout ends
+            return;
+        }else RotTimer-=diff;
+
+        if(SpoutAnimTimer<diff)
+        {
+            DoCast(me,SPELL_SPOUT_ANIM,true);
+            SpoutAnimTimer = 1000;
+        }else SpoutAnimTimer-=diff;
+
+        Map *map = me->GetMap();
+        Map::PlayerList const &PlayerList = map->GetPlayers();
+        for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+        {
+            //Player *target = i->getSource();
+            if(i->getSource() && i->getSource()->isAlive() && !i->getSource()->HasAura(36151) && me->HasInArc((double)diff/20000*(double)M_PI*2,i->getSource()) && me->GetDistance(i->getSource()) <= SPOUT_DIST && !i->getSource()->IsInWater()){
+                DoCast(i->getSource(),SPELL_SPOUT,true);//only knock back palyers in arc, in 100yards, not in water
+                DoCast(i->getSource(), 36151, true);
+            }
+        }
+
+    }
+
+    void StartRotate(Unit* victim)
+    {
+        switch (rand()%2)
+        {
+        case 0: RotType = CLOCKWISE; break;
+        case 1: RotType = COUNTERCLOCKWISE; break;
+        }
+        RotTimer=20000;
+
+        if(victim)
+            SpoutAngle = me->GetAngle(victim);
+
+        me->StopMoving();
+        me->addUnitState(UNIT_STAT_ROTATING);
+        me->SetReactState(REACT_PASSIVE);
+        m_rotating = true;
+
+        events.RescheduleEvent(LURKER_EVENT_WHIRL, 20000);
+        events.RescheduleEvent(LURKER_EVENT_GEYSER, rand()%25000 + 30000); // Geysir can´t come while spout
+        events.ScheduleEvent(LURKER_EVENT_SPOUT_EMOTE, 45000);
+
+        me->MonsterTextEmote(EMOTE_SPOUT,0,true);
+        //DoCast(me,SPELL_SPOUT_BREATH);//take breath anim
     }
 
     void EnterCombat(Unit *who)
@@ -136,6 +257,7 @@ struct boss_the_lurker_belowAI : public BossAI
     void JustDied(Unit* Killer)
     {
         instance->SetData(DATA_THELURKERBELOWEVENT, DONE);
+        me->RemoveAurasDueToSpell(SPELL_SUBMERGE);
     }
 
     void SummonAdds()
@@ -144,24 +266,10 @@ struct boss_the_lurker_belowAI : public BossAI
             Creature *pSummon = me->SummonCreature(addPos[i][0], addPos[i][1], addPos[i][2], addPos[i][3], 0, TEMPSUMMON_DEAD_DESPAWN, 2000);
     }
 
-    void MovementInform(uint32 type, uint32 data)
-    {
-        // data: 0 = FINALIZE
-        // data: 1 = UPDATE
-        if (type == ROTATE_MOTION_TYPE)
-        {
-            if (data == 0) //Rotate movegen finalize
-            {
-                me->RemoveAurasDueToSpell(SPELL_SPOUT_VISUAL);
-                me->SetReactState(REACT_AGGRESSIVE);
-                m_rotating = false;
-            }
-        }
-    }
 
     void DoMeleeAttackIfReady()
     {
-        if (me->hasUnitState(UNIT_STAT_CASTING) || m_submerged || m_rotating)
+        if (me->hasUnitState(UNIT_STAT_CASTING) || m_submerged || m_rotating  || RotType)
             return;
 
         //Make sure our attack is ready and we aren't currently casting before checking distance
@@ -212,47 +320,62 @@ struct boss_the_lurker_belowAI : public BossAI
 
         DoSpecialThings(diff, DO_PULSE_COMBAT);
 
+        Rotate(diff);//always check rotate things
+
         events.Update(diff);
+
+        if(!m_submerged && RotType == NOROTATE)//is not spouting and not submerged
+        {
+            if(SpoutTimer < diff)
+            {
+                if(me->getVictim() && RotType == NOROTATE)
+                    StartRotate(me->getVictim());//start spout and random rotate
+
+                SpoutTimer= 35000;
+                return;
+            } else SpoutTimer -= diff;
+        }
+
         while (uint32 eventId = events.ExecuteEvent())
         {
             switch (eventId)
-            {
-                case LURKER_EVENT_SPOUT_EMOTE:
+            {    
+                /*case LURKER_EVENT_SPOUT_EMOTE:
                 {
-                    me->MonsterTextEmote(EMOTE_SPOUT, 0, true);
-                    ForceSpellCast(me, SPELL_SPOUT_BREATH);
-                    events.ScheduleEvent(LURKER_EVENT_SPOUT, 3000);
-                    break;
+                me->MonsterTextEmote(EMOTE_SPOUT, 0, true);
+                ForceSpellCast(me, SPELL_SPOUT_BREATH);
+                events.ScheduleEvent(LURKER_EVENT_SPOUT, 3000);
+                break;
                 }
                 case LURKER_EVENT_SPOUT:
                 {
-                    me->SetReactState(REACT_PASSIVE);
+                me->SetReactState(REACT_PASSIVE);
 
-                    me->SetSelection(0);
-                   // me->GetMotionMaster()->MoveRotate(20000, RAND(ROTATE_DIRECTION_LEFT, ROTATE_DIRECTION_RIGHT));
+                me->SetSelection(0);
+                me->GetMotionMaster()->MoveRotate(20000, RAND(ROTATE_DIRECTION_LEFT, ROTATE_DIRECTION_RIGHT));
 
-                    ForceSpellCast(me, SPELL_SPOUT_VISUAL, INTERRUPT_AND_CAST_INSTANTLY);
+                ForceSpellCast(me, SPELL_SPOUT_VISUAL, INTERRUPT_AND_CAST_INSTANTLY);
 
-                    m_rotating = true;
+                m_rotating = true;
 
-                    events.DelayEvents(20000, 0);
-                    events.ScheduleEvent(LURKER_EVENT_SPOUT_EMOTE, 45000);
-                    events.RescheduleEvent(LURKER_EVENT_WHIRL, 21000);
-                    break;
-                }
-                case LURKER_EVENT_WHIRL:
+                events.DelayEvents(20000, 0);
+                events.ScheduleEvent(LURKER_EVENT_SPOUT_EMOTE, 45000);
+                events.RescheduleEvent(LURKER_EVENT_WHIRL, 21000);
+                break;
+                }*/
+            case LURKER_EVENT_WHIRL:
                 {
                     AddSpellToCast(me, SPELL_WHIRL);
-                    events.ScheduleEvent(LURKER_EVENT_WHIRL, 17500);
+                    events.ScheduleEvent(LURKER_EVENT_WHIRL, 18000);
                     break;
                 }
-                case LURKER_EVENT_GEYSER:
+            case LURKER_EVENT_GEYSER:
                 {
                     AddSpellToCast(SPELL_GEYSER, CAST_RANDOM);
-                    events.ScheduleEvent(LURKER_EVENT_GEYSER, urand(10000, 30000));
+                    events.ScheduleEvent(LURKER_EVENT_GEYSER, urand(15000, 20000));
                     break;
                 }
-                case LURKER_EVENT_SUBMERGE:
+            case LURKER_EVENT_SUBMERGE:
                 {
                     ForceSpellCast(me, SPELL_SUBMERGE, INTERRUPT_AND_CAST_INSTANTLY);
 
@@ -263,13 +386,14 @@ struct boss_the_lurker_belowAI : public BossAI
                     m_submerged = true;
 
                     events.CancelEvent(LURKER_EVENT_SPOUT_EMOTE);
-                    events.CancelEvent(LURKER_EVENT_SPOUT);
+                    SpoutTimer = 4000; // directly cast Spout after emerging!
+                    // events.CancelEvent(LURKER_EVENT_SPOUT);
                     events.CancelEvent(LURKER_EVENT_WHIRL);
                     events.CancelEvent(LURKER_EVENT_GEYSER);
                     events.ScheduleEvent(LURKER_EVENT_REEMERGE, 60000);
                     break;
                 }
-                case LURKER_EVENT_REEMERGE:
+            case LURKER_EVENT_REEMERGE:
                 {
                     me->RemoveAurasDueToSpell(SPELL_SUBMERGE);
 

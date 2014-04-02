@@ -607,8 +607,8 @@ struct npc_geezleAI : public ScriptedAI
 
     void DespawnNagaFlag(bool despawn)
     {
-        Hellground::AllGameObjectsWithEntryInGrid go_check(GO_NAGA_FLAG);
-        Hellground::ObjectListSearcher<GameObject, Hellground::AllGameObjectsWithEntryInGrid> go_search(FlagList, go_check);
+        Looking4group::AllGameObjectsWithEntryInGrid go_check(GO_NAGA_FLAG);
+        Looking4group::ObjectListSearcher<GameObject, Looking4group::AllGameObjectsWithEntryInGrid> go_search(FlagList, go_check);
         Cell::VisitGridObjects(me, go_search, me->GetMap()->GetVisibilityDistance());
 
         Player* player = NULL;

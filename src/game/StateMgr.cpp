@@ -189,6 +189,9 @@ public:
         target->m_movementInfo.RemoveMovementFlag(MOVEFLAG_ROOT);
 
         target->SetSelection(target->getVictimGUID());
+        
+        if(target->GetTypeId() == TYPEID_UNIT && ((Creature*)target)->hasIgnoreVictimSelection())
+            target->SetSelection(0);
 
         target->AddEvent(new AttackResumeEvent(*target), ATTACK_DISPLAY_DELAY);
     }

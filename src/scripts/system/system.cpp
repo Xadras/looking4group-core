@@ -25,9 +25,9 @@
 #include "Database/DatabaseEnv.h"
 
 #if PLATFORM == PLATFORM_WINDOWS
-HELLGROUND_IMPORT_EXPORT DatabaseType GameDataDatabase;                              ///< Accessor to the world database
-HELLGROUND_IMPORT_EXPORT DatabaseType RealmDataDatabase;                             ///< Accessor to the character database
-HELLGROUND_IMPORT_EXPORT DatabaseType AccountsDatabase;                              ///< Accessor to the realm/login database
+LOOKING4GROUP_IMPORT_EXPORT DatabaseType GameDataDatabase;                              ///< Accessor to the world database
+LOOKING4GROUP_IMPORT_EXPORT DatabaseType RealmDataDatabase;                             ///< Accessor to the character database
+LOOKING4GROUP_IMPORT_EXPORT DatabaseType AccountsDatabase;                              ///< Accessor to the realm/login database
 #endif
 
 SystemMgr::SystemMgr()
@@ -62,7 +62,7 @@ void SystemMgr::LoadVersion()
 void SystemMgr::LoadScriptTexts()
 {
     outstring_log("TSCR: Loading Script Texts...");
-    LoadHellgroundStrings(GameDataDatabase,"script_texts",TEXT_SOURCE_RANGE,1+(TEXT_SOURCE_RANGE*2));
+    LoadLooking4groupStrings(GameDataDatabase,"script_texts",TEXT_SOURCE_RANGE,1+(TEXT_SOURCE_RANGE*2));
 
     QueryResultAutoPtr pResult = GameDataDatabase.PQuery("SELECT entry, sound, type, language, emote FROM script_texts");
 
@@ -128,7 +128,7 @@ void SystemMgr::LoadScriptTexts()
 void SystemMgr::LoadScriptTextsCustom()
 {
     outstring_log("TSCR: Loading Custom Texts...");
-    LoadHellgroundStrings(GameDataDatabase,"custom_texts",TEXT_SOURCE_RANGE*2,1+(TEXT_SOURCE_RANGE*3));
+    LoadLooking4groupStrings(GameDataDatabase,"custom_texts",TEXT_SOURCE_RANGE*2,1+(TEXT_SOURCE_RANGE*3));
 
     QueryResultAutoPtr pResult = GameDataDatabase.PQuery("SELECT entry, sound, type, language, emote FROM custom_texts");
 

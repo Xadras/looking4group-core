@@ -879,7 +879,7 @@ SkillChance.Prospecting = 0
 Event.Announce = 0
 BeepAtStart = 1
 ShowProgressBars = 1
-Motd = "HellGround.pl"
+Motd = "Looking4Group.pl"
 Server.LoginInfo = 0
 
 DontDeleteChars = 0

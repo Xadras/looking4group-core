@@ -441,7 +441,7 @@ extern std::map<uint32, uint32> CreatureAIReInitialize;
 
 #define MAX_VENDOR_ITEMS 255                                // Limitation in item count field size in SMSG_LIST_INVENTORY
 
-class HELLGROUND_IMPORT_EXPORT Creature : public Unit
+class LOOKING4GROUP_IMPORT_EXPORT Creature : public Unit
 {
     public:
 
@@ -472,7 +472,7 @@ class HELLGROUND_IMPORT_EXPORT Creature : public Unit
         bool isTrigger() const { return GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_TRIGGER; }
 
         bool CanWalk() const { return GetCreatureInfo()->InhabitType & INHABIT_GROUND; }
-        bool CanSwim() const { return GetCreatureInfo()->InhabitType & INHABIT_WATER; }
+        bool CanSwim() const { return GetCreatureInfo()->InhabitType & INHABIT_WATER || isPet() ; }
         bool CanFly()  const;
 
         void SetWalk(bool enable);

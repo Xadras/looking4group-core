@@ -411,7 +411,8 @@ bool AuthSocket::_HandleLogonChallenge()
     // No SQL injection possible (paste the IP address as passed by the socket)
     AccountsDatabase.Execute("DELETE FROM ip_banned WHERE unbandate<=UNIX_TIMESTAMP() AND unbandate<>bandate");
     AccountsDatabase.escape_string(address);
-	AccountsDatabase.Execute("DELETE FROM account_permissions WHERE unsetdate<=UNIX_TIMESTAMP() AND unsetdate<>setdate");
+    //Delete ViP
+	AccountsDatabase.Execute("UPDATE account_permissions SET permission_mask = 1 WHERE unsetdate<=UNIX_TIMESTAMP() AND unsetdate<>setdate");
     QueryResultAutoPtr result = AccountsDatabase.PQuery("SELECT * FROM ip_banned WHERE ip = '%s'", address.c_str());
 
     if (result) // ip banned
@@ -445,7 +446,7 @@ bool AuthSocket::_HandleLogonChallenge()
         {
             DEBUG_LOG("[AuthChallenge] Account '%s' is locked to IP - '%s'", _login.c_str(), (*result)[3].GetString());
             DEBUG_LOG("[AuthChallenge] Player address is '%s'", get_remote_address().c_str());
-            if (strcmp(fields[3].GetString(), get_remote_address().c_str()))
+            if (strcmp(fields[4].GetString(), get_remote_address().c_str()))
             {
                 DEBUG_LOG("[AuthChallenge] Account IP differs");
                     pkt << (uint8) WOW_FAIL_LOCKED_ENFORCED;
@@ -871,7 +872,7 @@ bool AuthSocket::_HandleReconnectChallenge()
     EndianConvert(ch->build);
     _build = ch->build;
 
-    QueryResultAutoPtr  result = AccountsDatabase.PQuery("SELECT session_key FROM account JOIN account_session ON account.account_id = account_session_account_id WHERE username = '%s'", _safelogin.c_str());
+    QueryResultAutoPtr  result = AccountsDatabase.PQuery("SELECT session_key FROM account JOIN account_session ON account.account_id = account_session.account_id WHERE username = '%s'", _safelogin.c_str());
 
     // Stop if the account is not found
     if (!result)

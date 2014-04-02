@@ -21,8 +21,8 @@
 
 // THIS FILE IS DEPRECATED
 
-#ifndef HELLGROUND_SYSTEMCONFIG_H
-#define HELLGROUND_SYSTEMCONFIG_H
+#ifndef LOOKING4GROUP_SYSTEMCONFIG_H
+#define LOOKING4GROUP_SYSTEMCONFIG_H
 
 #include "Platform/Define.h"
 #include "revision.h"
@@ -31,7 +31,7 @@
 #define _PACKAGENAME "TrinityCore "
 #define _CODENAME "YUME"
 
-#if HELLGROUND_ENDIAN == HELLGROUND_BIGENDIAN
+#if LOOKING4GROUP_ENDIAN == LOOKING4GROUP_BIGENDIAN
 # define _ENDIAN_STRING "big-endian"
 #else
 # define _ENDIAN_STRING "little-endian"
@@ -49,14 +49,14 @@
 # define SYSCONFDIR ""
 #endif
 
-#define _HELLGROUND_CORE_CONFIG SYSCONFDIR "trinitycore.conf"
-#define _HELLGROUND_REALM_CONFIG SYSCONFDIR "trinityrealm.conf"
+#define _LOOKING4GROUP_CORE_CONFIG SYSCONFDIR "trinitycore.conf"
+#define _LOOKING4GROUP_REALM_CONFIG SYSCONFDIR "trinityrealm.conf"
 
 // Format is YYYYMMDDRR where RR is the change in the conf file
 // for that day.
-#ifndef _HELLGROUND_CORE_CONFVER
-# define _HELLGROUND_CORE_CONFVER 2012070901
-#endif //_HELLGROUND_CORE_CONFVER
+#ifndef _LOOKING4GROUP_CORE_CONFVER
+# define _LOOKING4GROUP_CORE_CONFVER 2012070901
+#endif //_LOOKING4GROUP_CORE_CONFVER
 
 // Format is YYYYMMDDRR where RR is the change in the conf file
 // for that day.

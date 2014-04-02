@@ -79,6 +79,7 @@ struct boss_vazruden_the_heraldAI : public ScriptedAI
     uint32 checktimer;
     uint32 CastTimer;
     uint32 FlyTimer;
+    uint32 SpawnCounter;
     uint64 PlayerGUID;
     uint64 VazrudenGUID;
     uint64 VictimGUID;
@@ -104,6 +105,7 @@ struct boss_vazruden_the_heraldAI : public ScriptedAI
         ConeOfFireTimer = 1200+rand()%3000;
         BellowingRoarTimer = 1800+rand()%3000;
         FlyTimer = 45000+rand()%3000;
+        SpawnCounter = 0;
         me->SetLevitate(true);
         me->SetSpeed(MOVE_FLIGHT, 1.0f);
         me->GetMotionMaster()->MovePath(PATH_ENTRY, true);
@@ -112,6 +114,15 @@ struct boss_vazruden_the_heraldAI : public ScriptedAI
         {
             Vazruden->SetLootRecipient(NULL);
             Vazruden->RemoveCorpse();
+        }
+
+        for (int i = 0; i < SpawnCounter; i++)
+        {
+            Unit *HaveToKill = FindCreature(ENTRY_LIQUID_FIRE, 150, me);
+            if (!HaveToKill)
+                break;
+            else
+                HaveToKill->ToCreature()->DisappearAndDie();
         }
     }
 
@@ -207,7 +218,10 @@ struct boss_vazruden_the_heraldAI : public ScriptedAI
     void SpellHitTarget(Unit* target, const SpellEntry* entry)
     {
         if (target && entry->Id == SPELL_FIREBALL)
+        {
             me->SummonCreature(ENTRY_LIQUID_FIRE,target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(),target->GetOrientation(),TEMPSUMMON_TIMED_DESPAWN,30000);
+            SpawnCounter++;
+        }
     }
 
     void JustSummoned(Creature* summoned)
@@ -236,7 +250,7 @@ struct boss_vazruden_the_heraldAI : public ScriptedAI
 
         DoMoveToCombat();
     }
-
+    
     void SentryDownBy(Unit* who)
     {
         if (SentryDown)

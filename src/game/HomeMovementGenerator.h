@@ -18,18 +18,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef HELLGROUND_HOMEMOVEMENTGENERATOR_H
-#define HELLGROUND_HOMEMOVEMENTGENERATOR_H
+#ifndef LOOKING4GROUP_HOMEMOVEMENTGENERATOR_H
+#define LOOKING4GROUP_HOMEMOVEMENTGENERATOR_H
 
 #include "MovementGenerator.h"
 
 class Creature;
 
 template <class T>
-class HELLGROUND_IMPORT_EXPORT HomeMovementGenerator;
+class LOOKING4GROUP_IMPORT_EXPORT HomeMovementGenerator;
 
 template <>
-class HELLGROUND_IMPORT_EXPORT HomeMovementGenerator<Creature> : public MovementGeneratorMedium< Creature, HomeMovementGenerator<Creature> >
+class LOOKING4GROUP_IMPORT_EXPORT HomeMovementGenerator<Creature> : public MovementGeneratorMedium< Creature, HomeMovementGenerator<Creature> >
 {
     public:
         HomeMovementGenerator() : arrived(false) {}

@@ -1,4 +1,4 @@
-/* Copyright (C) 2008 - 2010 HellgroundDev <http://gamefreedom.pl/>
+/* Copyright (C) 2008 - 2010 Looking4groupDev <http://gamefreedom.pl/>
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -1595,8 +1595,8 @@ struct totem_ashtongue_mysticAI : public Scripted_NoMovementAI
         if(me->GetEntry() == NPC_SUMMONED_WINDFURY_TOTEM)
         {
             std::list<Creature*> pList;
-            Hellground::AllFriendlyCreaturesInGrid u_check(me);
-            Hellground::ObjectListSearcher<Creature, Hellground::AllFriendlyCreaturesInGrid> searcher(pList, u_check);
+            Looking4group::AllFriendlyCreaturesInGrid u_check(me);
+            Looking4group::ObjectListSearcher<Creature, Looking4group::AllFriendlyCreaturesInGrid> searcher(pList, u_check);
             Cell::VisitAllObjects(me, searcher, 60.0);  // range than of aura, in case mobs moved too far from totem when killed
 
             if(!pList.empty())

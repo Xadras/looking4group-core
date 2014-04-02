@@ -995,7 +995,7 @@ void WorldObject::SetOrientation(float orientation)
 
 uint32 WorldObject::GetZoneId() const
 {
-    if (!Hellground::IsValidMapCoord(m_positionX, m_positionY, m_positionZ))
+    if (!Looking4group::IsValidMapCoord(m_positionX, m_positionY, m_positionZ))
     {
         sLog.outDebug("Unit::GetZoneId()(%f, %f, %f) .. bad coordinates!",m_positionX, m_positionY, m_positionZ);
         return 0;
@@ -1006,7 +1006,7 @@ uint32 WorldObject::GetZoneId() const
 
 uint32 WorldObject::GetAreaId() const
 {
-    if (!Hellground::IsValidMapCoord(m_positionX, m_positionY, m_positionZ))
+    if (!Looking4group::IsValidMapCoord(m_positionX, m_positionY, m_positionZ))
     {
         sLog.outDebug("Unit::GetAreaId()(%f, %f, %f) .. bad coordinates!",m_positionX, m_positionY, m_positionZ);
         return 0;
@@ -1290,7 +1290,7 @@ bool WorldObject::HasInArc(const float arcangle, WorldObject const* obj) const
 
 bool WorldObject::IsPositionValid() const
 {
-    return Hellground::IsValidMapCoord(m_positionX,m_positionY,m_positionZ,m_orientation);
+    return Looking4group::IsValidMapCoord(m_positionX,m_positionY,m_positionZ,m_orientation);
 }
 
 void WorldObject::MonsterSay(const char* text, uint32 language, uint64 TargetGuid)
@@ -1349,7 +1349,7 @@ void Object::ForceValuesUpdateAtIndex(uint32 i)
     }
 }
 
-namespace Hellground
+namespace Looking4group
 {
     class MonsterChatBuilder
     {
@@ -1371,15 +1371,15 @@ namespace Hellground
             uint64 i_targetGUID;
             bool i_withoutPrename;
     };
-}                                                           // namespace Hellground
+}                                                           // namespace Looking4group
 
 void WorldObject::MonsterSay(int32 textId, uint32 language, uint64 TargetGuid)
 {
     float range = sWorld.getConfig(CONFIG_LISTEN_RANGE_SAY);
-    Hellground::MonsterChatBuilder say_build(*this, CHAT_MSG_MONSTER_SAY, textId, language, TargetGuid);
-    Hellground::LocalizedPacketDo<Hellground::MonsterChatBuilder> say_do(say_build);
-    Hellground::CameraDistWorker<Hellground::LocalizedPacketDo<Hellground::MonsterChatBuilder> > say_worker(this, range, say_do);
-    TypeContainerVisitor<Hellground::CameraDistWorker<Hellground::LocalizedPacketDo<Hellground::MonsterChatBuilder> >, WorldTypeMapContainer > message(say_worker);
+    Looking4group::MonsterChatBuilder say_build(*this, CHAT_MSG_MONSTER_SAY, textId, language, TargetGuid);
+    Looking4group::LocalizedPacketDo<Looking4group::MonsterChatBuilder> say_do(say_build);
+    Looking4group::CameraDistWorker<Looking4group::LocalizedPacketDo<Looking4group::MonsterChatBuilder> > say_worker(this, range, say_do);
+    TypeContainerVisitor<Looking4group::CameraDistWorker<Looking4group::LocalizedPacketDo<Looking4group::MonsterChatBuilder> >, WorldTypeMapContainer > message(say_worker);
     //cell_lock->Visit(cell_lock, message, *GetMap());
     Cell::VisitWorldObjects(this, say_worker, range);
 }
@@ -1387,16 +1387,16 @@ void WorldObject::MonsterSay(int32 textId, uint32 language, uint64 TargetGuid)
 void WorldObject::MonsterYell(int32 textId, uint32 language, uint64 TargetGuid)
 {
     float range = sWorld.getConfig(CONFIG_LISTEN_RANGE_YELL);
-    Hellground::MonsterChatBuilder say_build(*this, CHAT_MSG_MONSTER_YELL, textId, language, TargetGuid);
-    Hellground::LocalizedPacketDo<Hellground::MonsterChatBuilder> say_do(say_build);
-    Hellground::CameraDistWorker<Hellground::LocalizedPacketDo<Hellground::MonsterChatBuilder> > say_worker(this, range, say_do);
+    Looking4group::MonsterChatBuilder say_build(*this, CHAT_MSG_MONSTER_YELL, textId, language, TargetGuid);
+    Looking4group::LocalizedPacketDo<Looking4group::MonsterChatBuilder> say_do(say_build);
+    Looking4group::CameraDistWorker<Looking4group::LocalizedPacketDo<Looking4group::MonsterChatBuilder> > say_worker(this, range, say_do);
     Cell::VisitWorldObjects(this, say_worker, range);
 }
 
 void WorldObject::MonsterYellToZone(int32 textId, uint32 language, uint64 TargetGuid)
 {
-    Hellground::MonsterChatBuilder say_build(*this, CHAT_MSG_MONSTER_YELL, textId, language, TargetGuid);
-    Hellground::LocalizedPacketDo<Hellground::MonsterChatBuilder> say_do(say_build);
+    Looking4group::MonsterChatBuilder say_build(*this, CHAT_MSG_MONSTER_YELL, textId, language, TargetGuid);
+    Looking4group::LocalizedPacketDo<Looking4group::MonsterChatBuilder> say_do(say_build);
 
     uint32 zoneid = GetZoneId();
 
@@ -1409,16 +1409,16 @@ void WorldObject::MonsterYellToZone(int32 textId, uint32 language, uint64 Target
 void WorldObject::MonsterTextEmote(int32 textId, uint64 TargetGuid, bool IsBossEmote, bool withoutPrename)
 {
     float range = sWorld.getConfig(IsBossEmote ? CONFIG_LISTEN_RANGE_YELL : CONFIG_LISTEN_RANGE_TEXTEMOTE);
-    Hellground::MonsterChatBuilder say_build(*this, IsBossEmote ? CHAT_MSG_RAID_BOSS_EMOTE : CHAT_MSG_MONSTER_EMOTE, textId, LANG_UNIVERSAL, TargetGuid, withoutPrename);
-    Hellground::LocalizedPacketDo<Hellground::MonsterChatBuilder> say_do(say_build);
-    Hellground::CameraDistWorker<Hellground::LocalizedPacketDo<Hellground::MonsterChatBuilder> > say_worker(this, range, say_do);
+    Looking4group::MonsterChatBuilder say_build(*this, IsBossEmote ? CHAT_MSG_RAID_BOSS_EMOTE : CHAT_MSG_MONSTER_EMOTE, textId, LANG_UNIVERSAL, TargetGuid, withoutPrename);
+    Looking4group::LocalizedPacketDo<Looking4group::MonsterChatBuilder> say_do(say_build);
+    Looking4group::CameraDistWorker<Looking4group::LocalizedPacketDo<Looking4group::MonsterChatBuilder> > say_worker(this, range, say_do);
     Cell::VisitWorldObjects(this, say_worker, range);
 }
 
 void WorldObject::MonsterTextEmoteToZone(int32 textId, uint64 TargetGuid, bool IsBossEmote, bool withoutPrename)
 {
-    Hellground::MonsterChatBuilder say_build(*this, IsBossEmote ? CHAT_MSG_RAID_BOSS_EMOTE : CHAT_MSG_MONSTER_EMOTE, textId, LANG_UNIVERSAL, TargetGuid, withoutPrename);
-    Hellground::LocalizedPacketDo<Hellground::MonsterChatBuilder> say_do(say_build);
+    Looking4group::MonsterChatBuilder say_build(*this, IsBossEmote ? CHAT_MSG_RAID_BOSS_EMOTE : CHAT_MSG_MONSTER_EMOTE, textId, LANG_UNIVERSAL, TargetGuid, withoutPrename);
+    Looking4group::LocalizedPacketDo<Looking4group::MonsterChatBuilder> say_do(say_build);
 
     uint32 zoneid = GetZoneId();
 
@@ -1765,8 +1765,8 @@ void WorldObject::GetGroundPoint(float &x, float &y, float &z, float dist, float
     angle += GetOrientation();
     x += dist * cos(angle);
     y += dist * sin(angle);
-    Hellground::NormalizeMapCoord(x);
-    Hellground::NormalizeMapCoord(y);
+    Looking4group::NormalizeMapCoord(x);
+    Looking4group::NormalizeMapCoord(y);
     UpdateGroundPositionZ(x, y, z);
 }
 
@@ -1780,8 +1780,11 @@ void WorldObject::UpdateVisibilityAndView()
 void WorldObject::UpdateObjectVisibility(bool /*forced*/)
 {
     //updates object's visibility for nearby players
-    Hellground::VisibleChangesNotifier notifier(*this);
-    Cell::VisitWorldObjects(this, notifier, GetMap()->GetVisibilityDistance() + World::GetVisibleObjectGreyDistance());
+    Looking4group::VisibleChangesNotifier notifier(*this);
+    float radius = World::GetVisibleObjectGreyDistance();
+    if(Map* map = GetMap())
+        radius += map->GetVisibilityDistance();
+    Cell::VisitWorldObjects(this, notifier, radius);
 }
 
 void WorldObject::AddToClientUpdateList()
@@ -1928,7 +1931,7 @@ void WorldObject::GetValidPointInAngle(Position &pos, float dist, float angle, b
     if (meAsSourcePos)
         GetPosition(pos);
 
-    pos.z += 2.0f;
+    //pos.z += 2.0f;
 
     Position dest;
     dest.x = pos.x + dist * cos(angle);
@@ -1944,7 +1947,7 @@ void WorldObject::GetValidPointInAngle(Position &pos, float dist, float angle, b
     if (ignoreLOSOffset)
         result = VMAP::VMapFactory::createOrGetVMapManager()->getObjectHitPos(GetMapId(), pos.x, pos.y, pos.z +0.5f, dest.x, dest.y, dest.z +1.0f, dest.x, dest.y, dest.z, -0.5f);
     else
-        result = VMAP::VMapFactory::createOrGetVMapManager()->getObjectHitPos(GetMapId(), pos.x, pos.y, pos.z +3.0f, dest.x, dest.y, dest.z +7.0f, dest.x, dest.y, dest.z, -0.5f);
+        result = VMAP::VMapFactory::createOrGetVMapManager()->getObjectHitPos(GetMapId(), pos.x, pos.y, pos.z +0.5f, dest.x, dest.y, dest.z +2.0f, dest.x, dest.y, dest.z, -0.5f);
 
     if (result)
     {
@@ -1973,8 +1976,8 @@ void WorldObject::GetValidPointInAngle(Position &pos, float dist, float angle, b
         }
     }
 
-    Hellground::NormalizeMapCoord(pos.x);
-    Hellground::NormalizeMapCoord(pos.y);
+    Looking4group::NormalizeMapCoord(pos.x);
+    Looking4group::NormalizeMapCoord(pos.y);
     UpdateAllowedPositionZ(pos.x, pos.y, pos.z);
 }
 

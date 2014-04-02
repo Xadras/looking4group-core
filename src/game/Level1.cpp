@@ -38,6 +38,7 @@
 #include "GridMap.h"
 #include "Guild.h"
 #include "AccountMgr.h"
+#include "GuildMgr.h"
 
 #ifdef _DEBUG_VMAPS
 #include "VMapFactory.h"
@@ -145,7 +146,7 @@ bool ChatHandler::HandleGuildAnnounceCommand(const char *args)
     SetSentErrorMessage(true);
     if (uint32 gId = m_session->GetPlayer()->GetGuildId())
     {
-        if (sObjectMgr.GetGuildAnnCooldown(gId) < time(NULL))
+        if (sGuildMgr.GetGuildAnnCooldown(gId) < time(NULL))
         {
             if (msg.size() > sWorld.getConfig(CONFIG_GUILD_ANN_LENGTH))
             {
@@ -153,7 +154,7 @@ bool ChatHandler::HandleGuildAnnounceCommand(const char *args)
                 return false;
             }
 
-            Guild * pGuild = sObjectMgr.GetGuildById(gId);
+            Guild * pGuild = sGuildMgr.GetGuildById(gId);
             if (!pGuild)
             {
                 PSendSysMessage("Error occured while sending guild announce.");
@@ -180,14 +181,14 @@ bool ChatHandler::HandleGuildAnnounceCommand(const char *args)
 
             PSendSysMessage("Your message has been queued and will be displayed soon, please wait: %u seconds before sending another one.", sWorld.getConfig(CONFIG_GUILD_ANN_COOLDOWN));
 
-            sObjectMgr.SaveGuildAnnCooldown(gId);
+            sGuildMgr.SaveGuildAnnCooldown(gId);
             sLog.outLog(LOG_GUILD_ANN, "Player %s (" UI64FMTD ") - guild: %s (%u) append guild announce: %s", m_session->GetPlayer()->GetName(), m_session->GetPlayer()->GetGUID(), pGuild->GetName().c_str(), gId, msg.c_str());
             sWorld.QueueGuildAnnounce(gId, m_session->GetPlayer()->GetTeam(), msg);
             return true;
         }
         else
         {
-            PSendSysMessage("Cooldown between messages didn't pass, come back later :]");
+            PSendSysMessage("Cooldown between messages didn't pass (%u seconds left) :]",(uint32)(time(NULL) - sGuildMgr.GetGuildAnnCooldown(gId)));
             return false;
         }
     }
@@ -831,11 +832,15 @@ bool ChatHandler::HandleGMVisibleCommand(const char* args)
         return true;
     }
 
+    const uint32 VISUAL_AURA = 37800;
     std::string argstr = (char*)args;
+    Player* player = m_session->GetPlayer();
 
     if (argstr == "on")
     {
-        m_session->GetPlayer()->SetGMVisible(true);
+        if (player->HasAura(VISUAL_AURA, 0))
+            player->RemoveAurasDueToSpell(VISUAL_AURA);
+        player->SetGMVisible(true);
         m_session->SendNotification(LANG_INVISIBLE_VISIBLE);
         return true;
     }
@@ -843,7 +848,8 @@ bool ChatHandler::HandleGMVisibleCommand(const char* args)
     if (argstr == "off")
     {
         m_session->SendNotification(LANG_INVISIBLE_INVISIBLE);
-        m_session->GetPlayer()->SetGMVisible(false);
+        player->SetGMVisible(false);
+        player->AddAura(VISUAL_AURA, player);
         return true;
     }
 
@@ -879,7 +885,7 @@ bool ChatHandler::HandleGPSCommand(const char* args)
             return false;
         }
     }
-    CellPair cell_val = Hellground::ComputeCellPair(obj->GetPositionX(), obj->GetPositionY());
+    CellPair cell_val = Looking4group::ComputeCellPair(obj->GetPositionX(), obj->GetPositionY());
     Cell cell(cell_val);
 
     uint32 zone_id, area_id;
@@ -907,7 +913,7 @@ bool ChatHandler::HandleGPSCommand(const char* args)
     float ground_z = map->GetHeight(obj->GetPositionX(), obj->GetPositionY(), MAX_HEIGHT);
     float floor_z = map->GetHeight(obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ());
 
-    GridPair p = Hellground::ComputeGridPair(obj->GetPositionX(), obj->GetPositionY());
+    GridPair p = Looking4group::ComputeGridPair(obj->GetPositionX(), obj->GetPositionY());
 
     int gx=63-p.x_coord;
     int gy=63-p.y_coord;
@@ -1684,7 +1690,7 @@ bool ChatHandler::HandleModifyASpeedCommand(const char* args)
 
     float ASpeed = (float)atof((char*)args);
 
-    if (ASpeed > 10 || ASpeed < 0.1)
+    if (ASpeed > 100 || ASpeed < 0.1)
     {
         SendSysMessage(LANG_BAD_VALUE);
         SetSentErrorMessage(true);

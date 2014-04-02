@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 HellGround <http://www.hellground.pl/>
+# Copyright (C) 2012 looking4group <http://www.looking4group.de/>
 #
 # Copyright (C) 2005-2012 MaNGOS project <http://getmangos.com/>
 #
@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-project(HellGround)
+project(Looking4Group)
 set(SERVER_VERSION 2.4.3)
 
 # CMake policies
@@ -65,7 +65,7 @@ endif()
 
 # Output description of this script
 message(
-  "\nThis script builds the HellGround project server.
+  "\nThis script builds the Looking4Group project server.
   Options that can be used in order to configure the process:
     PREFIX: Path where the server should be installed to
     PCH   : Use precompiled headers
@@ -144,7 +144,7 @@ endif()
 
 # Set up the install-prefix
 if(CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
-  get_filename_component(PREFIX_ABSOLUTE "../hellground-server" ABSOLUTE)
+  get_filename_component(PREFIX_ABSOLUTE "../l4g-server" ABSOLUTE)
   set(CMAKE_INSTALL_PREFIX ${PREFIX_ABSOLUTE} CACHE PATH "Install path prefix." FORCE)
 endif()
 if(PREFIX)
@@ -241,14 +241,14 @@ add_custom_target(uninstall
 
 # Find core revision
 if(MERCURIAL_FOUND)
-  MERCURIAL_HG_INFO(${PROJECT_SOURCE_DIR} HellGround)
+  MERCURIAL_HG_INFO(${PROJECT_SOURCE_DIR} L4G)
 endif()
 
 message("")
-message("Revision              : ${HellGround_HG_ID}")
-message("Last Changed Author   : ${HellGround_HG_AUTHOR}")
-message("Last Changed Rev      : ${HellGround_HG_CHANGESET}")
-message("Last Changed Date     : ${HellGround_HG_DATE}")
+message("Revision              : ${looking4group_HG_ID}")
+message("Last Changed Author   : ${looking4group_HG_AUTHOR}")
+message("Last Changed Rev      : ${looking4group_HG_CHANGESET}")
+message("Last Changed Date     : ${looking4group_HG_DATE}")
 message("Install server to     : ${CMAKE_INSTALL_PREFIX}")
 message("")
 

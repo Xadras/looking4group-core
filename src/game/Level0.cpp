@@ -495,3 +495,32 @@ bool ChatHandler::HandleServerPVPCommand(const char* /*args*/)
     }
     return true;
 }
+
+bool ChatHandler::HandleShowLowLevelQuestCommand(const char* /*args*/)
+{
+    Player *chr = m_session->GetPlayer();
+
+    uint64 idchar = chr->GetGUID();
+    if (!idchar)
+        return false;
+
+    QueryResultAutoPtr levelresult = RealmDataDatabase.PQuery ("SELECT 1 "
+     "FROM character_quest "
+     "WHERE guid = '%u' "
+     "AND show_low_level_quest = 1",
+     idchar);
+    if (levelresult) // if account premium
+    {
+         RealmDataDatabase.PExecute("UPDATE character_quest SET show_low_level_quest = 0 WHERE guid= '%u'", idchar);
+         PSendSysMessage("%s%s", "|cff00ff00", "You won't see any low level quests from now on until you press .showLowLevelQuest again.");
+         return true;
+    }
+    else
+    {
+        RealmDataDatabase.PExecute("REPLACE INTO character_quest (guid, show_low_level_quest) VALUES ('%u', 1)", idchar);
+        PSendSysMessage("%s%s", "|cff00ff00", "You see low level quests from now on until you press .showLowLevelQuest again.");
+        return true;
+    }
+    PSendSysMessage("%s%s", "|cff00ff00", "Something went wrong...");
+    return true;
+}

@@ -1727,3 +1727,18 @@
 /win/VC100/Win32_Release/zlib/zlib.Build.CppClean.log
 /win/VC100/Win32_Release
 /win/ipch
+/win/Looking4Group VC100.opensdf
+/win/Looking4Group VC100.sdf
+/win/VC100/Win32_Debug
+/win/VC100/Win32_Debug_PCH
+/win/Looking4Group VC100.suo
+/bin
+/win/VC100/Win32_Release_PCH/
+/dep/recastnavigation/RecastDemo/Build/
+/dep/recastnavigation/RecastDemo/Bin/Recast.exe
+/dep/recastnavigation/RecastDemo/Bin/Recast.pdb
+/dep/recastnavigation/RecastDemo/Bin/SDL.dll
+/dep/lib/
+/dep/recastnavigation/Detour/win/
+/dep/recastnavigation/Recast/win/
+

@@ -2365,6 +2365,77 @@ void SpellMgr::LoadSpellChains()
     mSpellChains[spell_id].last = 40120;
     mSpellChains[spell_id].rank = 2;
 
+    // Blessing of Kings
+    spell_id = 20217;
+    mSpellChains[spell_id].prev = 0;
+    mSpellChains[spell_id].next = 25898;
+    mSpellChains[spell_id].first = 20217;
+    mSpellChains[spell_id].last = 25898;
+    mSpellChains[spell_id].rank = 1;
+
+    // Gebet der Willenskraft - Name in english?
+
+
+    // Greater Blessing of Kings
+    spell_id = 25898;
+    mSpellChains[spell_id].prev = 20217;
+    mSpellChains[spell_id].next = 0;
+    mSpellChains[spell_id].first = 20217;
+    mSpellChains[spell_id].last = 25898;
+    mSpellChains[spell_id].rank = 2;
+
+    // Greater Blessing of Sanctuary I
+    spell_id = 25899;
+    mSpellChains[spell_id].prev = 27168;    // BoS V
+    mSpellChains[spell_id].next = 27169;    // GBoS II
+    mSpellChains[spell_id].first = 20911;   // BoS I
+    mSpellChains[spell_id].last = 27169;    // GBoS II
+    mSpellChains[spell_id].rank = 6;
+
+    // link BoS V with GBoS I
+    mSpellChains[27168].next = spell_id;
+
+    // Greater Blessing of Sanctuary II
+    spell_id = 27169;
+    mSpellChains[spell_id].prev = 25899;    // GBoS I
+    mSpellChains[spell_id].next = 0;        // none
+    mSpellChains[spell_id].first = 20911;   // BoS I
+    mSpellChains[spell_id].last = 27169;    // GBoS II
+    mSpellChains[spell_id].rank = 7;
+
+    // set GBoS II as last for all BoS ranks
+    mSpellChains[20911].last = spell_id;
+    mSpellChains[20912].last = spell_id;
+    mSpellChains[20913].last = spell_id;
+    mSpellChains[20914].last = spell_id;
+    mSpellChains[27168].last = spell_id;
+
+    // Gebet der Willenskraft I
+    spell_id = 27681;
+    mSpellChains[spell_id].prev = 25312;    // GW V
+    mSpellChains[spell_id].next = 32999;    // GdW II
+    mSpellChains[spell_id].first = 14752;   // GW I
+    mSpellChains[spell_id].last = 32999;    // GdW II
+    mSpellChains[spell_id].rank = 6;
+
+    // linkGW V with GdW I
+    mSpellChains[25312].next = spell_id;
+
+    // Gebet der Willenskraft II
+    spell_id = 32999;
+    mSpellChains[spell_id].prev = 27681;    // GdW I
+    mSpellChains[spell_id].next = 0;        // none
+    mSpellChains[spell_id].first = 14752;   // GW I
+    mSpellChains[spell_id].last = 32999;    // GdW II
+    mSpellChains[spell_id].rank = 7;
+
+    // set GdW II as last for all GW ranks
+    mSpellChains[14752].last = spell_id;
+    mSpellChains[14818].last = spell_id;
+    mSpellChains[14819].last = spell_id;
+    mSpellChains[27841].last = spell_id;
+    mSpellChains[25312].last = spell_id;
+
 //uncomment these two lines to print yourself list of spell_chains on startup
 //    for (UNORDERED_MAP<uint32, SpellChainNode>::iterator itr=mSpellChains.begin();itr!=mSpellChains.end();itr++)
 //       sLog.outString("Id: %u, Rank: %d , %s",itr->first,itr->second.rank, sSpellStore.LookupEntry(itr->first)->Rank[sWorld.GetDefaultDbcLocale()]);
@@ -2777,7 +2848,7 @@ void SpellMgr::LoadSpellCustomAttr()
         if (spellInfo->Effect[0] == SPELL_EFFECT_STUCK)
         {
             if (IsChanneledSpell(spellInfo))
-                spellInfo->ChannelInterruptFlags &= ~CHANNEL_FLAG_MOVEMENT;
+                spellInfo->ChannelInterruptFlags &= ~CHANNEL_INTERRUPT_FLAG_MOVEMENT;
             else
                 spellInfo->InterruptFlags &= ~SPELL_INTERRUPT_FLAG_MOVEMENT;
         }
@@ -2793,16 +2864,20 @@ void SpellMgr::LoadSpellCustomAttr()
         {
             case SPELLFAMILY_GENERIC:
             {
-                 // Goblin Rocket Launcher
-                 if (spellInfo->SpellIconID == 184 && spellInfo->Attributes == 4259840)
-                     spellInfo->AttributesCu |= SPELL_ATTR_CU_NO_SPELL_DMG_COEFF;
-                 else if (spellInfo->Id == 15852)
-                     spellInfo->Dispel = DISPEL_NONE;
-                 else if (spellInfo->Id == 46337) // Crab disguise
-                     spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_CAST;
-                 else if (spellInfo->SpellIconID == 2367) // remove flag from steam tonk & crashin trashin racers
-                     spellInfo->AttributesEx4 &= ~SPELL_ATTR_EX4_FORCE_TRIGGERED;
-                 break;
+                if (spellInfo->Id == 52009)
+                    spellInfo->EffectMiscValue[0] = 20865;
+                // Goblin Rocket Launcher
+                else if (spellInfo->SpellIconID == 184 && spellInfo->Attributes == 4259840)
+                    spellInfo->AttributesCu |= SPELL_ATTR_CU_NO_SPELL_DMG_COEFF;
+                else if (spellInfo->Id == 15852)
+                    spellInfo->Dispel = DISPEL_NONE;
+                else if (spellInfo->Id == 46337) // Crab disguise
+                    spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_CAST;
+                else if (spellInfo->SpellIconID == 2367) // remove flag from steam tonk & crashin trashin racers
+                    spellInfo->AttributesEx4 &= ~SPELL_ATTR_EX4_FORCE_TRIGGERED;
+                else if (spellInfo->Id == 34171 || spellInfo->Id == 37956) // underbat tentacle lash
+                    spellInfo->AttributesEx2 |= SPELL_ATTR_EX2_FROM_BEHIND;
+                break;
             }
             case SPELLFAMILY_SHAMAN:
             {
@@ -2908,6 +2983,9 @@ void SpellMgr::LoadSpellCustomAttr()
             case 16614:
                 spellInfo->AttributesCu |= SPELL_ATTR_CU_NO_SPELL_DMG_COEFF; //Storm Gauntlets - temporary workaround for hell too big spell coef
                 break;
+            case 20532: // Intense Heat (Majordomo Executus lava pit)
+                spellInfo->AttributesEx2 |= SPELL_ATTR_EX2_CANT_CRIT;
+                // no break here
             /* NO SPELL DMG COEFF */
             // Enduring Light - T6 proc
             case 40471:
@@ -3064,6 +3142,13 @@ void SpellMgr::LoadSpellCustomAttr()
             case 24178: // Will of Hakkar
                 spellInfo->AttributesEx |= SPELL_ATTR_EX_CHANNELED_1;
                 break;
+            case 28282: // Ashbringer
+                spellInfo->Effect[2] = SPELL_EFFECT_APPLY_AURA;
+                spellInfo->EffectImplicitTargetA[2] = TARGET_UNIT_CASTER;
+                spellInfo->EffectApplyAuraName[2] = SPELL_AURA_FORCE_REACTION;
+                spellInfo->EffectMiscValue[2] = 56; // Scarlet Crusade
+                spellInfo->EffectBasePoints[2] = 4; // Friendly
+                break;
             // Leggins of BeastMastery
             case 38297:
                 spellInfo->Effect[0] = 0;
@@ -3125,6 +3210,9 @@ void SpellMgr::LoadSpellCustomAttr()
                     case 43267:
                     case 43268:
                         spellInfo->MaxAffectedTargets = 2;
+                        break;
+                    case 45150:
+                        spellInfo->AttributesEx2 |= SPELL_ATTR_EX2_IGNORE_LOS;
                         break;
                 }
                 break;
@@ -3277,7 +3365,8 @@ void SpellMgr::LoadSpellCustomAttr()
                 break;
             case 37363: // set 5y radius instead of 25y
                 spellInfo->EffectRadiusIndex[0] = 8;
-                spellInfo->EffectRadiusIndex[0] = 8;
+                spellInfo->EffectRadiusIndex[1] = 8;
+                spellInfo->EffectMiscValue[1] = 50;
                 break;
             case 42835: // set visual only
                 spellInfo->Effect[0] = 0;
@@ -3289,6 +3378,7 @@ void SpellMgr::LoadSpellCustomAttr()
             case 46039:
                 spellInfo->AttributesEx2 |= SPELL_ATTR_EX2_IGNORE_LOS;
                 break;
+            case 21358: // Aqual Quintessence / Eternal Quintessence
             case 47977: // Broom Broom
             case 42679:
             case 42673:
@@ -3364,7 +3454,7 @@ void SpellMgr::LoadSpellCustomAttr()
                 spellInfo->AttributesEx2 &= ~SPELL_ATTR_EX2_IGNORE_LOS;
                 break;
             case 43383: // Spirit Bolts (HexLord)
-                spellInfo->ChannelInterruptFlags |= CHANNEL_FLAG_MOVEMENT;
+                spellInfo->ChannelInterruptFlags |= CHANNEL_INTERRUPT_FLAG_MOVEMENT;
                 spellInfo->InterruptFlags &= ~SPELL_INTERRUPT_FLAG_INTERRUPT;
                 break;
             case 29962: // Summon Elemental (Shade of Aran)
@@ -3410,6 +3500,7 @@ void SpellMgr::LoadSpellCustomAttr()
                 break;
             case 31790: // Righteous Defense taunt
                 spellInfo->DmgClass = SPELL_DAMAGE_CLASS_MELEE;
+                spellInfo->Attributes |= SPELL_ATTR_IMPOSSIBLE_DODGE_PARRY_BLOCK;
                 break;
             case 28509: // Greater Mana Regeneration - Elixir of Major Mageblood
             case 24363: // Mana Regeneration - Mageblood Potion
@@ -3485,6 +3576,25 @@ void SpellMgr::LoadSpellCustomAttr()
                 spellInfo->EffectBasePoints[0] = 1000;
                 spellInfo->AttributesCu |= SPELL_ATTR_CU_NO_SPELL_DMG_COEFF;
             break;
+            case 29838: //Second Wind (Rank 2)
+                spellInfo->procFlags &= ~PROC_FLAG_ON_TAKE_PERIODIC;
+                break;
+            case 38971: //acid geysir - spell of ssc colosses
+                spellInfo->EffectBasePoints[0] = 2478;
+                break;
+            case 39045: //SPELL_SUMMON_SERPENTSHRINE_PARASITE
+                spellInfo->AreaId = 3607;
+                break;
+            case 38924: //Spore Burst
+                spellInfo->EffectBasePoints[0] = 1867;
+                spellInfo->EffectBasePoints[1] = 1376;
+                break;
+            case 38599:  //spellreflect coilfang serpentguard
+                spellInfo->procFlags = 0x222A0;
+                break;
+            case 37770:
+                spellInfo->Effect[0] = 2;
+                break;
             default:
                 break;
         }

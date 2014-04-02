@@ -766,15 +766,15 @@ void AreaAura::Update(uint32 diff)
                     break;
                 case AREA_AURA_FRIEND:
                 {
-                    Hellground::AnyFriendlyUnitInObjectRangeCheck u_check(caster, caster, m_radius);
-                    Hellground::UnitListSearcher<Hellground::AnyFriendlyUnitInObjectRangeCheck> searcher(targets, u_check);
+                    Looking4group::AnyFriendlyUnitInObjectRangeCheck u_check(caster, caster, m_radius);
+                    Looking4group::UnitListSearcher<Looking4group::AnyFriendlyUnitInObjectRangeCheck> searcher(targets, u_check);
                     Cell::VisitAllObjects(caster, searcher, m_radius);
                     break;
                 }
                 case AREA_AURA_ENEMY:
                 {
-                    Hellground::AnyAoETargetUnitInObjectRangeCheck u_check(caster, caster, m_radius); // No GetCharmer in searcher
-                    Hellground::UnitListSearcher<Hellground::AnyAoETargetUnitInObjectRangeCheck> searcher(targets, u_check);
+                    Looking4group::AnyAoETargetUnitInObjectRangeCheck u_check(caster, caster, m_radius); // No GetCharmer in searcher
+                    Looking4group::UnitListSearcher<Looking4group::AnyAoETargetUnitInObjectRangeCheck> searcher(targets, u_check);
                     Cell::VisitAllObjects(caster, searcher, m_radius);
                     break;
                 }
@@ -1873,6 +1873,17 @@ void Aura::TriggerSpell()
 //                    case 39306: break;
 //                    // Inferno
 //                    case 39346: break;
+//                    // Inferno - Raging Fires in Mechanar
+                    case 39346:
+                    {
+                        if (caster->GetTypeId() != TYPEID_UNIT)
+                            return;
+                        if (!caster->GetInstanceData())
+                            return;
+                        int32 damage = (caster->GetInstanceData()->instance->IsHeroic() ? 1880 : 940);
+                        caster->CastCustomSpell((Unit*)NULL, 35283, &damage, NULL, NULL, true, 0, this, originalCasterGUID);
+                        break;
+                    }
 //                    // Enchanted Weapons
 //                    case 39489: break;
 //                    // Shadow Bolt Whirl
@@ -2003,7 +2014,7 @@ void Aura::TriggerSpell()
                     // Open Portal Periodic
                     case 45994: trigger_spell_id = 45976; break;
 //                    // Earthquake
-//                    case 46240: break;
+                    case 46240: trigger_spell_id = 46243; break;
                     // Personalized Weather
                     case 46736: trigger_spell_id = 46737; break;
 //                    // Stay Submerged
@@ -3816,7 +3827,7 @@ void Aura::HandleChannelDeathItem(bool apply, bool Real)
 
         // Soul Shard only from non-grey units and non-totems
         if (spellInfo->EffectItemType[m_effIndex] == 6265 &&
-            (victim->getLevel() <= Hellground::XP::GetGrayLevel(caster->getLevel()) ||
+            (victim->getLevel() <= Looking4group::XP::GetGrayLevel(caster->getLevel()) ||
             (victim->GetTypeId()==TYPEID_UNIT && (!((Player*)caster)->isAllowedToLoot((Creature*)victim) || ((Creature*)victim)->isTotem()))))
             return;
 
@@ -4015,8 +4026,8 @@ void Aura::HandleFeignDeath(bool apply, bool Real)
     {
         // feign death in pvp: clear target and interrupt casts
         std::list<Unit*> targets;
-        Hellground::AnyUnfriendlyUnitInObjectRangeCheck u_check(m_target, m_target, m_target->GetMap()->GetVisibilityDistance());
-        Hellground::UnitListSearcher<Hellground::AnyUnfriendlyUnitInObjectRangeCheck> searcher(targets, u_check);
+        Looking4group::AnyUnfriendlyUnitInObjectRangeCheck u_check(m_target, m_target, m_target->GetMap()->GetVisibilityDistance());
+        Looking4group::UnitListSearcher<Looking4group::AnyUnfriendlyUnitInObjectRangeCheck> searcher(targets, u_check);
 
         Cell::VisitAllObjects(m_target, searcher, m_target->GetMap()->GetVisibilityDistance());
 
@@ -7955,8 +7966,8 @@ void Aura::PeriodicDummyTick()
         case 50493:
         {
             Creature* target = NULL;
-            Hellground::AllCreaturesOfEntryInRange check(m_target, 27989, 10.0f);
-            Hellground::ObjectSearcher<Creature, Hellground::AllCreaturesOfEntryInRange> searcher(target, check);
+            Looking4group::AllCreaturesOfEntryInRange check(m_target, 27989, 10.0f);
+            Looking4group::ObjectSearcher<Creature, Looking4group::AllCreaturesOfEntryInRange> searcher(target, check);
             Cell::VisitAllObjects(m_target, searcher, 10.0f);
 
             if (target)

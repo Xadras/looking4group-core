@@ -231,24 +231,36 @@ void Spell::EffectUnused(uint32 /*i*/)
 
 void Spell::EffectResurrectNew(uint32 i)
 {
-    if (!unitTarget || unitTarget->isAlive())
+    if (!unitTarget || !unitTarget->IsInWorld() || unitTarget->isAlive())
         return;
 
-    if (unitTarget->GetTypeId() != TYPEID_PLAYER)
-        return;
+    if (Player* pTarget = unitTarget->ToPlayer())
+    {
+        if (pTarget->isRessurectRequested())       // already have one active request
+            return;
 
-    if (!unitTarget->IsInWorld())
-        return;
+        uint32 health = damage;
+        uint32 mana = GetSpellInfo()->EffectMiscValue[i];
+        pTarget->setResurrectRequestData(m_caster->GetGUID(), m_caster->GetMapId(), m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), health, mana);
+        SendResurrectRequest(pTarget);
+    }
+    else if (Pet* pet = unitTarget->ToPet())
+    {
+        if (pet->getPetType() != HUNTER_PET || pet->isAlive())
+            return;
 
-    Player* pTarget = ((Player*)unitTarget);
+        float x, y, z;
+        m_caster->GetPosition(x, y, z);
+        pet->NearTeleportTo(x, y, z, m_caster->GetOrientation());
 
-    if (pTarget->isRessurectRequested())       // already have one active request
-        return;
+        pet->SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0);
+        pet->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
+        pet->setDeathState(ALIVE);
+        pet->clearUnitState(UNIT_STAT_ALL_STATE);
+        pet->SetHealth(uint32(damage));
 
-    uint32 health = damage;
-    uint32 mana = GetSpellInfo()->EffectMiscValue[i];
-    pTarget->setResurrectRequestData(m_caster->GetGUID(), m_caster->GetMapId(), m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), health, mana);
-    SendResurrectRequest(pTarget);
+        pet->SavePetToDB(PET_SAVE_AS_CURRENT);
+    }
 }
 
 void Spell::EffectInstaKill(uint32 /*i*/)
@@ -947,8 +959,8 @@ void Spell::EffectDummy(uint32 i)
                         {
                             // Handle associated GO - monstrous kaliri egg
                             GameObject* target = NULL;
-                            Hellground::AllGameObjectsWithEntryInGrid go_check(185549);
-                            Hellground::ObjectSearcher<GameObject, Hellground::AllGameObjectsWithEntryInGrid> searcher(target, go_check);
+                            Looking4group::AllGameObjectsWithEntryInGrid go_check(185549);
+                            Looking4group::ObjectSearcher<GameObject, Looking4group::AllGameObjectsWithEntryInGrid> searcher(target, go_check);
 
                             // Find GO that matches this trigger:
                             Cell::VisitGridObjects(unitTarget, searcher, 3.0f);
@@ -1484,9 +1496,14 @@ void Spell::EffectDummy(uint32 i)
                 }*/
                 // Polarity Shift (Thaddius)
                 case 28089:
-                    if (unitTarget)
-                        unitTarget->CastSpell(unitTarget, roll_chance_i(50) ? 28059 : 28084, true, NULL, NULL, m_caster->GetGUID());
+                {
+                    if (!unitTarget)
+                        break;
+                    uint32 spellId = roll_chance_i(50) ? 28059 : 28084;
+                    unitTarget->RemoveAurasDueToSpell(spellId == 28059 ? 28084 : 28059);
+                    unitTarget->CastSpell(unitTarget, spellId, true, NULL, NULL, m_caster->GetGUID());
                     break;
+                }
                 // Polarity Shift (Mechano-Lord Capacitus)
                 case 39096:
                     if (unitTarget)
@@ -1649,8 +1666,8 @@ void Spell::EffectDummy(uint32 i)
                     Player* plr = unitTarget->GetCharmerOrOwnerPlayerOrPlayerItself();
 
                     GameObject* ok = NULL;
-                    Hellground::GameObjectFocusCheck go_check(plr,GetSpellInfo()->RequiresSpellFocus);
-                    Hellground::ObjectSearcher<GameObject, Hellground::GameObjectFocusCheck> checker(ok,go_check);
+                    Looking4group::GameObjectFocusCheck go_check(plr,GetSpellInfo()->RequiresSpellFocus);
+                    Looking4group::ObjectSearcher<GameObject, Looking4group::GameObjectFocusCheck> checker(ok,go_check);
 
                     Cell::VisitGridObjects(plr, checker, plr->GetMap()->GetVisibilityDistance());
 
@@ -1903,8 +1920,8 @@ void Spell::EffectDummy(uint32 i)
                         for (uint8 i=0;i<6;++i)
                         {
                             Creature *pCreature = NULL;
-                            Hellground::NearestCreatureEntryWithLiveStateInObjectRangeCheck creature_check(*m_caster, LunarEntry[i], true, 7.0, false);
-                            Hellground::ObjectLastSearcher<Creature, Hellground::NearestCreatureEntryWithLiveStateInObjectRangeCheck> searcher(pCreature, creature_check);
+                            Looking4group::NearestCreatureEntryWithLiveStateInObjectRangeCheck creature_check(*m_caster, LunarEntry[i], true, 7.0, false);
+                            Looking4group::ObjectLastSearcher<Creature, Looking4group::NearestCreatureEntryWithLiveStateInObjectRangeCheck> searcher(pCreature, creature_check);
                             Cell::VisitGridObjects(m_caster, searcher, 7.0);
 
                             if (pCreature)
@@ -2272,8 +2289,8 @@ void Spell::EffectDummy(uint32 i)
                     if (!unitTarget || unitTarget->getAttackers().empty())
                     {
                         // clear cooldown at fail
-                        if (m_caster->GetTypeId()==TYPEID_PLAYER)
-                            ((Player*)m_caster)->RemoveSpellCooldown(GetSpellInfo()->Id, true);
+                        if (m_caster->GetTypeId() == TYPEID_PLAYER)
+                            ((Player*) m_caster)->RemoveSpellCooldown(GetSpellInfo()->Id, true);
 
                         SendCastResult(SPELL_FAILED_TARGET_AFFECTING_COMBAT);
                         return;
@@ -2281,7 +2298,7 @@ void Spell::EffectDummy(uint32 i)
 
                     // Righteous Defense (step 2) (in old version 31980 dummy effect)
                     // Clear targets for eff 1
-                    for (std::list<TargetInfo>::iterator ihit= m_UniqueTargetInfo.begin();ihit != m_UniqueTargetInfo.end();++ihit)
+                    for (std::list<TargetInfo>::iterator ihit = m_UniqueTargetInfo.begin(); ihit != m_UniqueTargetInfo.end(); ++ihit)
                     {
                         if (ihit->deleted)
                             continue;
@@ -2290,17 +2307,16 @@ void Spell::EffectDummy(uint32 i)
                     }
 
                     // not empty (checked)
-                    Unit::AttackerSet const& attackers = unitTarget->getAttackers();
+                    Unit::AttackerSet attackers(unitTarget->getAttackers());
 
                     // chance to be selected from list
-                    float chance = 100.0f/attackers.size();
-                    uint32 count=0;
-                    for (Unit::AttackerSet::const_iterator aItr = attackers.begin(); aItr != attackers.end() && count < 3; ++aItr)
+                    uint32 maxTargets = std::min<uint32>(3, attackers.size());
+                    for (uint32 i = 0; i < maxTargets; ++i)
                     {
-                        if (!roll_chance_f(chance))
-                            continue;
-                        ++count;
-                        AddUnitTarget((*aItr), 1);
+                        Unit::AttackerSet::const_iterator aItr = attackers.begin();
+                        std::advance(aItr, urand(0, attackers.size() - 1));
+                        AddUnitTarget(*aItr, 1);
+                        attackers.erase(*aItr);
                     }
 
                     // now let next effect cast spell at each target.
@@ -2638,8 +2654,8 @@ void Spell::EffectTriggerSpell(uint32 i)
         case 37492:
         {
             std::list<Creature*> pList;
-            Hellground::AllCreaturesOfEntryInRange u_check(m_caster, 21633, 70.0f);
-            Hellground::ObjectListSearcher<Creature, Hellground::AllCreaturesOfEntryInRange> searcher(pList, u_check);
+            Looking4group::AllCreaturesOfEntryInRange u_check(m_caster, 21633, 70.0f);
+            Looking4group::ObjectListSearcher<Creature, Looking4group::AllCreaturesOfEntryInRange> searcher(pList, u_check);
 
             Cell::VisitAllObjects(m_caster, searcher, 70.0f);
 
@@ -2976,6 +2992,15 @@ void Spell::EffectApplyAura(uint32 i)
     if (!unitTarget->isAlive() && spellInfo->Id != 20584 && spellInfo->Id != 8326 &&
         (unitTarget->GetTypeId()!=TYPEID_PLAYER || !((Player*)unitTarget)->GetSession()->PlayerLoading()))
         return;
+        
+      // hacky GCD for Black Hole Effect dummy aura
+
+    if (spellInfo->Id == 46230 && unitTarget->HasAura(46230, 2))
+    {
+        if(Aura* aur = unitTarget->GetAura(46230, 2))
+            if(aur->GetAuraDuration() >= 3400)
+                return;
+    }
 
     Unit* caster = m_originalCasterGUID ? m_originalCaster : m_caster;
     if (!caster)
@@ -5300,26 +5325,38 @@ void Spell::EffectHealMaxHealth(uint32 /*i*/)
 
 void Spell::EffectInterruptCast(uint32 i)
 {
-    if (!unitTarget)
-        return;
-    if (!unitTarget->isAlive())
+    if (!unitTarget || !unitTarget->isAlive())
         return;
 
     // TODO: not all spells that used this effect apply cooldown at school spells
     // also exist case: apply cooldown to interrupted cast only and to all spells
     for (uint32 k = CURRENT_FIRST_NON_MELEE_SPELL; k < CURRENT_MAX_SPELL; k++)
     {
-        if (unitTarget->m_currentSpells[k])
+        if (Spell* spell = unitTarget->m_currentSpells[k])
         {
+            const SpellEntry* curSpellInfo = spell->GetSpellInfo();
             // check if we can interrupt spell
-            if ((unitTarget->m_currentSpells[k]->getState() == SPELL_STATE_CASTING || (unitTarget->m_currentSpells[k]->getState() == SPELL_STATE_PREPARING && unitTarget->m_currentSpells[k]->GetCastTime() > 0.0f)) && unitTarget->m_currentSpells[k]->GetSpellInfo()->InterruptFlags & SPELL_INTERRUPT_FLAG_INTERRUPT && unitTarget->m_currentSpells[k]->GetSpellInfo()->PreventionType == SPELL_PREVENTION_TYPE_SILENCE)
+            if ((spell->getState() == SPELL_STATE_CASTING || (spell->getState() == SPELL_STATE_PREPARING && spell->GetCastTime() > 0.0f)) &&
+                curSpellInfo->PreventionType == SPELL_PREVENTION_TYPE_SILENCE &&
+                ((k == CURRENT_GENERIC_SPELL && curSpellInfo->InterruptFlags & SPELL_INTERRUPT_FLAG_INTERRUPT) ||
+                (k == CURRENT_CHANNELED_SPELL && curSpellInfo->ChannelInterruptFlags & CHANNEL_INTERRUPT_FLAG_MOVEMENT)))
             {
                 if (m_originalCaster)
                 {
                     int32 duration = m_originalCaster->CalculateSpellDuration(GetSpellInfo(), i, unitTarget);
-                    unitTarget->ProhibitSpellScholl(SpellMgr::GetSpellSchoolMask(unitTarget->m_currentSpells[k]->GetSpellInfo()), duration/*GetSpellDuration(GetSpellInfo())*/);
+                    unitTarget->ProhibitSpellSchool(SpellMgr::GetSpellSchoolMask(curSpellInfo), duration /* GetSpellDuration(GetSpellInfo())? */);
                 }
-                unitTarget->InterruptSpell(k,false);
+                // has to be sent before InterruptSpell call
+                WorldPacket data(SMSG_SPELLLOGEXECUTE, (8+4+4+4+4+8+4));
+                data << m_caster->GetPackGUID();
+                data << uint32(GetSpellInfo()->Id);
+                data << uint32(1); // effect count
+                data << uint32(SPELL_EFFECT_INTERRUPT_CAST);
+                data << uint32(1); // target count
+                data << unitTarget->GetPackGUID();
+                data << uint32(curSpellInfo->Id);
+                m_caster->BroadcastPacket(&data, true);
+                unitTarget->InterruptSpell(k, false);
             }
         }
     }
@@ -6396,11 +6433,11 @@ void Spell::EffectScriptEffect(uint32 effIndex)
             int32 damage = irand(1885, 2115);
             m_caster->CastCustomSpell(unitTarget, 46285, &damage, 0, 0, true, 0, 0, m_caster->GetGUID());
             damage /= 2;
-            if(Unit* target_2 = unitTarget->ToPlayer()->GetNextRandomRaidMember(100.0f, true))
+            if(Unit* target_2 = unitTarget->ToPlayer()->GetNextRandomRaidMember(10.0f, true))
             {
                 unitTarget->CastCustomSpell(target_2, 46285, &damage, 0, 0, true, 0, 0, m_caster->GetGUID());
                 damage /= 2;
-                if(Unit* target_3 = target_2->ToPlayer()->GetNextRandomRaidMember(100.0f, true))
+                if(Unit* target_3 = target_2->ToPlayer()->GetNextRandomRaidMember(10.0f, true))
                     target_2->CastCustomSpell(target_3, 46285, &damage, 0, 0, true, 0, 0, m_caster->GetGUID());
             }
             return;
@@ -6599,8 +6636,8 @@ void Spell::EffectSanctuary(uint32 /*i*/)
 
     std::list<Unit*> targets;
 
-    Hellground::AnyUnfriendlyUnitInObjectRangeCheck u_check(unitTarget, unitTarget, m_caster->GetMap()->GetVisibilityDistance());
-    Hellground::UnitListSearcher<Hellground::AnyUnfriendlyUnitInObjectRangeCheck> searcher(targets, u_check);
+    Looking4group::AnyUnfriendlyUnitInObjectRangeCheck u_check(unitTarget, unitTarget, m_caster->GetMap()->GetVisibilityDistance());
+    Looking4group::UnitListSearcher<Looking4group::AnyUnfriendlyUnitInObjectRangeCheck> searcher(targets, u_check);
 
     Cell::VisitAllObjects(unitTarget, searcher, m_caster->GetMap()->GetVisibilityDistance());
 
@@ -7060,14 +7097,7 @@ void Spell::EffectSummonObject(uint32 i)
 
 void Spell::EffectResurrect(uint32 /*effIndex*/)
 {
-    if (!unitTarget)
-        return;
-    if (unitTarget->GetTypeId() != TYPEID_PLAYER)
-        return;
-
-    if (unitTarget->isAlive())
-        return;
-    if (!unitTarget->IsInWorld())
+    if (!unitTarget || !unitTarget->IsInWorld() || unitTarget->isAlive())
         return;
 
     switch (GetSpellInfo()->Id)
@@ -7092,16 +7122,34 @@ void Spell::EffectResurrect(uint32 /*effIndex*/)
             break;
     }
 
-    Player* pTarget = ((Player*)unitTarget);
+    if (Player* pTarget = unitTarget->ToPlayer())
+    {
+        if (pTarget->isRessurectRequested())       // already have one active request
+            return;
 
-    if (pTarget->isRessurectRequested())       // already have one active request
-        return;
+        uint32 health = pTarget->GetMaxHealth() * damage / 100;
+        uint32 mana   = pTarget->GetMaxPower(POWER_MANA) * damage / 100;
 
-    uint32 health = pTarget->GetMaxHealth() * damage / 100;
-    uint32 mana   = pTarget->GetMaxPower(POWER_MANA) * damage / 100;
+        pTarget->setResurrectRequestData(m_caster->GetGUID(), m_caster->GetMapId(), m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), health, mana);
+        SendResurrectRequest(pTarget);
+    }
+    else if (Pet* pet = unitTarget->ToPet())
+    {
+        if (pet->getPetType() != HUNTER_PET || pet->isAlive())
+            return;
 
-    pTarget->setResurrectRequestData(m_caster->GetGUID(), m_caster->GetMapId(), m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), health, mana);
-    SendResurrectRequest(pTarget);
+        float x, y, z;
+        m_caster->GetPosition(x, y, z);
+        pet->NearTeleportTo(x, y, z, m_caster->GetOrientation());
+
+        pet->SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0);
+        pet->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
+        pet->setDeathState(ALIVE);
+        pet->clearUnitState(UNIT_STAT_ALL_STATE);
+        pet->SetHealth(uint32(pet->GetMaxHealth() * damage / 100));
+
+        pet->SavePetToDB(PET_SAVE_AS_CURRENT);
+    }
 }
 
 void Spell::EffectAddExtraAttacks(uint32 /*i*/)
@@ -7410,6 +7458,9 @@ void Spell::EffectKnockBack(uint32 i)
 {
     if (!unitTarget)
         return;
+        
+    if (GetSpellInfo()->Id == 37852)    // Watery Grave Explosion;
+        unitTarget->SetStunned(false);  // stunned state has to be removed manually here before aura expires to allow self knockback
 
     unitTarget->KnockBackFrom(m_caster,float(GetSpellInfo()->EffectMiscValue[i])/10,float(damage)/10);
 }
@@ -7473,7 +7524,21 @@ void Spell::EffectSuspendGravity(uint32 i)
         return;
 
     float dist = unitTarget->GetDistance2d(m_caster);
-    unitTarget->KnockBackFrom(m_caster, dist-GetSpellInfo()->EffectMiscValue[i]/10.0, dist+GetSpellInfo()->EffectMiscValue[i]/50.0);
+    WorldLocation wLoc;
+    float diff_z;
+    unitTarget->GetPosition(wLoc);
+    float ground_z = m_caster->GetTerrain()->GetHeight(wLoc.coord_x, wLoc.coord_y, wLoc.coord_z, true);
+    diff_z = unitTarget->GetPositionZ() - ground_z;
+    
+    // for now this has to only support one spell
+    if(unitTarget->HasAura(46230, 2))
+    {
+        if(Aura* aur = unitTarget->GetAura(46230, 2))
+            if(aur->GetAuraDuration() < 3400)
+                unitTarget->KnockBackFrom(m_caster, dist-frand(7, 14), diff_z < 1.5 ? GetSpellInfo()->EffectMiscValue[i]/10.0 : 0);
+    }
+    else
+        unitTarget->KnockBackFrom(m_caster, dist-frand(7, 14), diff_z < 1.5 ? GetSpellInfo()->EffectMiscValue[i]/10.0 : 0);
 }
 
 void Spell::EffectDispelMechanic(uint32 i)

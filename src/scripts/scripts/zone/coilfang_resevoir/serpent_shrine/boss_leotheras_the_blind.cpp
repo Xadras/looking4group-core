@@ -1,4 +1,7 @@
-/* Copyright (C) 2006 - 2008 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
+/* 
+ * Copyright (C) 2006-2008 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
+ * Copyright (C) 2008-2014 Looking4Group <http://looking4group.de/>
+ * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -183,8 +186,8 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
     bool IsFinalForm;
     float x,y,z;
 
-    uint64 InnderDemon[5];
-    uint32 InnderDemon_Count;
+    uint64 InnerDemon[5];
+    uint32 InnerDemon_Count;
     uint64 Demon;
     uint64 SpellBinderGUID[3];
     uint64 actualtarget;
@@ -196,7 +199,7 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
         PulseCombat_Timer = 5000;
         Whirlwind_Timer = 15000;
         ChaosBlast_Timer = 1000;
-        SwitchToDemon_Timer = 45000;
+        SwitchToDemon_Timer = 55000;
         SwitchToHuman_Timer = 60000;
         Berserk_Timer = 600000;
         InnerDemons_Timer = 30000;
@@ -205,7 +208,7 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
         DemonForm = false;
         IsFinalForm = false;
         NeedThreatReset = false;
-        InnderDemon_Count = 0;
+        InnerDemon_Count = 0;
         m_creature->SetSpeed( MOVE_RUN, 2.0f, true);
         m_creature->SetUInt32Value(UNIT_FIELD_DISPLAYID, MODEL_NIGHTELF);
         m_creature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_DISPLAY  , 0);
@@ -220,7 +223,7 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
         m_creature->SetMeleeDamageSchool(SPELL_SCHOOL_NORMAL);
     }
 
-    void CheckChannelers(bool DoEvade = true)
+    void CheckChannelers()
     {
         for(uint8 i = 0; i < 3; i++)
         {
@@ -244,7 +247,6 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
             Creature* binder = m_creature->SummonCreature(MOB_SPELLBINDER,nx,ny,z,o,TEMPSUMMON_DEAD_DESPAWN,0);
             if (binder)
                 SpellBinderGUID[i] = binder->GetGUID();
-
         }
     }
     void MoveInLineOfSight(Unit *who)
@@ -302,13 +304,13 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
             // and reseting equipment
             m_creature->LoadEquipment(m_creature->GetEquipmentId());
 
-            if(pInstance && pInstance->GetData64(DATA_LEOTHERAS_EVENT_STARTER))
-            {
+            //if(pInstance && pInstance->GetData64(DATA_LEOTHERAS_EVENT_STARTER))
+           // {
                 Unit *victim = Unit::GetUnit(*m_creature, pInstance->GetData64(DATA_LEOTHERAS_EVENT_STARTER));
                 if(victim)
                     m_creature->getThreatManager().addThreat(victim, 1);
                 StartEvent();
-            }
+            //}
         }
         else if(AliveChannelers != 0 && !m_creature->HasAura(AURA_BANISH, 0))
         {
@@ -331,27 +333,27 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
     {
         for(int i=0; i<5; i++)
         {
-            if(InnderDemon[i])
+            if(InnerDemon[i])
             {
                 //delete creature
-                Unit* pUnit = Unit::GetUnit((*m_creature), InnderDemon[i]);
+                Unit* pUnit = Unit::GetUnit((*m_creature), InnerDemon[i]);
                 if(pUnit && pUnit->isAlive())
                     pUnit->Kill(pUnit, false);
 
-                InnderDemon[i] = 0;
+                InnerDemon[i] = 0;
             }
         }
 
-        InnderDemon_Count = 0;
+        InnerDemon_Count = 0;
     }
 
     void CastConsumingMadness() //remove this once SPELL_INSIDIOUS_WHISPER is supported by core
     {
         for(int i=0; i<5; i++)
         {
-            if(InnderDemon[i] > 0 )
+            if(InnerDemon[i] > 0 )
             {
-                Unit* pUnit = Unit::GetUnit((*m_creature), InnderDemon[i]);
+                Unit* pUnit = Unit::GetUnit((*m_creature), InnerDemon[i]);
                 if (pUnit && pUnit->isAlive())
                 {
                     Unit* pUnit_target = Unit::GetUnit((*pUnit), ((mob_inner_demonAI *)((Creature *)pUnit)->AI())->victimGUID);
@@ -401,6 +403,7 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
         //Return since we have no target
         if (!UpdateVictim() || m_creature->HasAura(AURA_BANISH, 0))
         {
+
             if(BanishTimer < diff)
             {
                 CheckBanish();         //no need to check every update tick
@@ -560,13 +563,13 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
                                     continue;
                                 (*itr)->AddAura(new InsidiousAura(spell, i, NULL, (*itr), (*itr)));
                             }
-                            if( InnderDemon_Count > 4 ) InnderDemon_Count = 0;
+                            if( InnerDemon_Count > 4 ) InnerDemon_Count = 0;
 
                             //Safe storing of creatures
-                            InnderDemon[InnderDemon_Count] = demon->GetGUID();
+                            InnerDemon[InnerDemon_Count] = demon->GetGUID();
 
                             //Update demon count
-                            InnderDemon_Count++;
+                            InnerDemon_Count++;
                         }
                     }
                 }
@@ -703,7 +706,6 @@ struct mob_greyheart_spellbinderAI : public ScriptedAI
     {
         pInstance = ((ScriptedInstance *)c->GetInstanceData());;
         leotherasGUID = 0;
-        AddedBanish = false;
     }
 
     ScriptedInstance *pInstance;
@@ -713,8 +715,6 @@ struct mob_greyheart_spellbinderAI : public ScriptedAI
     uint32 Mindblast_Timer;
     uint32 Earthshock_Timer;
 
-    bool AddedBanish;
-
     void Reset()
     {
         Mindblast_Timer  = 3000 + rand()%5000;
@@ -722,10 +722,15 @@ struct mob_greyheart_spellbinderAI : public ScriptedAI
 
         if(pInstance)
         {
+            if (pInstance->GetData(DATA_LEOTHERASTHEBLINDEVENT) != NOT_STARTED)
+            {
+                m_creature->Kill(m_creature,false);
+                return;
+            }
             pInstance->SetData64(DATA_LEOTHERAS_EVENT_STARTER, 0);
             Creature *leotheras = (Creature *)Unit::GetUnit(*m_creature, leotherasGUID);
             if(leotheras && leotheras->isAlive())
-                ((boss_leotheras_the_blindAI*)leotheras->AI())->CheckChannelers(false);
+                ((boss_leotheras_the_blindAI*)leotheras->AI())->CheckChannelers();
         }
     }
 
@@ -738,7 +743,6 @@ struct mob_greyheart_spellbinderAI : public ScriptedAI
 
     void JustRespawned()
     {
-        AddedBanish = false;
         Reset();
     }
 
@@ -860,4 +864,3 @@ void AddSC_boss_leotheras_the_blind()
     newscript->GetAI = &GetAI_mob_inner_demon;
     newscript->RegisterSelf();
 }
-

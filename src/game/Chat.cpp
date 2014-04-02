@@ -44,6 +44,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "addon",          PERM_ADM,       true,   &ChatHandler::HandleAccountSetAddonCommand,       "", NULL },
         { "permissions",    PERM_CONSOLE,   true,   &ChatHandler::HandleAccountSetPermissionsCommand, "", NULL },
         { "password",       PERM_ADM,       true,   &ChatHandler::HandleAccountSetPasswordCommand,    "", NULL },
+        { "multiacc",       PERM_GMT,       true,   &ChatHandler::HandleAccountSetMultiaccCommand,    "", NULL },
         { NULL,             0,              false,  NULL,                                             "", NULL }
     };
 
@@ -69,6 +70,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "set",            PERM_ADM,       true,   NULL,                                           "", accountSetCommandTable },
         { "xp",             PERM_PLAYER,    false,  &ChatHandler::HandleAccountXPToggleCommand,     "", NULL },
         { "whisp",          PERM_ADM,       true,   &ChatHandler::HandleAccountWhispLogCommand,     "", NULL },
+        { "delmultiacc",    PERM_GMT,       true,   &ChatHandler::HandleAccountDelMultiaccCommand,  "", NULL },
         { "",               PERM_PLAYER,    false,  &ChatHandler::HandleAccountCommand,             "", NULL },
         { NULL,             0,              false,  NULL,                                           "", NULL }
     };
@@ -378,7 +380,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "spell_target_position",       PERM_ADM,  true,   &ChatHandler::HandleReloadSpellTargetPositionCommand,       "", NULL },
         { "spell_threats",               PERM_ADM,  true,   &ChatHandler::HandleReloadSpellThreatsCommand,              "", NULL },
         { "spell_disabled",              PERM_ADM,  true,   &ChatHandler::HandleReloadSpellDisabledCommand,             "", NULL },
-        { "hellground_string",           PERM_ADM,  true,   &ChatHandler::HandleReloadHellgroundStringCommand,          "", NULL },
+        { "looking4group_string",           PERM_ADM,  true,   &ChatHandler::HandleReloadLooking4groupStringCommand,          "", NULL },
         { "unqueue_account",             PERM_ADM,  true,   &ChatHandler::HandleReloadUnqueuedAccountListCommand,       "", NULL },
         { "waypoint_scripts",            PERM_ADM,  true,   &ChatHandler::HandleReloadWpScriptsCommand,                 "", NULL },
 
@@ -442,6 +444,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "account",        PERM_GMT,       true,   &ChatHandler::HandleLookupPlayerAccountCommand, "", NULL },
         { "email",          PERM_HIGH_GMT,  true,   &ChatHandler::HandleLookupPlayerEmailCommand,   "", NULL },
         { "ip",             PERM_GMT,       true,   &ChatHandler::HandleLookupPlayerIpCommand,      "", NULL },
+        { "iplist",         PERM_GMT,       true,   &ChatHandler::HandleLookupPlayerIpListCommand,  "", NULL },
         { NULL,             0,              false,  NULL,                                           "", NULL }
     };
 
@@ -582,6 +585,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "add",            PERM_HIGH_GMT,  false,  &ChatHandler::HandleQuestAdd,                   "", NULL },
         { "complete",       PERM_HIGH_GMT,  false,  &ChatHandler::HandleQuestComplete,              "", NULL },
         { "remove",         PERM_HIGH_GMT,  false,  &ChatHandler::HandleQuestRemove,                "", NULL },
+        { "showlowlevel",   PERM_PLAYER,    false,  &ChatHandler::HandleShowLowLevelQuestCommand,   "", NULL },
         { NULL,             0,              false,  NULL,                                           "", NULL }
     };
 
@@ -754,6 +758,8 @@ ChatCommand * ChatHandler::getCommandTable()
         { "vipdel",         PERM_ADM,       true,   &ChatHandler::HandleDelVIPAccountCommand,       "", NULL },
         { "charstoplevel",  PERM_PLAYER,    true,   &ChatHandler::HandleStopLevelCharacterCommand,  "", NULL },
         { "charactivatelevel", PERM_PLAYER, true,   &ChatHandler::HandleActivateLevelCharacterCommand, "", NULL },
+        { "characterimport", PERM_GMT,      true,   &ChatHandler::HandleCharacterImportCommand,     "", NULL },
+        { "changeaccount", PERM_GMT,      true,   &ChatHandler::HandleChangeAccountCommand,     "", NULL },
         { NULL,             0,              false,  NULL,                                           "", NULL }
     };
 
@@ -1395,8 +1401,8 @@ GameObject* ChatHandler::GetObjectGlobalyWithGuidOrNearWithDbGuid(uint32 lowguid
     if (!obj && sObjectMgr.GetGOData(lowguid))                   // guid is DB guid of object
     {
         // search near player then
-        Hellground::GameObjectWithDbGUIDCheck go_check(*pl,lowguid);
-        Hellground::ObjectSearcher<GameObject, Hellground::GameObjectWithDbGUIDCheck> checker(obj,go_check);
+        Looking4group::GameObjectWithDbGUIDCheck go_check(*pl,lowguid);
+        Looking4group::ObjectSearcher<GameObject, Looking4group::GameObjectWithDbGUIDCheck> checker(obj,go_check);
 
         Cell::VisitGridObjects(pl,checker, pl->GetMap()->GetVisibilityDistance());
     }

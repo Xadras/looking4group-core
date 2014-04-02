@@ -173,7 +173,7 @@ bool GossipSelect_npc_loramus_thalipedes(Player *player, Creature *_Creature, ui
 
 //next message must be send to player when Rizzle jump into river, not implemented
 #define MSG_ESCAPE_NOTICE "     Rizzle Sprysprocket takes the Southfury moonstone and escapes into the river. Follow her!"
-
+/*
 float WPs[58][4] =
 {
 //pos_x   pos_y     pos_z    orien
@@ -398,7 +398,7 @@ struct mob_rizzle_sprysprocketAI : public ScriptedAI
     }
 
 };
-
+*/
 bool GossipHello_mob_rizzle_sprysprocket(Player *player, Creature *_Creature)
 {
     if(player->GetQuestStatus(10994) != QUEST_STATUS_INCOMPLETE)
@@ -414,17 +414,16 @@ bool GossipSelect_mob_rizzle_sprysprocket(Player *player, Creature *_Creature, u
     {
         player->CLOSE_GOSSIP_MENU();
         _Creature->CastSpell(player, SPELL_GIVE_SOUTHFURY_MOONSTONE, true);
-        ((mob_rizzle_sprysprocketAI*)_Creature->AI())->Must_Die_Timer = 3000;
-        ((mob_rizzle_sprysprocketAI*)_Creature->AI())->Must_Die = true;
+        _Creature->DisappearAndDie();
     }
     return true;
 }
-
+/*
 CreatureAI* GetAI_mob_rizzle_sprysprocket(Creature *_Creature)
 {
     return new mob_rizzle_sprysprocketAI (_Creature);
 }
-
+*/
 /*####
 # mob_depth_charge
 ####*/
@@ -645,7 +644,6 @@ void AddSC_azshara()
 
     newscript = new Script;
     newscript->Name="mob_rizzle_sprysprocket";
-    newscript->GetAI = &GetAI_mob_rizzle_sprysprocket;
     newscript->pGossipHello =  &GossipHello_mob_rizzle_sprysprocket;
     newscript->pGossipSelect = &GossipSelect_mob_rizzle_sprysprocket;
     newscript->RegisterSelf();

@@ -385,6 +385,22 @@ struct npc_bloodmaul_brutebaneAI : public ScriptedAI
            if (Player* plOwner = pOwner->GetCharmerOrOwnerPlayerOrPlayerItself())
                plOwner->KilledMonster(NPC_QUEST_CREDIT, pOgre->GetGUID());
        }
+       else if (Creature* pOgre = GetClosestCreatureWithEntry(me, 20726, 50.0f))
+       {
+           pOgre->SetReactState(REACT_DEFENSIVE);
+           pOgre->GetMotionMaster()->MovePoint(1, me->GetPositionX()-1, me->GetPositionY()+1, me->GetPositionZ());
+
+           if (Player* plOwner = pOwner->GetCharmerOrOwnerPlayerOrPlayerItself())
+               plOwner->KilledMonster(NPC_QUEST_CREDIT, pOgre->GetGUID());
+       }
+       else if (Creature* pOgre = GetClosestCreatureWithEntry(me, 20731, 50.0f))
+       {
+           pOgre->SetReactState(REACT_DEFENSIVE);
+           pOgre->GetMotionMaster()->MovePoint(1, me->GetPositionX()-1, me->GetPositionY()+1, me->GetPositionZ());
+
+           if (Player* plOwner = pOwner->GetCharmerOrOwnerPlayerOrPlayerItself())
+               plOwner->KilledMonster(NPC_QUEST_CREDIT, pOgre->GetGUID());
+       }
     }
 
     void UpdateAI(const uint32 uiDiff){}
@@ -457,8 +473,8 @@ struct npc_vim_bunnyAI : public ScriptedAI
     bool GetPlayer()
     {
         Player* pPlayer = NULL;
-        Hellground::AnyPlayerInObjectRangeCheck p_check(me, 3.0f);
-        Hellground::ObjectSearcher<Player, Hellground::AnyPlayerInObjectRangeCheck> searcher(pPlayer, p_check);
+        Looking4group::AnyPlayerInObjectRangeCheck p_check(me, 3.0f);
+        Looking4group::ObjectSearcher<Player, Looking4group::AnyPlayerInObjectRangeCheck> searcher(pPlayer, p_check);
 
         Cell::VisitAllObjects(me, searcher, 3.0f);
         return pPlayer;
@@ -972,8 +988,8 @@ struct npc_simon_bunnyAI : public ScriptedAI
         me->SetFloatValue(OBJECT_FIELD_SCALE_X, large ? 2 : 1);
 
         std::list<GameObject*> ClusterList;
-        Hellground::AllGameObjectsInRange objects(me, searchDistance);
-        Hellground::ObjectListSearcher<GameObject, Hellground::AllGameObjectsInRange> searcher(ClusterList, objects);
+        Looking4group::AllGameObjectsInRange objects(me, searchDistance);
+        Looking4group::ObjectListSearcher<GameObject, Looking4group::AllGameObjectsInRange> searcher(ClusterList, objects);
         Cell::VisitGridObjects(me, searcher, searchDistance);
 
         for (std::list<GameObject*>::const_iterator i = ClusterList.begin(); i != ClusterList.end(); ++i)

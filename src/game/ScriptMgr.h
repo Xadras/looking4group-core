@@ -41,7 +41,7 @@ class WorldObject;
 
 struct SpellEntry;
 
-#define MIN_DB_SCRIPT_STRING_ID        MAX_HELLGROUND_STRING_ID // 'db_script_string'
+#define MIN_DB_SCRIPT_STRING_ID        MAX_LOOKING4GROUP_STRING_ID // 'db_script_string'
 #define MAX_DB_SCRIPT_STRING_ID        2000010000
 
 struct ScriptInfo
@@ -141,7 +141,7 @@ class ScriptMgr
         template<class T>
         void GetScriptHookPtr(T& ptr, const char* name)
         {
-            ptr = (T)HELLGROUND_GET_PROC_ADDR(m_hScriptLib, name);
+            ptr = (T)LOOKING4GROUP_GET_PROC_ADDR(m_hScriptLib, name);
         }
 
         typedef UNORDERED_MAP<uint32, uint32> AreaTriggerScriptMap;
@@ -156,50 +156,50 @@ class ScriptMgr
 
         ScriptNameMap           m_scriptNames;
 
-        HELLGROUND_LIBRARY_HANDLE   m_hScriptLib;
+        LOOKING4GROUP_LIBRARY_HANDLE   m_hScriptLib;
 
-        void (HELLGROUND_IMPORT* m_pOnInitScriptLibrary)(char const*);
-        void (HELLGROUND_IMPORT* m_pOnFreeScriptLibrary)();
-        const char* (HELLGROUND_IMPORT* m_pGetScriptLibraryVersion)();
+        void (LOOKING4GROUP_IMPORT* m_pOnInitScriptLibrary)(char const*);
+        void (LOOKING4GROUP_IMPORT* m_pOnFreeScriptLibrary)();
+        const char* (LOOKING4GROUP_IMPORT* m_pGetScriptLibraryVersion)();
 
-        CreatureAI* (HELLGROUND_IMPORT* m_pGetCreatureAI) (Creature*);
-        InstanceData* (HELLGROUND_IMPORT* m_pCreateInstanceData) (Map*);
+        CreatureAI* (LOOKING4GROUP_IMPORT* m_pGetCreatureAI) (Creature*);
+        InstanceData* (LOOKING4GROUP_IMPORT* m_pCreateInstanceData) (Map*);
 
-        bool (HELLGROUND_IMPORT* m_pOnGossipHello) (Player*, Creature*);
-        bool (HELLGROUND_IMPORT* m_pOnGossipSelect) (Player*, Creature*, uint32, uint32);
-        bool (HELLGROUND_IMPORT* m_pOnGOGossipSelect) (Player*, GameObject*, uint32, uint32);
-        bool (HELLGROUND_IMPORT* m_pOnGossipSelectWithCode) (Player*, Creature*, uint32, uint32, const char*);
-        bool (HELLGROUND_IMPORT* m_pOnGOGossipSelectWithCode) (Player*, GameObject*, uint32, uint32, const char*);
-        bool (HELLGROUND_IMPORT* m_pOnQuestAccept) (Player*, Creature*, Quest const*);
-        bool (HELLGROUND_IMPORT* m_pOnGOQuestAccept) (Player*, GameObject*, Quest const*);
-        bool (HELLGROUND_IMPORT* m_pOnItemQuestAccept) (Player*, Item*, Quest const*);
-        bool (HELLGROUND_IMPORT* m_pOnQuestRewarded) (Player*, Creature*, Quest const*);
-        bool (HELLGROUND_IMPORT* m_pOnGOQuestRewarded) (Player*, GameObject*, Quest const*);
-        uint32 (HELLGROUND_IMPORT* m_pGetNPCDialogStatus) (Player*, Creature*);
-        uint32 (HELLGROUND_IMPORT* m_pGetGODialogStatus) (Player*, GameObject*);
-        bool (HELLGROUND_IMPORT* m_pOnGOUse) (Player*, GameObject*);
-        bool (HELLGROUND_IMPORT* m_pOnItemUse) (Player*, Item*, SpellCastTargets const&);
-        bool (HELLGROUND_IMPORT* m_pOnAreaTrigger) (Player*, AreaTriggerEntry const*);
-        bool (HELLGROUND_IMPORT* m_pOnCompletedCinematic) (Player*, CinematicSequencesEntry const*);
-        bool (HELLGROUND_IMPORT* m_pOnProcessEvent) (uint32, Object*, Object*, bool);
-        bool (HELLGROUND_IMPORT* m_pOnEffectDummyCreature) (Unit*, uint32, uint32, Creature*);
-        bool (HELLGROUND_IMPORT* m_pOnEffectDummyGO) (Unit*, uint32, uint32, GameObject*);
-        bool (HELLGROUND_IMPORT* m_pOnEffectDummyItem) (Unit*, uint32, uint32, Item*);
-        bool (HELLGROUND_IMPORT* m_pOnAuraDummy) (Aura const*, bool);
+        bool (LOOKING4GROUP_IMPORT* m_pOnGossipHello) (Player*, Creature*);
+        bool (LOOKING4GROUP_IMPORT* m_pOnGossipSelect) (Player*, Creature*, uint32, uint32);
+        bool (LOOKING4GROUP_IMPORT* m_pOnGOGossipSelect) (Player*, GameObject*, uint32, uint32);
+        bool (LOOKING4GROUP_IMPORT* m_pOnGossipSelectWithCode) (Player*, Creature*, uint32, uint32, const char*);
+        bool (LOOKING4GROUP_IMPORT* m_pOnGOGossipSelectWithCode) (Player*, GameObject*, uint32, uint32, const char*);
+        bool (LOOKING4GROUP_IMPORT* m_pOnQuestAccept) (Player*, Creature*, Quest const*);
+        bool (LOOKING4GROUP_IMPORT* m_pOnGOQuestAccept) (Player*, GameObject*, Quest const*);
+        bool (LOOKING4GROUP_IMPORT* m_pOnItemQuestAccept) (Player*, Item*, Quest const*);
+        bool (LOOKING4GROUP_IMPORT* m_pOnQuestRewarded) (Player*, Creature*, Quest const*);
+        bool (LOOKING4GROUP_IMPORT* m_pOnGOQuestRewarded) (Player*, GameObject*, Quest const*);
+        uint32 (LOOKING4GROUP_IMPORT* m_pGetNPCDialogStatus) (Player*, Creature*);
+        uint32 (LOOKING4GROUP_IMPORT* m_pGetGODialogStatus) (Player*, GameObject*);
+        bool (LOOKING4GROUP_IMPORT* m_pOnGOUse) (Player*, GameObject*);
+        bool (LOOKING4GROUP_IMPORT* m_pOnItemUse) (Player*, Item*, SpellCastTargets const&);
+        bool (LOOKING4GROUP_IMPORT* m_pOnAreaTrigger) (Player*, AreaTriggerEntry const*);
+        bool (LOOKING4GROUP_IMPORT* m_pOnCompletedCinematic) (Player*, CinematicSequencesEntry const*);
+        bool (LOOKING4GROUP_IMPORT* m_pOnProcessEvent) (uint32, Object*, Object*, bool);
+        bool (LOOKING4GROUP_IMPORT* m_pOnEffectDummyCreature) (Unit*, uint32, uint32, Creature*);
+        bool (LOOKING4GROUP_IMPORT* m_pOnEffectDummyGO) (Unit*, uint32, uint32, GameObject*);
+        bool (LOOKING4GROUP_IMPORT* m_pOnEffectDummyItem) (Unit*, uint32, uint32, Item*);
+        bool (LOOKING4GROUP_IMPORT* m_pOnAuraDummy) (Aura const*, bool);
 
-        bool (HELLGROUND_IMPORT* m_pOnReceiveEmote) (Player *pPlayer, Creature *pCreature, uint32 emote);
+        bool (LOOKING4GROUP_IMPORT* m_pOnReceiveEmote) (Player *pPlayer, Creature *pCreature, uint32 emote);
 
         // spell scripts
-        bool (HELLGROUND_IMPORT* m_pOnSpellSetTargetMap) (Unit* pCaster, std::list<Unit*> &unitList, SpellCastTargets const&, SpellEntry const *pSpell, uint32 effectIndex);
-        bool (HELLGROUND_IMPORT* m_pOnSpellHandleEffect) (Unit *pCaster, Unit* pUnit, Item* pItem, GameObject* pGameObject, SpellEntry const *pSpell, uint32 effectIndex);
+        bool (LOOKING4GROUP_IMPORT* m_pOnSpellSetTargetMap) (Unit* pCaster, std::list<Unit*> &unitList, SpellCastTargets const&, SpellEntry const *pSpell, uint32 effectIndex);
+        bool (LOOKING4GROUP_IMPORT* m_pOnSpellHandleEffect) (Unit *pCaster, Unit* pUnit, Item* pItem, GameObject* pGameObject, SpellEntry const *pSpell, uint32 effectIndex);
 };
 
 #define sScriptMgr (*ACE_Singleton<ScriptMgr, ACE_Null_Mutex>::instance())
 
-HELLGROUND_IMPORT_EXPORT uint32 GetAreaTriggerScriptId(uint32 triggerId);
-HELLGROUND_IMPORT_EXPORT uint32 GetCompletedCinematicScriptId(uint32 triggerId);
-HELLGROUND_IMPORT_EXPORT uint32 GetScriptId(const char *name);
-HELLGROUND_IMPORT_EXPORT uint32 GetEventIdScriptId(uint32 eventId);
-HELLGROUND_IMPORT_EXPORT uint32 GetSpellIdScriptId(uint32 eventId);
+LOOKING4GROUP_IMPORT_EXPORT uint32 GetAreaTriggerScriptId(uint32 triggerId);
+LOOKING4GROUP_IMPORT_EXPORT uint32 GetCompletedCinematicScriptId(uint32 triggerId);
+LOOKING4GROUP_IMPORT_EXPORT uint32 GetScriptId(const char *name);
+LOOKING4GROUP_IMPORT_EXPORT uint32 GetEventIdScriptId(uint32 eventId);
+LOOKING4GROUP_IMPORT_EXPORT uint32 GetSpellIdScriptId(uint32 eventId);
 
 #endif

@@ -342,7 +342,7 @@ struct boss_twinemperorsAI : public ScriptedAI
         std::list<Creature*> unitList;
 
         AnyBugCheck u_check(m_creature, 150);
-        Hellground::ObjectListSearcher<Creature, AnyBugCheck> searcher(unitList, u_check);
+        Looking4group::ObjectListSearcher<Creature, AnyBugCheck> searcher(unitList, u_check);
         Cell::VisitGridObjects(me, searcher, 150);
 
         Creature *nearb = NULL;

@@ -380,7 +380,7 @@ bool ItemUse_item_specific_target(Player *player, Item* _Item, SpellCastTargets 
         case 23417: cEntry[0] = 16975; break; // Sanctified Crystal
         case 32698: cEntry[0] = 22181; break; // Wrangling Rope
         case 34257: cEntry[0] = 24918; targetState = T_ALIVE; break; // Fel Siphon
-        case 28547: cEntry[0] = 17157; cEntry[1] = 18865; break;
+        case 28547: cEntry[0] = 18881; cEntry[1] = 18865; break; //Elemental power extractor
         case 12284: cEntry[0] = 7047; cEntry[1] = 7048; cEntry[2] = 7049; break; // Draco-Incarcinatrix 900
         case 23337: cEntry[0] = 16880; targetState = T_ALIVE; break;    // Cenarion Antidote
         case 29818: cEntry[0] = 20774; targetState = T_ALIVE; break;    // Energy Field Modulator
@@ -482,8 +482,8 @@ bool ItemUse_item_rood_rofl(Player *player, Item* _Item, SpellCastTargets const&
 bool ItemUse_item_chest_of_containment_coffers(Player *player, Item* _Item, SpellCastTargets const& targets)
 {
     std::list<Creature*> SpawnList;
-    Hellground::AllCreaturesOfEntryInRange u_check(player, MOB_RIFT_SPAWN, 20.0);
-    Hellground::ObjectListSearcher<Creature, Hellground::AllCreaturesOfEntryInRange> searcher(SpawnList, u_check);
+    Looking4group::AllCreaturesOfEntryInRange u_check(player, MOB_RIFT_SPAWN, 20.0);
+    Looking4group::ObjectListSearcher<Creature, Looking4group::AllCreaturesOfEntryInRange> searcher(SpawnList, u_check);
     Cell::VisitAllObjects(player, searcher, 20.0);
 
     if(!SpawnList.empty())
@@ -520,22 +520,20 @@ bool ItemUse_item_reset_talents(Player *player, Item* _Item, SpellCastTargets co
         }
         else
         {
-            if (MapEntry const* mapEntry = sMapStore.LookupEntry(player->GetMapId()))
-                if (mapEntry->IsBattleArena())
-                {
-                    WorldPacket data(SMSG_CAST_FAILED, (4+2));              // prepare packet error message
-                    data << uint32(_Item->GetEntry());                      // itemId
-                    data << uint8(SPELL_FAILED_NOT_IN_ARENA);               // reason
-                    player->GetSession()->SendPacket(&data);                // send message: Invalid target
-                }
-                else
-                {
-                    player->resetTalents(true);
-                    player->DestroyItemCount(1000022, 1, true, false);
-                    ChatHandler(player).SendSysMessage("Your talents have been reset.");
-                    ChatHandler(player).SendSysMessage("Deine Talente wurden zurueckgesetzt.");
-                    return true;
-                }
+            if (player->GetMap()->IsBattleGroundOrArena())
+            {
+                WorldPacket data(SMSG_CAST_FAILED, (4+2));              // prepare packet error message
+                data << uint32(_Item->GetEntry());                      // itemId
+                data << uint8(SPELL_FAILED_NOT_IN_ARENA);               // reason
+                player->GetSession()->SendPacket(&data);                // send message: Invalid target
+            }
+            else
+            {
+                player->resetTalents(true);
+                player->DestroyItemCount(1000022, 1, true, false);
+                player->Whisper("Deine Talente wurden zurueckgesetzt", LANG_UNIVERSAL, player->GetGUID());
+                return true;
+            }
         }
     }
     else

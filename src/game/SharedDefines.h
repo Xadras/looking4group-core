@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef HELLGROUND_SHAREDDEFINES_H
-#define HELLGROUND_SHAREDDEFINES_H
+#ifndef LOOKING4GROUP_SHAREDDEFINES_H
+#define LOOKING4GROUP_SHAREDDEFINES_H
 
 #include "Platform/Define.h"
 #include <cassert>
@@ -326,7 +326,7 @@ enum SpellCategory
 #define SPELL_ATTR_EX2_NOT_RESET_AUTOSHOT         0x00020000            // 17 Hunters Shot and Stings only have this flag
 #define SPELL_ATTR_EX2_UNK18                      0x00040000            // 18 Only Revive pet - possible req dead pet
 #define SPELL_ATTR_EX2_NOT_NEED_SHAPESHIFT        0x00080000            // 19 does not necessarly need shapeshift
-#define SPELL_ATTR_EX2_UNK20                      0x00100000            // 20
+#define SPELL_ATTR_EX2_FROM_BEHIND                0x00100000            // 20 only if behind
 #define SPELL_ATTR_EX2_DAMAGE_REDUCED_SHIELD      0x00200000            // 21 for ice blocks, pala immunity buffs, priest absorb shields, but used also for other spells -> not sure!
 #define SPELL_ATTR_EX2_UNK22                      0x00400000            // 22
 #define SPELL_ATTR_EX2_UNK23                      0x00800000            // 23 Only mage Arcane Concentration have this flag
@@ -2295,7 +2295,7 @@ enum PetDiet
 #define GUILD_BANK_MAX_TABS         6
 #define GUILD_BANK_MAX_SLOTS        98
 #define GUILD_BANK_MAX_LOGS         24
-#define GUILD_EVENTLOG_MAX_ENTRIES  100
+#define GUILD_EVENTLOG_MAX_ENTRIES  99
 #define GUILD_MAX_RANKS             10
 
 enum AiReaction

@@ -427,8 +427,8 @@ struct npc_commander_dawnforgeAI : public ScriptedAI
     {
         Creature* creature = NULL;
 
-        Hellground::NearestCreatureEntryWithLiveStateInObjectRangeCheck creature_check(*me, entry, true, range, false);
-        Hellground::ObjectLastSearcher<Creature, Hellground::NearestCreatureEntryWithLiveStateInObjectRangeCheck> searcher(creature, creature_check);
+        Looking4group::NearestCreatureEntryWithLiveStateInObjectRangeCheck creature_check(*me, entry, true, range, false);
+        Looking4group::ObjectLastSearcher<Creature, Looking4group::NearestCreatureEntryWithLiveStateInObjectRangeCheck> searcher(creature, creature_check);
 
         Cell::VisitGridObjects(me, searcher, range);
 
@@ -654,8 +654,8 @@ Creature* SearchDawnforge(Player* source, uint32 entry, float range)
 {
     Creature* creature = NULL;
 
-    Hellground::NearestCreatureEntryWithLiveStateInObjectRangeCheck creature_check(*source, entry, true, range, false);
-    Hellground::ObjectLastSearcher<Creature, Hellground::NearestCreatureEntryWithLiveStateInObjectRangeCheck> searcher(creature, creature_check);
+    Looking4group::NearestCreatureEntryWithLiveStateInObjectRangeCheck creature_check(*source, entry, true, range, false);
+    Looking4group::ObjectLastSearcher<Creature, Looking4group::NearestCreatureEntryWithLiveStateInObjectRangeCheck> searcher(creature, creature_check);
 
     Cell::VisitGridObjects(source, searcher, range);
 
@@ -1200,11 +1200,11 @@ struct mob_epextractionAI : public ScriptedAI
 
     void JustDied(Unit* killer)
     {
-        if (me->GetEntry() == ENTRY_RUMBLER)
-           me->CastSpell(me, SPELL_SUMMON_SHARD, true);
-
         if (PowerExtracted)
             me->CastSpell(me, SPELL_CREATE_EPOWER, true);
+
+        if (me->GetEntry() == ENTRY_RUMBLER)
+           me->CastSpell(me, SPELL_SUMMON_SHARD, true);
 
         me->RemoveCorpse();
     }

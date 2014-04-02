@@ -114,17 +114,8 @@ ObjectMgr::ObjectMgr()
     m_hiPetNumber       = 1;
     m_ItemTextId        = 1;
     m_mailid            = 1;
-    m_guildId           = 1;
     m_arenaTeamId       = 1;
     m_auctionid         = 1;
-
-    mGuildBankTabPrice.resize(GUILD_BANK_MAX_TABS);
-    mGuildBankTabPrice[0] = 100;
-    mGuildBankTabPrice[1] = 250;
-    mGuildBankTabPrice[2] = 500;
-    mGuildBankTabPrice[3] = 1000;
-    mGuildBankTabPrice[4] = 2500;
-    mGuildBankTabPrice[5] = 5000;
 
     // Only zero condition left, others will be added while loading DB tables
     mConditions.resize(1);
@@ -155,10 +146,6 @@ ObjectMgr::~ObjectMgr()
     for (GroupSet::iterator itr = mGroupSet.begin(); itr != mGroupSet.end(); ++itr)
         delete (*itr);
 
-    for (GuildMap::iterator itr = mGuildMap.begin(); itr != mGuildMap.end(); ++itr)
-        delete itr->second;
-    mGuildMap.clear();
-
     for (CacheVendorItemMap::iterator itr = m_mCacheVendorItemMap.begin(); itr != m_mCacheVendorItemMap.end(); ++itr)
         itr->second.Clear();
 
@@ -175,56 +162,6 @@ Group * ObjectMgr::GetGroupByLeader(const uint64 &guid) const
     return NULL;
 }
 
-Guild * ObjectMgr::GetGuildById(const uint32 GuildId) const
-{
-    GuildMap::const_iterator itr = mGuildMap.find(GuildId);
-    if (itr != mGuildMap.end())
-        return itr->second;
-
-    return NULL;
-}
-
-Guild * ObjectMgr::GetGuildByName(const std::string& guildname) const
-{
-    std::string search = guildname;
-    std::transform(search.begin(), search.end(), search.begin(), toupper);
-    for (GuildMap::const_iterator itr = mGuildMap.begin(); itr != mGuildMap.end(); ++itr)
-    {
-        std::string gname = itr->second->GetName();
-        std::transform(gname.begin(), gname.end(), gname.begin(), toupper);
-        if (search == gname)
-            return itr->second;
-    }
-    return NULL;
-}
-
-std::string ObjectMgr::GetGuildNameById(const uint32 GuildId) const
-{
-    GuildMap::const_iterator itr = mGuildMap.find(GuildId);
-    if (itr != mGuildMap.end())
-        return itr->second->GetName();
-
-    return "";
-}
-
-Guild* ObjectMgr::GetGuildByLeader(const uint64 &guid) const
-{
-    for (GuildMap::const_iterator itr = mGuildMap.begin(); itr != mGuildMap.end(); ++itr)
-        if (itr->second->GetLeader() == guid)
-            return itr->second;
-
-    return NULL;
-}
-
-void ObjectMgr::AddGuild(Guild* guild)
-{
-    mGuildMap[guild->GetId()] = guild;
-}
-
-void ObjectMgr::RemoveGuild(uint32 Id)
-{
-    mGuildMap.erase(Id);
-}
 ArenaTeam* ObjectMgr::GetArenaTeamById(const uint32 arenateamid) const
 {
     ArenaTeamMap::const_iterator itr = mArenaTeamMap.find(arenateamid);
@@ -1029,7 +966,7 @@ void ObjectMgr::AddCreatureToGrid(uint32 guid, CreatureData const* data)
     {
         if (mask & 1)
         {
-            CellPair cell_pair = Hellground::ComputeCellPair(data->posX, data->posY);
+            CellPair cell_pair = Looking4group::ComputeCellPair(data->posX, data->posY);
             uint32 cell_id = (cell_pair.y_coord*TOTAL_NUMBER_OF_CELLS_PER_MAP) + cell_pair.x_coord;
 
             CellObjectGuids& cell_guids = mMapObjectGuids[MAKE_PAIR32(data->mapid,i)][cell_id];
@@ -1045,7 +982,7 @@ void ObjectMgr::RemoveCreatureFromGrid(uint32 guid, CreatureData const* data)
     {
         if (mask & 1)
         {
-            CellPair cell_pair = Hellground::ComputeCellPair(data->posX, data->posY);
+            CellPair cell_pair = Looking4group::ComputeCellPair(data->posX, data->posY);
             uint32 cell_id = (cell_pair.y_coord*TOTAL_NUMBER_OF_CELLS_PER_MAP) + cell_pair.x_coord;
 
             CellObjectGuids& cell_guids = mMapObjectGuids[MAKE_PAIR32(data->mapid,i)][cell_id];
@@ -1252,7 +1189,7 @@ void ObjectMgr::AddGameobjectToGrid(uint32 guid, GameObjectData const* data)
     {
         if (mask & 1)
         {
-            CellPair cell_pair = Hellground::ComputeCellPair(data->posX, data->posY);
+            CellPair cell_pair = Looking4group::ComputeCellPair(data->posX, data->posY);
             uint32 cell_id = (cell_pair.y_coord*TOTAL_NUMBER_OF_CELLS_PER_MAP) + cell_pair.x_coord;
 
             CellObjectGuids& cell_guids = mMapObjectGuids[MAKE_PAIR32(data->mapid,i)][cell_id];
@@ -1268,7 +1205,7 @@ void ObjectMgr::RemoveGameobjectFromGrid(uint32 guid, GameObjectData const* data
     {
         if (mask & 1)
         {
-            CellPair cell_pair = Hellground::ComputeCellPair(data->posX, data->posY);
+            CellPair cell_pair = Looking4group::ComputeCellPair(data->posX, data->posY);
             uint32 cell_id = (cell_pair.y_coord*TOTAL_NUMBER_OF_CELLS_PER_MAP) + cell_pair.x_coord;
 
             CellObjectGuids& cell_guids = mMapObjectGuids[MAKE_PAIR32(data->mapid,i)][cell_id];
@@ -1311,42 +1248,6 @@ void ObjectMgr::LoadCreatureRespawnTimes()
     } while (result->NextRow());
 
     sLog.outString(">> Loaded %u creature respawn times", mCreatureRespawnTimes.size());
-    sLog.outString();
-}
-
-void ObjectMgr::LoadGuildAnnCooldowns()
-{
-    uint32 count = 0;
-
-    QueryResultAutoPtr result = RealmDataDatabase.Query("SELECT guild_id, cooldown_end FROM guild_announce_cooldown");
-
-    if (!result)
-    {
-        BarGoLink bar(1);
-
-        bar.step();
-
-        sLog.outString();
-        sLog.outString(">> Loaded 0 guildann_cooldowns.");
-        return;
-    }
-
-    BarGoLink bar(result->GetRowCount());
-
-    do
-    {
-        Field *fields = result->Fetch();
-        bar.step();
-
-        uint32 guild_id       = fields[0].GetUInt32();
-        uint64 respawn_time = fields[1].GetUInt64();
-
-        mGuildCooldownTimes[guild_id] = time_t(respawn_time);
-
-        ++count;
-    } while (result->NextRow());
-
-    sLog.outString(">> Loaded %u guild ann cooldowns.", mGuildCooldownTimes.size());
     sLog.outString();
 }
 
@@ -2563,49 +2464,6 @@ void ObjectMgr::BuildPlayerLevelInfo(uint8 race, uint8 _class, uint8 level, Play
     }
 }
 
-void ObjectMgr::LoadGuilds()
-{
-    Guild *newguild;
-    uint32 count = 0;
-
-    QueryResultAutoPtr result = RealmDataDatabase.Query("SELECT guildid FROM guild");
-
-    if (!result)
-    {
-
-        BarGoLink bar(1);
-
-        bar.step();
-
-        sLog.outString();
-        sLog.outString(">> Loaded %u guild definitions", count);
-        return;
-    }
-
-    BarGoLink bar(result->GetRowCount());
-
-    do
-    {
-        Field *fields = result->Fetch();
-
-        bar.step();
-        ++count;
-
-        newguild = new Guild;
-        if (!newguild->LoadGuildFromDB(fields[0].GetUInt32()))
-        {
-            newguild->Disband();
-            delete newguild;
-            continue;
-        }
-        AddGuild(newguild);
-
-    }while (result->NextRow());
-
-    sLog.outString();
-    sLog.outString(">> Loaded %u guild definitions", count);
-}
-
 void ObjectMgr::LoadArenaTeams()
 {
     uint32 count = 0;
@@ -2878,19 +2736,19 @@ void ObjectMgr::LoadQuests()
         if (qinfo->GetQuestMethod() >= 3)
             sLog.outLog(LOG_DB_ERR, "Quest %u has `Method` = %u, expected values are 0, 1 or 2.",qinfo->GetQuestId(),qinfo->GetQuestMethod());
 
-        if (qinfo->QuestFlags & ~QUEST_HELLGROUND_FLAGS_DB_ALLOWED)
+        if (qinfo->QuestFlags & ~QUEST_LOOKING4GROUP_FLAGS_DB_ALLOWED)
         {
             sLog.outLog(LOG_DB_ERR, "Quest %u has `SpecialFlags` = %u > max allowed value. Correct `SpecialFlags` to value <= %u",
-                qinfo->GetQuestId(),qinfo->QuestFlags,QUEST_HELLGROUND_FLAGS_DB_ALLOWED >> 16);
-            qinfo->QuestFlags &= QUEST_HELLGROUND_FLAGS_DB_ALLOWED;
+                qinfo->GetQuestId(),qinfo->QuestFlags,QUEST_LOOKING4GROUP_FLAGS_DB_ALLOWED >> 16);
+            qinfo->QuestFlags &= QUEST_LOOKING4GROUP_FLAGS_DB_ALLOWED;
         }
 
         if (qinfo->QuestFlags & QUEST_FLAGS_DAILY)
         {
-            if (!(qinfo->QuestFlags & QUEST_HELLGROUND_FLAGS_REPEATABLE))
+            if (!(qinfo->QuestFlags & QUEST_LOOKING4GROUP_FLAGS_REPEATABLE))
             {
                 sLog.outLog(LOG_DB_ERR, "Daily Quest %u not marked as repeatable in `SpecialFlags`, added.",qinfo->GetQuestId());
-                qinfo->QuestFlags |= QUEST_HELLGROUND_FLAGS_REPEATABLE;
+                qinfo->QuestFlags |= QUEST_LOOKING4GROUP_FLAGS_REPEATABLE;
             }
         }
 
@@ -3039,7 +2897,7 @@ void ObjectMgr::LoadQuests()
                     continue;
                 }
 
-                qinfo->SetFlag(QUEST_HELLGROUND_FLAGS_DELIVER);
+                qinfo->SetFlag(QUEST_LOOKING4GROUP_FLAGS_DELIVER);
 
                 if (!sItemStorage.LookupEntry<ItemPrototype>(id))
                 {
@@ -3127,8 +2985,8 @@ void ObjectMgr::LoadQuests()
 
                     if (found)
                     {
-                        if (!qinfo->HasFlag(QUEST_HELLGROUND_FLAGS_EXPLORATION_OR_EVENT))
-                            sLog.outLog(LOG_DB_ERR, "Spell (id: %u) have SPELL_EFFECT_QUEST_COMPLETE or SPELL_EFFECT_SEND_EVENT for quest %u and ReqCreatureOrGOId%d = 0, but quest not have flag QUEST_HELLGROUND_FLAGS_EXPLORATION_OR_EVENT. Quest flags or ReqCreatureOrGOId%d must be fixed, quest modified to enable objective.",spellInfo->Id,qinfo->QuestId,j+1,j+1);
+                        if (!qinfo->HasFlag(QUEST_LOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT))
+                            sLog.outLog(LOG_DB_ERR, "Spell (id: %u) have SPELL_EFFECT_QUEST_COMPLETE or SPELL_EFFECT_SEND_EVENT for quest %u and ReqCreatureOrGOId%d = 0, but quest not have flag QUEST_LOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT. Quest flags or ReqCreatureOrGOId%d must be fixed, quest modified to enable objective.",spellInfo->Id,qinfo->QuestId,j+1,j+1);
                     }
                     else
                         sLog.outLog(LOG_DB_ERR, "Quest %u has `ReqSpellCast%d` = %u and ReqCreatureOrGOId%d = 0 but spell %u does not have SPELL_EFFECT_QUEST_COMPLETE or SPELL_EFFECT_SEND_EVENT effect for this quest, quest can't be done.", qinfo->GetQuestId(),j+1,id,j+1,id);
@@ -3154,7 +3012,7 @@ void ObjectMgr::LoadQuests()
             if (id)
             {
                 // In fact SpeakTo and Kill are quite same: either you can speak to mob:SpeakTo or you can't:Kill/Cast
-                qinfo->SetFlag(QUEST_HELLGROUND_FLAGS_KILL_OR_CAST | QUEST_HELLGROUND_FLAGS_SPEAKTO);
+                qinfo->SetFlag(QUEST_LOOKING4GROUP_FLAGS_KILL_OR_CAST | QUEST_LOOKING4GROUP_FLAGS_SPEAKTO);
 
                 if (!qinfo->ReqCreatureOrGOCount[j])
                     sLog.outLog(LOG_DB_ERR, "Quest %u has `ReqCreatureOrGOId%d` = %u but `ReqCreatureOrGOCount%d` = 0, quest can't be done.", qinfo->GetQuestId(),j+1,id,j+1);
@@ -3296,7 +3154,7 @@ void ObjectMgr::LoadQuests()
             mExclusiveQuestGroups.insert(std::pair<int32, uint32>(qinfo->ExclusiveGroup, qinfo->GetQuestId()));
 
         if (qinfo->LimitTime)
-            qinfo->SetFlag(QUEST_HELLGROUND_FLAGS_TIMED);
+            qinfo->SetFlag(QUEST_LOOKING4GROUP_FLAGS_TIMED);
     }
 
     sLog.outString();
@@ -3912,12 +3770,12 @@ void ObjectMgr::LoadQuestAreaTriggers()
             continue;
         }
 
-        if (!quest->HasFlag(QUEST_HELLGROUND_FLAGS_EXPLORATION_OR_EVENT))
+        if (!quest->HasFlag(QUEST_LOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT))
         {
-            sLog.outLog(LOG_DB_ERR, "Table `areatrigger_involvedrelation` has record (id: %u) for not quest %u, but quest not have flag QUEST_HELLGROUND_FLAGS_EXPLORATION_OR_EVENT. Trigger or quest flags must be fixed, quest modified to require objective.",trigger_ID,quest_ID);
+            sLog.outLog(LOG_DB_ERR, "Table `areatrigger_involvedrelation` has record (id: %u) for not quest %u, but quest not have flag QUEST_LOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT. Trigger or quest flags must be fixed, quest modified to require objective.",trigger_ID,quest_ID);
 
             // this will prevent quest completing without objective
-            const_cast<Quest*>(quest)->SetFlag(QUEST_HELLGROUND_FLAGS_EXPLORATION_OR_EVENT);
+            const_cast<Quest*>(quest)->SetFlag(QUEST_LOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT);
 
             // continue; - quest modified to required objective and trigger can be allowed.
         }
@@ -4605,10 +4463,6 @@ void ObjectMgr::SetHighestGuids()
     result = RealmDataDatabase.Query("SELECT MAX(arenateamid) FROM arena_team");
     if (result)
         m_arenaTeamId = (*result)[0].GetUInt32()+1;
-
-    result = RealmDataDatabase.Query("SELECT MAX(guildid) FROM guild");
-    if (result)
-        m_guildId = (*result)[0].GetUInt32()+1;
 }
 
 uint32 ObjectMgr::GenerateArenaTeamId()
@@ -4619,16 +4473,6 @@ uint32 ObjectMgr::GenerateArenaTeamId()
         World::StopNow(ERROR_EXIT_CODE);
     }
     return m_arenaTeamId++;
-}
-
-uint32 ObjectMgr::GenerateGuildId()
-{
-    if (m_guildId>=0xFFFFFFFE)
-    {
-        sLog.outLog(LOG_DEFAULT, "ERROR: Guild ids overflow!! Can't continue, shutting down server. ");
-        World::StopNow(ERROR_EXIT_CODE);
-    }
-    return m_guildId++;
 }
 
 uint32 ObjectMgr::GenerateAuctionID()
@@ -5518,13 +5362,6 @@ void ObjectMgr::SaveCreatureRespawnTime(uint32 loguid, uint32 instance, time_t t
     RealmDataDatabase.CommitTransaction();
 }
 
-void ObjectMgr::SaveGuildAnnCooldown(uint32 guild_id)
-{
-    time_t tmpTime = time_t(time(NULL) + sWorld.getConfig(CONFIG_GUILD_ANN_COOLDOWN));
-    mGuildCooldownTimes[guild_id] = tmpTime;
-    RealmDataDatabase.PExecute("REPLACE INTO guild_announce_cooldown VALUES ('%u', '" UI64FMTD "')", guild_id, uint64(tmpTime));
-}
-
 void ObjectMgr::DeleteCreatureData(uint32 guid)
 {
     // remove mapid*cellid -> guid_set map
@@ -5882,7 +5719,7 @@ int ObjectMgr::GetOrNewIndexForLocale(LocaleConstant loc)
     return m_LocalForIndex.size()-1;
 }
 
-bool ObjectMgr::LoadHellgroundStrings(DatabaseType& db, char const* table, int32 min_value, int32 max_value)
+bool ObjectMgr::LoadLooking4groupStrings(DatabaseType& db, char const* table, int32 min_value, int32 max_value)
 {
     int32 start_value = min_value;
     int32 end_value   = max_value;
@@ -5910,10 +5747,10 @@ bool ObjectMgr::LoadHellgroundStrings(DatabaseType& db, char const* table, int32
     }
 
     // cleanup affected map part for reloading case
-    for (HellgroundStringLocaleMap::iterator itr = mHellgroundStringLocaleMap.begin(); itr != mHellgroundStringLocaleMap.end();)
+    for (Looking4groupStringLocaleMap::iterator itr = mLooking4groupStringLocaleMap.begin(); itr != mLooking4groupStringLocaleMap.end();)
     {
         if (itr->first >= start_value && itr->first < end_value)
-            mHellgroundStringLocaleMap.erase(itr++);
+            mLooking4groupStringLocaleMap.erase(itr++);
         else
             ++itr;
     }
@@ -5927,7 +5764,7 @@ bool ObjectMgr::LoadHellgroundStrings(DatabaseType& db, char const* table, int32
         bar.step();
 
         sLog.outString();
-        if (min_value == MIN_HELLGROUND_STRING_ID)              // error only in case internal strings
+        if (min_value == MIN_LOOKING4GROUP_STRING_ID)              // error only in case internal strings
             sLog.outLog(LOG_DB_ERR, ">> Loaded 0 trinity strings. DB table `%s` is empty. Cannot continue.",table);
         else
             sLog.outString(">> Loaded 0 string templates. DB table `%s` is empty.",table);
@@ -5956,7 +5793,7 @@ bool ObjectMgr::LoadHellgroundStrings(DatabaseType& db, char const* table, int32
             continue;
         }
 
-        TrinityStringLocale& data = mHellgroundStringLocaleMap[entry];
+        TrinityStringLocale& data = mLooking4groupStringLocaleMap[entry];
 
         if (data.Content.size() > 0)
         {
@@ -5989,7 +5826,7 @@ bool ObjectMgr::LoadHellgroundStrings(DatabaseType& db, char const* table, int32
     } while (result->NextRow());
 
     sLog.outString();
-    if (min_value == MIN_HELLGROUND_STRING_ID)               // internal Trinity strings
+    if (min_value == MIN_LOOKING4GROUP_STRING_ID)               // internal Trinity strings
         sLog.outString(">> Loaded %u Trinity strings from table %s", count,table);
     else
         sLog.outString(">> Loaded %u string templates from %s", count,table);
@@ -6010,7 +5847,7 @@ const char *ObjectMgr::GetTrinityString(int32 entry, int locale_idx) const
     }
 
     if (entry > 0)
-        sLog.outLog(LOG_DB_ERR, "Entry %i not found in `HELLGROUND_string` table.",entry);
+        sLog.outLog(LOG_DB_ERR, "Entry %i not found in `LOOKING4GROUP_string` table.",entry);
     else
         sLog.outLog(LOG_DB_ERR, "Trinity string entry %i not found in DB.",entry);
     return "<error>";
@@ -6898,9 +6735,9 @@ void ObjectMgr::LoadItemTexts()
     sLog.outString(">> Loaded %u item texts", count);
 }
 
-bool LoadHellgroundStrings(DatabaseType& db, char const* table,int32 start_value, int32 end_value)
+bool LoadLooking4groupStrings(DatabaseType& db, char const* table,int32 start_value, int32 end_value)
 {
-    return sObjectMgr.LoadHellgroundStrings(db,table,start_value,end_value);
+    return sObjectMgr.LoadLooking4groupStrings(db,table,start_value,end_value);
 }
 
 GameObjectInfo const *GetGameObjectInfo(uint32 id)

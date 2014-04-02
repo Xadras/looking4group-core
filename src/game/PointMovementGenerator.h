@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef HELLGROUND_POINTMOVEMENTGENERATOR_H
-#define HELLGROUND_POINTMOVEMENTGENERATOR_H
+#ifndef LOOKING4GROUP_POINTMOVEMENTGENERATOR_H
+#define LOOKING4GROUP_POINTMOVEMENTGENERATOR_H
 
 #include "MovementGenerator.h"
 #include "FollowerReference.h"
@@ -30,8 +30,8 @@ template<class UNIT>
 class PointMovementGenerator : public MovementGeneratorMedium< UNIT, PointMovementGenerator<UNIT> >
 {
     public:
-        PointMovementGenerator(uint32 id, float x, float y, float z, bool generatePath = false) : _id(id),
-            _x(x), _y(y), _z(z), _generatePath(generatePath) {}
+        PointMovementGenerator(uint32 id, float x, float y, float z, bool generatePath = false, bool callStop = true) : _id(id),
+            _x(x), _y(y), _z(z), _generatePath(generatePath), m_callStopMove( callStop ) {}
 
         void Initialize(UNIT &);
         void Finalize(UNIT &);
@@ -48,6 +48,7 @@ class PointMovementGenerator : public MovementGeneratorMedium< UNIT, PointMoveme
         uint32 _id;
         float _x, _y, _z;
         bool _generatePath;
+        bool m_callStopMove;
 };
 
 class AssistanceMovementGenerator : public PointMovementGenerator<Creature>
@@ -62,7 +63,7 @@ class AssistanceMovementGenerator : public PointMovementGenerator<Creature>
 };
 
 // Does almost nothing - just doesn't allows previous movegen interrupt current effect.
-class HELLGROUND_IMPORT_EXPORT EffectMovementGenerator : public MovementGenerator
+class LOOKING4GROUP_IMPORT_EXPORT EffectMovementGenerator : public MovementGenerator
 {
     public:
         explicit EffectMovementGenerator(uint32 Id) : m_Id(Id) {}

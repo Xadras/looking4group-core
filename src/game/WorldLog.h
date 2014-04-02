@@ -22,8 +22,8 @@
 /// @{
 /// \file
 
-#ifndef HELLGROUND_WORLDLOG_H
-#define HELLGROUND_WORLDLOG_H
+#ifndef LOOKING4GROUP_WORLDLOG_H
+#define LOOKING4GROUP_WORLDLOG_H
 
 #include "ace/Singleton.h"
 

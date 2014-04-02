@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef HELLGROUND_GRIDMAP_H
-#define HELLGROUND_GRIDMAP_H
+#ifndef LOOKING4GROUP_GRIDMAP_H
+#define LOOKING4GROUP_GRIDMAP_H
 
 #include "ace/Singleton.h"
 
@@ -65,7 +65,7 @@ struct GridMapAreaHeader
 };
 
 template<typename Countable>
-class HELLGROUND_IMPORT_EXPORT Referencable
+class LOOKING4GROUP_IMPORT_EXPORT Referencable
 {
     public:
         Referencable() { m_count = 0; }
@@ -228,7 +228,7 @@ typedef struct MapTemplate
 } TerrainSpecifics;
 
 //class for sharing and managing GridMap objects
-class HELLGROUND_IMPORT_EXPORT TerrainInfo : public Referencable<AtomicLong>
+class LOOKING4GROUP_IMPORT_EXPORT TerrainInfo : public Referencable<AtomicLong>
 {
     public:
         TerrainInfo(uint32 mapid, TerrainSpecifics terrainspecifics);

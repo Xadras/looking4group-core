@@ -65,6 +65,7 @@
 #include "GameEvent.h"
 #include "GridMap.h"
 #include "WorldEventProcessor.h"
+#include "GuildMgr.h"
 
 #include "PlayerAI.h"
 
@@ -496,8 +497,14 @@ Player::~Player ()
 
     // clean up player-instance binds, may unload some instance saves
     for (uint8 i = 0; i < TOTAL_DIFFICULTIES; i++)
+    {
         for (BoundInstancesMap::iterator itr = m_boundInstances[i].begin(); itr != m_boundInstances[i].end(); ++itr)
-            itr->second.save->RemovePlayer(this);
+        {
+            InstanceSave* save = itr->second.save;
+            if (save != nullptr && save->HasPlayer(GetGUID()))
+                save->RemovePlayer(GetGUID());
+        }
+    }
 
     delete m_declinedname;
 
@@ -1460,7 +1467,7 @@ void Player::setDeathState(DeathState s)
         RemoveAurasDueToSpell(m_ShapeShiftFormSpellId);
 
         //FIXME: is pet dismissed at dying or releasing spirit? if second, add setDeathState(DEAD) to HandleRepopRequestOpcode and define pet unsummon here with (s == DEAD)
-        RemovePet(NULL, PET_SAVE_NOT_IN_SLOT, true);
+        RemovePet(NULL, PET_SAVE_NOT_IN_SLOT, true, true);
 
         // remove uncontrolled pets
         RemoveMiniPet();
@@ -2325,7 +2332,7 @@ void Player::SetGMVisible(bool on)
     {
         m_ExtraFlags |= PLAYER_EXTRA_GM_INVISIBLE;          //add flag
 
-        SetAcceptWhispers(false);
+        //SetAcceptWhispers(false);
         SetGameMaster(true);
 
         SetVisibility(VISIBILITY_OFF);
@@ -2495,7 +2502,7 @@ void Player::GiveLevel(uint32 level)
 
     SendPacketToSelf(&data);
 
-    SetUInt32Value(PLAYER_NEXT_LEVEL_XP, Hellground::XP::xp_to_level(level));
+    SetUInt32Value(PLAYER_NEXT_LEVEL_XP, Looking4group::XP::xp_to_level(level));
 
     //update level, max level of skills
     if (getLevel()!= level)
@@ -2581,7 +2588,7 @@ void Player::InitStatsForLevel(bool reapplyMods)
     sObjectMgr.GetPlayerLevelInfo(getRace(),getClass(),getLevel(),&info);
 
     SetUInt32Value(PLAYER_FIELD_MAX_LEVEL, sWorld.getConfig(CONFIG_MAX_PLAYER_LEVEL));
-    SetUInt32Value(PLAYER_NEXT_LEVEL_XP, Hellground::XP::xp_to_level(getLevel()));
+    SetUInt32Value(PLAYER_NEXT_LEVEL_XP, Looking4group::XP::xp_to_level(getLevel()));
 
     UpdateSkillsForLevel ();
 
@@ -3223,6 +3230,14 @@ void Player::removeSpell(uint32 spell_id, bool disabled)
     SpellsRequiringSpellMap::const_iterator itr2 = reqMap.find(spell_id);
     for (uint32 i=reqMap.count(spell_id);i>0;i--,itr2++)
         removeSpell(itr2->second,disabled);
+
+    if (CanDualWield())
+    {
+        SpellEntry const *spellInfo = sSpellStore.LookupEntry(spell_id);
+
+        if (spellInfo && spellInfo->HasEffect(SPELL_EFFECT_DUAL_WIELD))
+            SetCanDualWield(false);
+    }
 
     // removing
     WorldPacket data(SMSG_REMOVED_SPELL, 4);
@@ -3920,7 +3935,7 @@ void Player::DeleteFromDB(uint64 playerguid, uint32 accountId, bool updateRealmC
     uint32 guildId = GetGuildIdFromDB(playerguid);
     if (guildId != 0)
     {
-        Guild* guild = sObjectMgr.GetGuildById(guildId);
+        Guild* guild = sGuildMgr.GetGuildById(guildId);
         if (guild)
             guild->DelMember(guid);
     }
@@ -4504,7 +4519,7 @@ uint32 Player::DurabilityRepair(uint16 pos, bool cost, float discountMod, bool g
                     return TotalCost;
                 }
 
-                Guild *pGuild = sObjectMgr.GetGuildById(GetGuildId());
+                Guild *pGuild = sGuildMgr.GetGuildById(GetGuildId());
                 if (!pGuild)
                     return TotalCost;
 
@@ -5877,7 +5892,7 @@ int32 Player::CalculateReputationGain(ReputationSource source, int32 rep, int32 
             break;
     }
 
-    if (rate != 1.0f && creatureOrQuestLevel <= Hellground::XP::GetGrayLevel(getLevel()))
+    if (rate != 1.0f && creatureOrQuestLevel <= Looking4group::XP::GetGrayLevel(getLevel()))
         percent *= rate;
 
     if (percent <= 0.0f)
@@ -12668,7 +12683,7 @@ bool Player::CanCompleteQuest(uint32 quest_id)
         if (q_status.m_status == QUEST_STATUS_INCOMPLETE)
         {
 
-            if (qInfo->HasFlag(QUEST_HELLGROUND_FLAGS_DELIVER))
+            if (qInfo->HasFlag(QUEST_LOOKING4GROUP_FLAGS_DELIVER))
             {
                 for (int i = 0; i < QUEST_OBJECTIVES_COUNT; i++)
                 {
@@ -12677,7 +12692,7 @@ bool Player::CanCompleteQuest(uint32 quest_id)
                 }
             }
 
-            if (qInfo->HasFlag(QUEST_HELLGROUND_FLAGS_KILL_OR_CAST | QUEST_HELLGROUND_FLAGS_SPEAKTO))
+            if (qInfo->HasFlag(QUEST_LOOKING4GROUP_FLAGS_KILL_OR_CAST | QUEST_LOOKING4GROUP_FLAGS_SPEAKTO))
             {
                 for (int i = 0; i < QUEST_OBJECTIVES_COUNT; i++)
                 {
@@ -12689,10 +12704,10 @@ bool Player::CanCompleteQuest(uint32 quest_id)
                 }
             }
 
-            if (qInfo->HasFlag(QUEST_HELLGROUND_FLAGS_EXPLORATION_OR_EVENT) && !q_status.m_explored)
+            if (qInfo->HasFlag(QUEST_LOOKING4GROUP_FLAGS_EXPLORATION_OR_EVENT) && !q_status.m_explored)
                 return false;
 
-            if (qInfo->HasFlag(QUEST_HELLGROUND_FLAGS_TIMED) && q_status.m_timer == 0)
+            if (qInfo->HasFlag(QUEST_LOOKING4GROUP_FLAGS_TIMED) && q_status.m_timer == 0)
                 return false;
 
             if (qInfo->GetRewOrReqMoney() < 0)
@@ -12719,7 +12734,7 @@ bool Player::CanCompleteRepeatableQuest(Quest const *pQuest)
     if (!CanTakeQuest(pQuest, false))
         return false;
 
-    if (pQuest->HasFlag(QUEST_HELLGROUND_FLAGS_DELIVER))
+    if (pQuest->HasFlag(QUEST_LOOKING4GROUP_FLAGS_DELIVER))
         for (int i = 0; i < QUEST_OBJECTIVES_COUNT; i++)
             if (pQuest->ReqItemId[i] && pQuest->ReqItemCount[i] && !HasItemCount(pQuest->ReqItemId[i],pQuest->ReqItemCount[i]))
                 return false;
@@ -12745,7 +12760,7 @@ bool Player::CanRewardQuest(Quest const *pQuest, bool msg)
         return false;
 
     // prevent receive reward with quest items in bank
-    if (pQuest->HasFlag(QUEST_HELLGROUND_FLAGS_DELIVER))
+    if (pQuest->HasFlag(QUEST_LOOKING4GROUP_FLAGS_DELIVER))
     {
         for (int i = 0; i < QUEST_OBJECTIVES_COUNT; i++)
         {
@@ -12820,13 +12835,13 @@ void Player::AddQuest(Quest const *pQuest, Object *questGiver)
     questStatusData.m_status = QUEST_STATUS_INCOMPLETE;
     questStatusData.m_explored = false;
 
-    if (pQuest->HasFlag(QUEST_HELLGROUND_FLAGS_DELIVER))
+    if (pQuest->HasFlag(QUEST_LOOKING4GROUP_FLAGS_DELIVER))
     {
         for (int i = 0; i < QUEST_OBJECTIVES_COUNT; i++)
             questStatusData.m_itemcount[i] = 0;
     }
 
-    if (pQuest->HasFlag(QUEST_HELLGROUND_FLAGS_KILL_OR_CAST | QUEST_HELLGROUND_FLAGS_SPEAKTO))
+    if (pQuest->HasFlag(QUEST_LOOKING4GROUP_FLAGS_KILL_OR_CAST | QUEST_LOOKING4GROUP_FLAGS_SPEAKTO))
     {
         for (int i = 0; i < QUEST_OBJECTIVES_COUNT; i++)
             questStatusData.m_creatureOrGOcount[i] = 0;
@@ -12840,7 +12855,7 @@ void Player::AddQuest(Quest const *pQuest, Object *questGiver)
             m_reputationMgr.SetVisible(factionEntry);
 
     uint32 qtime = 0;
-    if (pQuest->HasFlag(QUEST_HELLGROUND_FLAGS_TIMED))
+    if (pQuest->HasFlag(QUEST_LOOKING4GROUP_FLAGS_TIMED))
     {
         uint32 limittime = pQuest->GetLimitTime();
 
@@ -12963,7 +12978,7 @@ void Player::RewardQuest(Quest const *pQuest, uint32 reward, Object* questGiver,
 
     // honor reward
     if (pQuest->GetRewHonorableKills())
-        RewardHonor(NULL, 0, Hellground::Honor::hk_honor_at_level(getLevel(), pQuest->GetRewHonorableKills()));
+        RewardHonor(NULL, 0, Looking4group::Honor::hk_honor_at_level(getLevel(), pQuest->GetRewHonorableKills()));
 
     // title reward
     if (pQuest->GetCharTitleId())
@@ -13301,7 +13316,7 @@ bool Player::SatisfyQuestStatus(Quest const* qInfo, bool msg)
 
 bool Player::SatisfyQuestTimed(Quest const* qInfo, bool msg)
 {
-    if ((find(m_timedquests.begin(), m_timedquests.end(), qInfo->GetQuestId()) != m_timedquests.end()) && qInfo->HasFlag(QUEST_HELLGROUND_FLAGS_TIMED))
+    if ((find(m_timedquests.begin(), m_timedquests.end(), qInfo->GetQuestId()) != m_timedquests.end()) && qInfo->HasFlag(QUEST_LOOKING4GROUP_FLAGS_TIMED))
     {
         if (msg)
             SendCanTakeQuestResponse(INVALIDREASON_QUEST_ONLY_ONE_TIMED);
@@ -13538,7 +13553,7 @@ void Player::SetQuestStatus(uint32 quest_id, QuestStatus status)
     {
         if (status == QUEST_STATUS_NONE || status == QUEST_STATUS_INCOMPLETE || status == QUEST_STATUS_COMPLETE)
         {
-            if (qInfo->HasFlag(QUEST_HELLGROUND_FLAGS_TIMED))
+            if (qInfo->HasFlag(QUEST_LOOKING4GROUP_FLAGS_TIMED))
                 m_timedquests.erase(qInfo->GetQuestId());
         }
 
@@ -13567,7 +13582,7 @@ uint32 Player::GetReqKillOrCastCurrentCount(uint32 quest_id, int32 entry)
 
 void Player::AdjustQuestReqItemCount(Quest const* pQuest, QuestStatusData& questStatusData)
 {
-    if (pQuest->HasFlag(QUEST_HELLGROUND_FLAGS_DELIVER))
+    if (pQuest->HasFlag(QUEST_LOOKING4GROUP_FLAGS_DELIVER))
     {
         for (int i = 0; i < QUEST_OBJECTIVES_COUNT; i++)
         {
@@ -13650,7 +13665,7 @@ void Player::ItemAddedQuestCheck(uint32 entry, uint32 count)
             continue;
 
         Quest const* qInfo = sObjectMgr.GetQuestTemplate(questid);
-        if (!qInfo || !qInfo->HasFlag(QUEST_HELLGROUND_FLAGS_DELIVER))
+        if (!qInfo || !qInfo->HasFlag(QUEST_LOOKING4GROUP_FLAGS_DELIVER))
             continue;
 
         for (int j = 0; j < QUEST_OBJECTIVES_COUNT; j++)
@@ -13687,7 +13702,7 @@ void Player::ItemRemovedQuestCheck(uint32 entry, uint32 count)
         Quest const* qInfo = sObjectMgr.GetQuestTemplate(questid);
         if (!qInfo)
             continue;
-        if (!qInfo->HasFlag(QUEST_HELLGROUND_FLAGS_DELIVER))
+        if (!qInfo->HasFlag(QUEST_LOOKING4GROUP_FLAGS_DELIVER))
             continue;
 
         for (int j = 0; j < QUEST_OBJECTIVES_COUNT; j++)
@@ -13734,7 +13749,7 @@ void Player::KilledMonster(uint32 entry, uint64 guid)
         QuestStatusData& q_status = mQuestStatus[questid];
         if (q_status.m_status == QUEST_STATUS_INCOMPLETE && (!GetGroup() || !GetGroup()->isRaidGroup() || qInfo->GetType() == QUEST_TYPE_RAID))
         {
-            if (qInfo->HasFlag(QUEST_HELLGROUND_FLAGS_KILL_OR_CAST))
+            if (qInfo->HasFlag(QUEST_LOOKING4GROUP_FLAGS_KILL_OR_CAST))
             {
                 for (int j = 0; j < QUEST_OBJECTIVES_COUNT; j++)
                 {
@@ -13790,7 +13805,7 @@ void Player::CastedCreatureOrGO(uint32 entry, uint64 guid, uint32 spell_id)
 
         if (q_status.m_status == QUEST_STATUS_INCOMPLETE)
         {
-            if (qInfo->HasFlag(QUEST_HELLGROUND_FLAGS_KILL_OR_CAST))
+            if (qInfo->HasFlag(QUEST_LOOKING4GROUP_FLAGS_KILL_OR_CAST))
             {
                 for (int j = 0; j < QUEST_OBJECTIVES_COUNT; j++)
                 {
@@ -13857,7 +13872,7 @@ void Player::TalkedToCreature(uint32 entry, uint64 guid)
 
         if (q_status.m_status == QUEST_STATUS_INCOMPLETE)
         {
-            if (qInfo->HasFlag(QUEST_HELLGROUND_FLAGS_KILL_OR_CAST | QUEST_HELLGROUND_FLAGS_SPEAKTO))
+            if (qInfo->HasFlag(QUEST_LOOKING4GROUP_FLAGS_KILL_OR_CAST | QUEST_LOOKING4GROUP_FLAGS_SPEAKTO))
             {
                 for (int j = 0; j < QUEST_OBJECTIVES_COUNT; j++)
                 {
@@ -14546,7 +14561,7 @@ bool Player::LoadFromDB(uint32 guid, SqlQueryHolder *holder)
     {
         m_movementInfo.SetTransportData(transGUID, fields[27].GetFloat(), fields[28].GetFloat(), fields[29].GetFloat(), fields[30].GetFloat(), 0);
 
-        if (!Hellground::IsValidMapCoord(
+        if (!Looking4group::IsValidMapCoord(
             GetPositionX() + m_movementInfo.GetTransportPos()->x, GetPositionY() + m_movementInfo.GetTransportPos()->y,
             GetPositionZ() + m_movementInfo.GetTransportPos()->z, GetOrientation() + m_movementInfo.GetTransportPos()->o) ||
 
@@ -15465,7 +15480,7 @@ void Player::_LoadQuestStatus(QueryResultAutoPtr result)
 
                 time_t quest_time = time_t(fields[4].GetUInt64());
 
-                if (pQuest->HasFlag(QUEST_HELLGROUND_FLAGS_TIMED) && !GetQuestRewardStatus(quest_id) &&  questStatusData.m_status != QUEST_STATUS_NONE)
+                if (pQuest->HasFlag(QUEST_LOOKING4GROUP_FLAGS_TIMED) && !GetQuestRewardStatus(quest_id) &&  questStatusData.m_status != QUEST_STATUS_NONE)
                 {
                     AddTimedQuest(quest_id);
 
@@ -15708,15 +15723,20 @@ void Player::UnbindInstance(BoundInstancesMap::iterator &itr, uint8 difficulty, 
 {
     if (itr != m_boundInstances[difficulty].end())
     {
-        if (!unload) RealmDataDatabase.PExecute("DELETE FROM character_instance WHERE guid = '%u' AND instance = '%u'", GetGUIDLow(), itr->second.save->GetInstanceId());
-        itr->second.save->RemovePlayer(this);               // save can become invalid
+        if (!unload)
+            RealmDataDatabase.PExecute("DELETE FROM character_instance WHERE guid = '%u' AND instance = '%u'", GetGUIDLow(), itr->second.save->GetInstanceId());
+        
+        InstanceSave* save = itr->second.save;
+        if (save != nullptr)
+            save->RemovePlayer(GetGUID());
+
         m_boundInstances[difficulty].erase(itr++);
     }
 }
 
 InstancePlayerBind* Player::BindToInstance(InstanceSave *save, bool permanent, bool load)
 {
-    if (save)
+    if (save != nullptr)
     {
         InstancePlayerBind& bind = m_boundInstances[save->GetDifficulty()][save->GetMapId()];
         if (bind.save)
@@ -15730,8 +15750,10 @@ InstancePlayerBind* Player::BindToInstance(InstanceSave *save, bool permanent, b
 
         if (bind.save != save)
         {
-            if (bind.save) bind.save->RemovePlayer(this);
-            save->AddPlayer(this);
+            if (bind.save != nullptr)
+                bind.save->RemovePlayer(GetGUID());
+
+            save->AddPlayer(GetGUID());
         }
 
         if (permanent) save->SetCanReset(false);
@@ -15742,7 +15764,7 @@ InstancePlayerBind* Player::BindToInstance(InstanceSave *save, bool permanent, b
         return &bind;
     }
     else
-        return NULL;
+        return nullptr;
 }
 
 void Player::SendRaidInfo()
@@ -16409,7 +16431,7 @@ void Player::_SaveInventory()
 
                 AccountsDatabase.BeginTransaction();
 
-                SqlStatement stmt = AccountsDatabase.CreateStatement(insertBan, "INSERT INTO account_panishment VALUES (?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), '[CONSOLE]', 'With love: cheater -.-', 1)");
+                SqlStatement stmt = AccountsDatabase.CreateStatement(insertBan, "INSERT INTO account_punishment VALUES (?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), '[CONSOLE]', 'With love: cheater -.-', 1)");
                 stmt.PExecute(GetSession()->GetAccountId(), uint32(PUNISHMENT_BAN));
 
                 if (!GetSession()->IsAccountFlagged(ACC_SPECIAL_LOG))
@@ -16928,7 +16950,7 @@ void Player::ResetInstances(uint8 method)
     {
         InstanceSave *p = itr->second.save;
         const MapEntry *entry = sMapStore.LookupEntry(itr->first);
-        if (!entry || !p->CanReset())
+        if (!entry || !p->CanReset() || p == nullptr)
         {
             ++itr;
             continue;
@@ -16947,11 +16969,13 @@ void Player::ResetInstances(uint8 method)
         // if the map is loaded, reset it
         Map *map = sMapMgr.FindMap(p->GetMapId(), p->GetInstanceId());
         if (map && map->IsDungeon())
+        {
             if (!((InstanceMap*)map)->Reset(method))
             {
                 ++itr;
                 continue;
             }
+        }
 
         // since this is a solo instance there should not be any players inside
         if (method == INSTANCE_RESET_ALL || method == INSTANCE_RESET_CHANGE_DIFFICULTY)
@@ -16961,7 +16985,7 @@ void Player::ResetInstances(uint8 method)
         m_boundInstances[dif].erase(itr++);
 
         // the following should remove the instance save from the manager and delete it as well
-        p->RemovePlayer(this);
+        p->RemovePlayer(GetGUID());
     }
 }
 
@@ -17042,10 +17066,14 @@ void Player::UpdateDuelFlag(time_t currTime)
     duel->opponent->duel->startTime  = currTime;
 }
 
-void Player::RemovePet(Pet* pet, PetSaveMode mode, bool returnreagent)
+void Player::RemovePet(Pet* pet, PetSaveMode mode, bool returnreagent, bool isDying)
 {
     if (!pet)
         pet = GetPet();
+    
+    // Remove auras off unsummoned pet when owner dies
+    if (isDying && !pet && GetTemporaryUnsummonedPetNumber())
+        RealmDataDatabase.PExecute("DELETE FROM pet_aura WHERE guid = '%u'", GetTemporaryUnsummonedPetNumber());
 
     if (returnreagent && (pet || m_temporaryUnsummonedPetNumber) && !InBattleGround())
     {
@@ -17110,6 +17138,10 @@ void Player::RemovePet(Pet* pet, PetSaveMode mode, bool returnreagent)
                 break;
         }
     }
+
+    // Clear auras when owner dies
+    if (isDying)
+        pet->RemoveAllAuras();
 
     pet->SavePetToDB(mode);
 
@@ -17664,8 +17696,8 @@ void Player::SetRestBonus (float rest_bonus_new)
 void Player::HandleStealthedUnitsDetection()
 {
     std::list<Unit*> stealthedUnits;
-    Hellground::AnyStealthedCheck u_check;
-    Hellground::UnitListSearcher<Hellground::AnyStealthedCheck > searcher(stealthedUnits, u_check);
+    Looking4group::AnyStealthedCheck u_check;
+    Looking4group::UnitListSearcher<Looking4group::AnyStealthedCheck > searcher(stealthedUnits, u_check);
 
     Cell::VisitAllObjects(this, searcher, MAX_PLAYER_STEALTH_DETECT_RANGE);
 
@@ -17862,7 +17894,7 @@ void Player::CleanupAfterTaxiFlight()
     getHostilRefManager().setOnlineOfflineState(true);
 }
 
-void Player::ProhibitSpellScholl(SpellSchoolMask idSchoolMask, uint32 unTimeMs)
+void Player::ProhibitSpellSchool(SpellSchoolMask idSchoolMask, uint32 unTimeMs)
 {
                                                             // last check 2.0.10
     WorldPacket data(SMSG_SPELL_COOLDOWN, 8+1+m_spells.size()*8);
@@ -18243,31 +18275,17 @@ void Player::UpdatePvP(bool state, bool ovrride)
         ovrride = true;
         ApplyModFlag(PLAYER_FLAGS, PLAYER_FLAGS_IN_PVP, false);
     }
-
+    
+    SetPvP(state);
+    if (Pet* pet = GetPet())
+        pet->SetPvP(state);
+    if (Unit* charmed = GetCharm())
+        charmed->SetPvP(state);
+            
     if (!state || ovrride)
-    {
-        SetPvP(state);
-        if (Pet* pet = GetPet())
-            pet->SetPvP(state);
-        if (Unit* charmed = GetCharm())
-            charmed->SetPvP(state);
-
-        pvpInfo.endTimer = 0;
-    }
-    else
-    {
-        if (pvpInfo.endTimer != 0)
-            pvpInfo.endTimer = time(NULL);
-        else
-        {
-            SetPvP(state);
-
-            if (Pet* pet = GetPet())
-                pet->SetPvP(state);
-            if (Unit* charmed = GetCharm())
-                charmed->SetPvP(state);
-        }
-    }
+        pvpInfo.endTimer = 0;    
+    else if (!pvpInfo.inHostileArea && !HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_IN_PVP))
+        pvpInfo.endTimer = time(NULL);
 }
 
 void Player::AddSpellCooldown(uint32 spellid, uint32 itemid, time_t end_time)
@@ -19710,12 +19728,12 @@ bool Player::RewardPlayerAndGroupAtKill(Unit* pVictim)
         {
             // PvP kills doesn't yield experience
             // also no XP gained if there is no member below gray level
-            xp = (PvP || !not_gray_member_with_max_level) ? 0 : Hellground::XP::Gain(not_gray_member_with_max_level, pVictim);
+            xp = (PvP || !not_gray_member_with_max_level) ? 0 : Looking4group::XP::Gain(not_gray_member_with_max_level, pVictim);
 
             /// skip in check PvP case (for speed, not used)
             bool is_raid = PvP ? false : sMapStore.LookupEntry(GetMapId())->IsRaid() && pGroup->isRaidGroup();
             bool is_dungeon = PvP ? false : sMapStore.LookupEntry(GetMapId())->IsDungeon();
-            float group_rate = Hellground::XP::xp_in_group_rate(count,is_raid);
+            float group_rate = Looking4group::XP::xp_in_group_rate(count,is_raid);
 
             for (GroupReference *itr = pGroup->GetFirstMember(); itr != NULL; itr = itr->next())
             {
@@ -19768,7 +19786,7 @@ bool Player::RewardPlayerAndGroupAtKill(Unit* pVictim)
     }
     else                                                    // if (!pGroup)
     {
-        xp = PvP ? 0 : Hellground::XP::Gain(this, pVictim);
+        xp = PvP ? 0 : Looking4group::XP::Gain(this, pVictim);
 
         // honor can be in PvP and !PvP (racial leader) cases
         if (RewardHonor(pVictim,1, -1, true))
@@ -20592,6 +20610,10 @@ void Player::HandleFallDamage(MovementInfo& movementInfo)
 
 void Player::HandleFallUnderMap(float z)
 {
+    //Hacky - this fixes movement if player died in an instance .i.e. zangarmarsh TODO: Find better solution
+    if (m_deathState != ALIVE)
+        SetMovement(MOVE_WATER_WALK);
+
     if (InBattleGround() && GetBattleGround())
         GetBattleGround()->HandlePlayerUnderMap(this, z);
     else
@@ -21429,4 +21451,67 @@ void Player::SendItemByMail(Player *plr,uint32 item, uint32 count)
             .AddItem(mailItem)
             .SendMailTo(plr, MailSender(this, MAIL_STATIONERY_GM));
     }
+}
+
+bool Player::ShowLowLevelQuest(){
+    // Check if account premium
+    QueryResultAutoPtr levelresult = RealmDataDatabase.PQuery ("SELECT 1 "
+     "FROM character_quest "
+     "WHERE guid = '%u' "
+     "AND show_low_level_quest = 1",
+     GetGUID());
+    if (levelresult) // if account premium
+    {
+        return true;
+    }
+    return false;
+}
+
+void Player::EnchantItem(uint32 spellid, uint8 slot)
+{
+    Item* pItem = GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
+
+	if (spellid == 0)
+		return;
+
+    if (!pItem)
+    {
+        ChatHandler(GetSession()).PSendSysMessage("%s[VZ NPC]%s Dein Item konnte leider nicht verzaubert werden, da sich kein Item in dem angegebenen Slot befindet.",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
+        return;
+    }
+	/*Special cases für die Schilde, die sind doof ._.*/
+	if(pItem->GetProto()->Class == 4 && pItem->GetProto()->SubClass == 6)
+		if (spellid == 44383 || spellid == 34009 || spellid == 27945 || spellid == 27947 || spellid == 27946 || spellid == 20016 || spellid == 11224 || spellid == 13464 || spellid == 23530){}
+		else
+		{
+			ChatHandler(GetSession()).PSendSysMessage("%s[VZ NPC]%s Dein Item konnte nicht verzaubert werden, da ein falsches item angelegt ist.",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
+			return;
+		}
+    if (pItem->GetEntry() == 33681 || pItem->GetEntry() == 33736 || pItem->GetEntry() == 34033)
+	    return;
+
+    SpellEntry const* spellInfo = sSpellStore.LookupEntry(spellid);
+    if (!spellInfo)
+    {
+        ChatHandler(GetSession()).PSendSysMessage("Invalid spellid %u report to devs",spellid);
+        return;
+    }
+    uint32 enchantid = spellInfo->EffectMiscValue[0];
+    if (!enchantid)
+    {
+        ChatHandler(GetSession()).PSendSysMessage("Invalid enchantid %u report to devs", enchantid);
+        return;
+    }
+
+    if (!((1 << pItem->GetProto()->SubClass) & spellInfo->EquippedItemSubClassMask) &&
+        !((1 << pItem->GetProto()->InventoryType) & spellInfo->EquippedItemInventoryTypeMask))
+    {
+        ChatHandler(GetSession()).PSendSysMessage("%s[VZ NPC]%s Dein Item konnte nicht verzaubert werden, da ein falsches Item angelegt ist.",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
+        return;
+    }
+	//Item *item, EnchantmentSlot slot, bool apply, bool apply_dur, bool ignore_condition
+    ApplyEnchantment(pItem, PERM_ENCHANTMENT_SLOT, false);
+    pItem->SetEnchantment(PERM_ENCHANTMENT_SLOT, enchantid, 0, 0);
+    ApplyEnchantment(pItem, PERM_ENCHANTMENT_SLOT, true);
+	ChatHandler(GetSession()).PSendSysMessage("%s[VZ NPC]%s Dein Item wurde erfolgreich verzaubert!",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
 }

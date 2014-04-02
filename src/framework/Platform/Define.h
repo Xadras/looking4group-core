@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef HELLGROUND_DEFINE_H
-#define HELLGROUND_DEFINE_H
+#ifndef LOOKING4GROUP_DEFINE_H
+#define LOOKING4GROUP_DEFINE_H
 
 #include <sys/types.h>
 
@@ -30,74 +30,74 @@
 
 #include "Platform/CompilerDefs.h"
 
-#define HELLGROUND_LITTLEENDIAN 0
-#define HELLGROUND_BIGENDIAN    1
+#define LOOKING4GROUP_LITTLEENDIAN 0
+#define LOOKING4GROUP_BIGENDIAN    1
 
-#if !defined(HELLGROUND_ENDIAN)
+#if !defined(LOOKING4GROUP_ENDIAN)
 #  if defined (ACE_BIG_ENDIAN)
-#    define HELLGROUND_ENDIAN HELLGROUND_BIGENDIAN
+#    define LOOKING4GROUP_ENDIAN LOOKING4GROUP_BIGENDIAN
 #  else //ACE_BYTE_ORDER != ACE_BIG_ENDIAN
-#    define HELLGROUND_ENDIAN HELLGROUND_LITTLEENDIAN
+#    define LOOKING4GROUP_ENDIAN LOOKING4GROUP_LITTLEENDIAN
 #  endif //ACE_BYTE_ORDER
-#endif //HELLGROUND_ENDIAN
+#endif //LOOKING4GROUP_ENDIAN
 
-typedef ACE_SHLIB_HANDLE HELLGROUND_LIBRARY_HANDLE;
+typedef ACE_SHLIB_HANDLE LOOKING4GROUP_LIBRARY_HANDLE;
 
-#define HELLGROUND_SCRIPT_NAME "trinityscript"
-#define HELLGROUND_SCRIPT_SUFFIX ACE_DLL_SUFFIX
-#define HELLGROUND_SCRIPT_PREFIX ACE_DLL_PREFIX
-#define HELLGROUND_LOAD_LIBRARY(libname)    ACE_OS::dlopen(libname)
-#define HELLGROUND_CLOSE_LIBRARY(hlib)      ACE_OS::dlclose(hlib)
-#define HELLGROUND_GET_PROC_ADDR(hlib,name) ACE_OS::dlsym(hlib,name)
+#define LOOKING4GROUP_SCRIPT_NAME "trinityscript"
+#define LOOKING4GROUP_SCRIPT_SUFFIX ACE_DLL_SUFFIX
+#define LOOKING4GROUP_SCRIPT_PREFIX ACE_DLL_PREFIX
+#define LOOKING4GROUP_LOAD_LIBRARY(libname)    ACE_OS::dlopen(libname)
+#define LOOKING4GROUP_CLOSE_LIBRARY(hlib)      ACE_OS::dlclose(hlib)
+#define LOOKING4GROUP_GET_PROC_ADDR(hlib,name) ACE_OS::dlsym(hlib,name)
 
 #if PLATFORM == PLATFORM_WINDOWS
 #  ifndef THIS_IS_SCRIPT_DLL
-#    define HELLGROUND_EXPORT __declspec(dllexport)
+#    define LOOKING4GROUP_EXPORT __declspec(dllexport)
 #  else
-#    define HELLGROUND_EXPORT
+#    define LOOKING4GROUP_EXPORT
 #  endif
-#  define HELLGROUND_IMPORT __cdecl
-#  define HELLGROUND_PATH_MAX MAX_PATH
+#  define LOOKING4GROUP_IMPORT __cdecl
+#  define LOOKING4GROUP_PATH_MAX MAX_PATH
 #else //PLATFORM != PLATFORM_WINDOWS
-#  define HELLGROUND_EXPORT
+#  define LOOKING4GROUP_EXPORT
 #  if defined(__APPLE_CC__) && defined(BIG_ENDIAN)
-#    define HELLGROUND_IMPORT __attribute__ ((longcall))
+#    define LOOKING4GROUP_IMPORT __attribute__ ((longcall))
 #  elif defined(__x86_64__)
-#    define HELLGROUND_IMPORT
+#    define LOOKING4GROUP_IMPORT
 #  else
-#    define HELLGROUND_IMPORT __attribute__ ((cdecl))
+#    define LOOKING4GROUP_IMPORT __attribute__ ((cdecl))
 #  endif //__APPLE_CC__ && BIG_ENDIAN
-#  define HELLGROUND_PATH_MAX PATH_MAX
+#  define LOOKING4GROUP_PATH_MAX PATH_MAX
 #endif //PLATFORM
 
 //
-// Use HELLGROUND_IMPORT_EXPORT define to proper export from core/shared/etc to script dll
+// Use LOOKING4GROUP_IMPORT_EXPORT define to proper export from core/shared/etc to script dll
 // While compile core - defined like __declspec(dllexport)
 // While compile script dll - defined like __declspec(dllimport)
 //
-// Use just HELLGROUND_EXPORT for static objects
+// Use just LOOKING4GROUP_EXPORT for static objects
 //
 // Make sense only in windows OS
 //
 #if PLATFORM == PLATFORM_WINDOWS
 #  ifndef THIS_IS_SCRIPT_DLL
-#    define HELLGROUND_IMPORT_EXPORT  __declspec(dllexport)
+#    define LOOKING4GROUP_IMPORT_EXPORT  __declspec(dllexport)
 #  else
-#    define HELLGROUND_IMPORT_EXPORT __declspec(dllimport)
+#    define LOOKING4GROUP_IMPORT_EXPORT __declspec(dllimport)
 #  endif
 #else //PLATFORM != PLATFORM_WINDOWS
-#  define HELLGROUND_IMPORT_EXPORT
+#  define LOOKING4GROUP_IMPORT_EXPORT
 #  define DECLSPEC_NORETURN
 #endif //PLATFORM
 
 
 #if !defined(DEBUG)
-#  define HELLGROUND_INLINE inline
+#  define LOOKING4GROUP_INLINE inline
 #else //DEBUG
-#  if !defined(HELLGROUND_DEBUG)
-#    define HELLGROUND_DEBUG
-#  endif //HELLGROUND_DEBUG
-#  define HELLGROUND_INLINE
+#  if !defined(LOOKING4GROUP_DEBUG)
+#    define LOOKING4GROUP_DEBUG
+#  endif //LOOKING4GROUP_DEBUG
+#  define LOOKING4GROUP_INLINE
 #endif //!DEBUG
 
 #if COMPILER == COMPILER_GNU
@@ -124,5 +124,5 @@ typedef uint32      DWORD;
 
 typedef uint64 OBJECT_HANDLE;
 
-#endif //HELLGROUND_DEFINE_H
+#endif //LOOKING4GROUP_DEFINE_H
 
