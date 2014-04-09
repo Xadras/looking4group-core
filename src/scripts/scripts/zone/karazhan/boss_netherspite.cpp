@@ -248,7 +248,7 @@ struct boss_netherspiteAI : public ScriptedAI
         SwitchToPortalPhase();
 
         //m_creature->GetMotionMaster()->Clear();
-        DoStartMovement(who);
+        //DoStartMovement(who);
 
         if (pInstance)
             pInstance->SetData(DATA_NETHERSPITE_EVENT, IN_PROGRESS);
