@@ -1549,6 +1549,9 @@
     <ClCompile Include="..\..\src\scripts\scripts\custom\event_reward.cpp">
       <Filter>Scripts\custom</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\scripts\scripts\custom\boss_easter_event.cpp">
+      <Filter>Scripts\custom</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\scripts\scripts\creature\simple_ai.h">
