@@ -91,7 +91,7 @@ CreatureAI* GetAI_boss_easter_event(Creature *_Creature)
     return new boss_easter_eventAI (_Creature);
 }
 
-void AddSC_boss_doomwalker()
+void AddSC_boss_easter_event()
 {
     Script *newscript;
     newscript = new Script;
