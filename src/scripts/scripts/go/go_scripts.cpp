@@ -725,6 +725,58 @@ bool GOUse_go_personal_mole_machine(Player* player, GameObject* go)
     return true;
 };
 
+#define GOSSIP_S_TEROKK         "Ich bin bereit!"
+
+bool GossipHello_go_uraltes_portal(Player *player, GameObject* go)
+{
+    player->ADD_GOSSIP_ITEM(0, GOSSIP_S_TEROKK, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+    player->SEND_GOSSIP_MENU(1, go->GetGUID());
+    return true;
+}
+
+bool GossipSelect_go_uraltes_portal(Player *player, GameObject* go, uint32 sender, uint32 action )
+{
+    switch(sender)
+    {
+        case GOSSIP_SENDER_MAIN:
+            if(player->hasQuest(100059) || player->hasQuest(100060) || player->hasQuest(100061) || (player->GetQuestStatus(100061) == QUEST_STATUS_COMPLETE) )
+            {
+                player->TeleportTo(169,-3804.020, 3345.919, 132.477,0);
+                player->CLOSE_GOSSIP_MENU();
+                go->SetGoState(GO_STATE_ACTIVE);
+                go->SetRespawnTime(1);
+            }
+            break;
+    }
+    return true;
+}
+
+#define GOSSIP_A_TEROKK         "Die Bestie? Wo?"
+
+bool GossipHello_go_uralte_apparatur(Player *player, GameObject* go)
+{
+    player->ADD_GOSSIP_ITEM(0, GOSSIP_A_TEROKK, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+    player->SEND_GOSSIP_MENU(1, go->GetGUID());
+    return true;
+}
+
+bool GossipSelect_go_uralte_apparatur(Player *player, GameObject* go, uint32 sender, uint32 action )
+{
+    switch(sender)
+    {
+        case GOSSIP_SENDER_MAIN:
+            if(player->hasQuest(100059) || player->hasQuest(100060) || player->hasQuest(100061) || (player->GetQuestStatus(100061) == QUEST_STATUS_COMPLETE) )
+            {
+                player->SummonCreature(61550, -3922.816, 3350.622, 122.963, player->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 20000);
+                player->CLOSE_GOSSIP_MENU();
+                go->SetGoState(GO_STATE_ACTIVE);
+                go->SetRespawnTime(20);
+            }
+            break;
+    }
+    return true;
+}
+
 void AddSC_go_scripts()
 {
     Script *newscript;
@@ -861,5 +913,17 @@ void AddSC_go_scripts()
     newscript->Name = "go_draconic_for_dummies";
     newscript->pGOUse = &GOUse_go_draconic_for_dummies;
     newscript->pGossipSelectGO =  &GOGossipSelect_go_draconic_for_dummies;
+    newscript->RegisterSelf();
+    
+    newscript = new Script;
+    newscript->Name="go_uraltes_portal";
+    newscript->pGOUse  = &GossipHello_go_uraltes_portal;
+    newscript->pGossipSelectGO = &GossipSelect_go_uraltes_portal;
+    newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name="go_uralte_apparatur";
+    newscript->pGOUse  = &GossipHello_go_uralte_apparatur;
+    newscript->pGossipSelectGO = &GossipSelect_go_uralte_apparatur;
     newscript->RegisterSelf();
 }
