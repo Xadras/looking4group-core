@@ -751,7 +751,7 @@ bool GossipSelect_go_uraltes_portal(Player *player, GameObject* go, uint32 sende
     return true;
 }
 
-#define GOSSIP_A_TEROKK         "Die Bestie? Wo?"
+#define GOSSIP_A_TEROKK         "Zieht einen Hebel."
 
 bool GossipHello_go_uralte_apparatur(Player *player, GameObject* go)
 {
