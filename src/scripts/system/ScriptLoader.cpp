@@ -22,6 +22,8 @@ extern void AddSC_generic_creature();
 extern void AddSC_custom_example();
 extern void AddSC_custom_gossip_codebox();
 extern void AddSC_event_reward();
+extern void AddSC_enchant_npc();
+extern void AddSC_boss_easter_event();
 
 // -- GO --
 extern void AddSC_go_scripts();
@@ -646,6 +648,8 @@ void AddScripts()
     AddSC_custom_example();
     AddSC_custom_gossip_codebox();
     AddSC_event_reward();
+    AddSC_enchant_npc();
+    AddSC_boss_easter_event();
 
     // -- GO --
     AddSC_go_scripts();

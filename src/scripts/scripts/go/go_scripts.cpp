@@ -739,13 +739,15 @@ bool GossipSelect_go_uraltes_portal(Player *player, GameObject* go, uint32 sende
     switch(sender)
     {
         case GOSSIP_SENDER_MAIN:
-            if(player->hasQuest(100059) || player->hasQuest(100060) || player->hasQuest(100061) || (player->GetQuestStatus(100061) == QUEST_STATUS_COMPLETE) )
+            if(player->GetQuestStatus(100059) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(100060) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(100061) == QUEST_STATUS_INCOMPLETE || (player->GetQuestStatus(100061) == QUEST_STATUS_COMPLETE) )
             {
                 player->TeleportTo(169,-3804.020, 3345.919, 132.477,0);
                 player->CLOSE_GOSSIP_MENU();
-                go->SetGoState(GO_STATE_ACTIVE);
-                go->SetRespawnTime(1);
+                //go->SetGoState(GO_STATE_ACTIVE);
+                //go->SetRespawnTime(1);
             }
+		else
+                player->Say("Quest missing",LANG_UNIVERSAL);
             break;
     }
     return true;
