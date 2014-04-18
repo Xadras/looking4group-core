@@ -30,8 +30,10 @@ EndScriptData */
 #define ITEM_MARKE_COUNT_2  1
 #define ITEM_MARKE_COUNT_3  1
 #define ITEM_MARKE_COUNT_4  1
+
 #define ITEM_MARKE_COUNT_5  1
-#define ITEM_MARKE_COUNT_6  1
+#define ITEM_MARKE_COUNT_6  2
+
 #define ITEM_MARKE_COUNT_7  1
 #define ITEM_MARKE_COUNT_8  1
 #define ITEM_MARKE_COUNT_9  1
@@ -54,8 +56,8 @@ EndScriptData */
 #define ITEM_MARKE_COUNT_26 1
 #define ITEM_MARKE_COUNT_27 1
 #define ITEM_MARKE_COUNT_28 1
-#define ITEM_MARKE_COUNT_29 1
-#define ITEM_MARKE_COUNT_30 1
+#define ITEM_MARKE_COUNT_29 2
+#define ITEM_MARKE_COUNT_30 2
 
 /*
 20558 - Ehrenabzeichen der Kriegshymnenschlucht
@@ -132,10 +134,10 @@ EndScriptData */
 
 //-------------ITEM COUNT----------------------------
 
-#define ITEM_COUNT_1        10
-#define ITEM_COUNT_2        10
-#define ITEM_COUNT_3        10
-#define ITEM_COUNT_4        10
+#define ITEM_COUNT_1        5
+#define ITEM_COUNT_2        5
+#define ITEM_COUNT_3        5
+#define ITEM_COUNT_4        5
 
 #define ITEM_COUNT_5        1
 #define ITEM_COUNT_6        1
@@ -154,17 +156,17 @@ EndScriptData */
 #define ITEM_COUNT_17       1
 #define ITEM_COUNT_18       1
 
-#define ITEM_COUNT_19       2
-#define ITEM_COUNT_20       2
-#define ITEM_COUNT_21       2
-#define ITEM_COUNT_22       2
-#define ITEM_COUNT_23       2
-#define ITEM_COUNT_24       2
-#define ITEM_COUNT_25       2
-#define ITEM_COUNT_26       2
-#define ITEM_COUNT_27       2
+#define ITEM_COUNT_19       3
+#define ITEM_COUNT_20       3
+#define ITEM_COUNT_21       3
+#define ITEM_COUNT_22       3
+#define ITEM_COUNT_23       3
+#define ITEM_COUNT_24       3
+#define ITEM_COUNT_25       3
+#define ITEM_COUNT_26       3
+#define ITEM_COUNT_27       3
 
-#define ITEM_COUNT_28       2000
+#define ITEM_COUNT_28       700
 #define ITEM_COUNT_29       1
 #define ITEM_COUNT_30       1
 
