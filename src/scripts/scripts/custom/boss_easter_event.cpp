@@ -229,7 +229,7 @@ struct boss_easter_eventAI : public ScriptedAI
             phase1=false;
             phase2=true;
         }
-        if ((m_creature->GetHealth()*100 / m_creature->GetMaxHealth() <40) && phase2)
+        if ((m_creature->GetHealth()*100 / m_creature->GetMaxHealth() <45) && phase2)
         {
             phase2=false;
             phase3=true;
