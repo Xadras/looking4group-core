@@ -172,10 +172,10 @@ EndScriptData */
 
 //---------------------------ITEM NAME--------------------------------
 
-#define ITEM_NAME_1         "10 Ehrenabzeichen der Kriegshymnenschlucht"
-#define ITEM_NAME_2         "10 Ehrenabzeichen des Arathibeckens"
-#define ITEM_NAME_3         "10 Ehrenabzeichen des Alteractals"
-#define ITEM_NAME_4         "10 Ehrenabzeichen vom Auge des Sturms"
+#define ITEM_NAME_1         "5 Ehrenabzeichen der Kriegshymnenschlucht"
+#define ITEM_NAME_2         "5 Ehrenabzeichen des Arathibeckens"
+#define ITEM_NAME_3         "5 Ehrenabzeichen des Alteractals"
+#define ITEM_NAME_4         "5 Ehrenabzeichen vom Auge des Sturms"
 
 #define ITEM_NAME_5         "L4G Talent Reset Coin"
 #define ITEM_NAME_6         "L4G Maxskill Coin"
@@ -194,17 +194,17 @@ EndScriptData */
 #define ITEM_NAME_17        "Flaeschchen des reinen Todes aus Shattrath"
 #define ITEM_NAME_18        "Flaeschchen des blendenden Lichts aus Shattrath"
 
-#define ITEM_NAME_19        "2 Wuerziger Flusskrebs ( +30 Ausdauer)"
-#define ITEM_NAME_20        "2 Knusperschlange  ( +23 Zauberschaden)"
-#define ITEM_NAME_21        "2 Doppelwarper  ( +20 Beweglichkeit)"
-#define ITEM_NAME_22        "2 Geroesteter Grollhuf ( +20 Staerke)"
-#define ITEM_NAME_23        "2 Goldfischstaebchen ( +44 Heilzauber)"
-#define ITEM_NAME_24        "2 Feuriger Wuerztalbuk ( +20 Trefferwertung)"
-#define ITEM_NAME_25        "2 Heisser Hetzer ( +40 Angriffskraft)"
-#define ITEM_NAME_26        "2 Sporlingschmaus ( +20 Ausdauer deines Begleiters)"
-#define ITEM_NAME_27        "2 Kiblers Haeppchen ( +20 Staerke deines Begleiters)"
+#define ITEM_NAME_19        "3 Wuerziger Flusskrebs ( +30 Ausdauer)"
+#define ITEM_NAME_20        "3 Knusperschlange  ( +23 Zauberschaden)"
+#define ITEM_NAME_21        "3 Doppelwarper  ( +20 Beweglichkeit)"
+#define ITEM_NAME_22        "3 Geroesteter Grollhuf ( +20 Staerke)"
+#define ITEM_NAME_23        "3 Goldfischstaebchen ( +44 Heilzauber)"
+#define ITEM_NAME_24        "3 Feuriger Wuerztalbuk ( +20 Trefferwertung)"
+#define ITEM_NAME_25        "3 Heisser Hetzer ( +40 Angriffskraft)"
+#define ITEM_NAME_26        "3 Sporlingschmaus ( +20 Ausdauer deines Begleiters)"
+#define ITEM_NAME_27        "3 Kiblers Haeppchen ( +20 Staerke deines Begleiters)"
 
-#define ITEM_NAME_28        "2000 Ehre"
+#define ITEM_NAME_28        "700 Ehre"
 #define ITEM_NAME_29        "Raketenhuehnchen"
 #define ITEM_NAME_30        "Papierdrache"
 
