@@ -739,7 +739,6 @@ bool GossipSelect_go_uraltes_portal(Player *player, GameObject* go, uint32 sende
     switch(sender)
     {
         case GOSSIP_SENDER_MAIN:
-            if(player->hasQuest(100059) || player->hasQuest(100060) || player->hasQuest(100061) || (player->GetQuestStatus(100061) == QUEST_STATUS_COMPLETE) )
             {
                 player->TeleportTo(169,-3804.020, 3345.919, 132.477,0);
                 player->CLOSE_GOSSIP_MENU();
@@ -751,7 +750,7 @@ bool GossipSelect_go_uraltes_portal(Player *player, GameObject* go, uint32 sende
     return true;
 }
 
-#define GOSSIP_A_TEROKK         "Die Bestie? Wo?"
+#define GOSSIP_A_TEROKK         "Zieht einen Hebel."
 
 bool GossipHello_go_uralte_apparatur(Player *player, GameObject* go)
 {
