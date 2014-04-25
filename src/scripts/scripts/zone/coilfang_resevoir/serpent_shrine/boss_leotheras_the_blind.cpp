@@ -310,6 +310,7 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
                 if(victim)
                     m_creature->getThreatManager().addThreat(victim, 1);
                 StartEvent();
+                AttackStart(victim);
             }
         }
         else if(AliveChannelers != 0 && !m_creature->HasAura(AURA_BANISH, 0))
@@ -394,7 +395,7 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
     {
         if(m_creature->HasAura(AURA_BANISH, 0))
             return;
-
+        AttackStart(who);
         m_creature->LoadEquipment(m_creature->GetEquipmentId());
     }
 
@@ -536,7 +537,6 @@ struct boss_leotheras_the_blindAI : public ScriptedAI
             //Summon Inner Demon
             if(InnerDemons_Timer < diff)
             {
-
                 std::list<HostilReference *>& ThreatList = m_creature->getThreatManager().getThreatList();
                 std::vector<Unit *> TargetList;
 
