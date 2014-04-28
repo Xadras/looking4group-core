@@ -268,7 +268,10 @@ struct boss_netherspiteAI : public ScriptedAI
         if(!UpdateVictim())
             return;
 
-        DoSpecialThings(diff, DO_EVERYTHING, 125.0f, 1.5f);
+        //DoSpecialThings(diff, DO_EVERYTHING, 125.0f, 1.5f);
+        me->SetSpeed(MOVE_WALK, 1.5f, true);
+        me->SetSpeed(MOVE_RUN, 1.5f, true);
+        DoZoneInCombat();
 
         // Void Zone
         if(VoidZoneTimer < diff)
