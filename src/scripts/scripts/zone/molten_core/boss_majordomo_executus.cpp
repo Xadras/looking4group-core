@@ -318,7 +318,6 @@ struct boss_majordomoAI : public BossAI
                 if(pCreature) 
                 {
                     AddGUID[i] = pCreature->GetGUID();
-                    pCreature->Attack(
                 }
             }
             else
