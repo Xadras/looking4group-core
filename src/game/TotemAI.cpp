@@ -97,6 +97,9 @@ void TotemAI::UpdateAI(const uint32 /*diff*/)
     // If have target
     if (victim)
     {
+        //this should prevent target-type totems from attacking from unattackable zones and attacking while being unattackable
+        if ((i_totem.isInSanctuary() || victim->isInSanctuary()) && victim->GetCharmerOrOwnerPlayerOrPlayerItself())
+            return;
         // remember
         i_victimGuid = victim->GetGUID();
 

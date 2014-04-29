@@ -21515,3 +21515,8 @@ void Player::EnchantItem(uint32 spellid, uint8 slot)
     ApplyEnchantment(pItem, PERM_ENCHANTMENT_SLOT, true);
 	ChatHandler(GetSession()).PSendSysMessage("%s[VZ NPC]%s Dein Item wurde erfolgreich verzaubert!",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
 }
+
+bool Player::isInSanctuary()
+{
+    return HasFlag(PLAYER_FLAGS,PLAYER_FLAGS_SANCTUARY);
+}

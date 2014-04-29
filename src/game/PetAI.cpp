@@ -70,7 +70,8 @@ bool PetAI::targetHasInterruptableAura(Unit *target) const
 bool PetAI::_needToStop() const
 {
     // This is needed for charmed creatures, as once their target was reset other effects can trigger threat
-    if (me->isCharmed() && me->getVictim() == me->GetCharmer())
+    if (me->isCharmed() && me->getVictim() == me->GetCharmer() ||
+    (me->GetOwner() && me->GetOwner()->isInSanctuary() &&  me->getVictim()->GetCharmerOrOwnerPlayerOrPlayerItself()))
         return true;
 
     return targetHasInterruptableAura(me->getVictim()) || !me->canAttack(me->getVictim());
