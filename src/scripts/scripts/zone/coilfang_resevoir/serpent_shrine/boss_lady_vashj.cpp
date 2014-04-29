@@ -326,7 +326,7 @@ struct boss_lady_vashjAI : public ScriptedAI
             Intro = true;
             DoScriptText(SAY_INTRO, me);
         }
-        if (!CanAttack)
+        if (!CanAttack || me->isDead())
             return;
 
         if (!who || me->getVictim())
