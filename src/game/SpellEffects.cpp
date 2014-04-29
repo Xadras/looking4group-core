@@ -4432,8 +4432,23 @@ void Spell::EffectSummonGuardian(uint32 i)
                     spawnCreature->SetUInt32Value(UNIT_CREATED_BY_SPELL, GetSpellInfo()->Id);
                     spawnCreature->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_PVP_ATTACKABLE);
                     spawnCreature->SetOwnerGUID(m_caster->GetGUID());
-                    spawnCreature->SetReactState(REACT_AGGRESSIVE);
-                    return;
+                    spawnCreature->SetReactState(REACT_DEFENSIVE);
+
+                    float healthfactor = (frand(0.15, 0.30));
+                    float manafactor = (frand(0.2, 0.8));
+                    spawnCreature->SetMaxHealth(spawnCreature->GetMaxHealth() + caster->GetHealthBonusFromStamina() * healthfactor);
+                    spawnCreature->SetHealth(spawnCreature->GetMaxHealth() + caster->GetHealthBonusFromStamina() * healthfactor);
+                    if(spawnCreature->GetEntry() == 15438)
+                    {
+                        spawnCreature->SetMaxPower(POWER_MANA, (spawnCreature->GetMaxPower(POWER_MANA) + caster->GetManaBonusFromIntellect() * manafactor));
+                        spawnCreature->SetPower(POWER_MANA,(spawnCreature->GetMaxPower(POWER_MANA) + caster->GetManaBonusFromIntellect() * manafactor));
+                    }
+
+                   //Precise values are impossible to find. This values (+ 10-30%) are the conclusion of all available proofs, lovered by 10%.
+                   //After checking the impact on the game if may be lowered to 10%.
+                   //Mana bonus must be much lover, due to conclusion of spells costs.
+                   //Bonus spell damage is not confirmed, so it's NOT implemented.
+                   return;
                 }
             }
             else
