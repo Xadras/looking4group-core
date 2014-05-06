@@ -1031,7 +1031,6 @@ GridMap* TerrainInfo::LoadMapAndVMap(const uint32 x, const uint32 y)
             }
 
             delete [] tmp;
-            m_GridMaps[x][y] = map;
 
             //load VMAPs for current map/grid...
             const MapEntry * i_mapEntry = sMapStore.LookupEntry(m_mapId);
@@ -1051,6 +1050,8 @@ GridMap* TerrainInfo::LoadMapAndVMap(const uint32 x, const uint32 y)
             }
 
             MMAP::MMapFactory::createOrGetMMapManager()->loadMap(m_mapId, x, y);
+
+            m_GridMaps[x][y] = map;
         }
     }
 
@@ -1080,41 +1081,55 @@ float TerrainInfo::GetWaterLevel(float x, float y, float z, float* pGround /*= N
 
 bool TerrainInfo::IsLineOfSightEnabled() const
 {
-    if (GetSpecifics()->lineofsight == F_ALWAYS_DISABLED)
+    const TerrainSpecifics* specifics = GetSpecifics();
+
+    if (specifics == nullptr)
+        return true;
+
+    if (specifics->lineofsight == F_ALWAYS_DISABLED)
         return false;
 
-    if (GetSpecifics()->lineofsight == F_ALWAYS_ENABLED)
+    if (specifics->lineofsight == F_ALWAYS_ENABLED)
         return sWorld.getConfig(CONFIG_VMAP_LOS_ENABLED);
 
     if (sWorld.getConfig(CONFIG_COREBALANCER_ENABLED))
     {
-        if (GetSpecifics()->lineofsight <= sWorld.GetCoreBalancerTreshold())
+        if (specifics->lineofsight <= sWorld.GetCoreBalancerTreshold())
             return false;
     }
 
-    return GetSpecifics()->lineofsight != F_ALWAYS_DISABLED && sWorld.getConfig(CONFIG_VMAP_LOS_ENABLED);
+    return specifics->lineofsight != F_ALWAYS_DISABLED && sWorld.getConfig(CONFIG_VMAP_LOS_ENABLED);
 }
 
 bool TerrainInfo::IsPathFindingEnabled() const
 {
-    if (GetSpecifics()->pathfinding == F_ALWAYS_DISABLED)
+    const TerrainSpecifics* specifics = GetSpecifics();
+
+    if (specifics == nullptr)
+        return true;
+
+    if (specifics->pathfinding == F_ALWAYS_DISABLED)
         return false;
 
-    if (GetSpecifics()->pathfinding == F_ALWAYS_ENABLED)
+    if (specifics->pathfinding == F_ALWAYS_ENABLED)
         return sWorld.getConfig(CONFIG_MMAP_ENABLED);
 
     if (sWorld.getConfig(CONFIG_COREBALANCER_ENABLED))
     {
-        if (GetSpecifics()->pathfinding <= sWorld.GetCoreBalancerTreshold())
+        if (specifics->pathfinding <= sWorld.GetCoreBalancerTreshold())
             return false;
     }
 
-    return GetSpecifics()->pathfinding != F_ALWAYS_DISABLED && sWorld.getConfig(CONFIG_MMAP_ENABLED);
+    return specifics->pathfinding != F_ALWAYS_DISABLED && sWorld.getConfig(CONFIG_MMAP_ENABLED);
 }
 
 float TerrainInfo::GetVisibilityDistance()
 {
     const TerrainSpecifics* specifics = GetSpecifics();
+
+    if (specifics == nullptr)
+        return DEFAULT_VISIBILITY_DISTANCE;
+
     float visibility = specifics ? specifics->visibility : DEFAULT_VISIBILITY_DISTANCE;
     if (sWorld.GetCoreBalancerTreshold() >= CB_VISIBILITY_PENALTY)
         visibility -= sWorld.getConfig(CONFIG_COREBALANCER_VISIBILITY_PENALTY);
