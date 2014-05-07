@@ -342,7 +342,13 @@ void WorldSession::HandleWhoOpcode(WorldPacket & recv_data)
         data << uint8(gender);                          // player gender
         data << uint32(pzoneid);                        // player zone id
 
-    if (sWorld.getConfig(CONFIG_FAKE_WHO_LIST) && clientcount < 490)
+        // 49 is maximum player count sent to client - can be overridden
+        // through config, but is unstable
+        if ((++clientcount) == sWorld.getConfig(CONFIG_MAX_WHO))
+            break;
+    }
+
+    if (sWorld.getConfig(CONFIG_FAKE_WHO_LIST) && clientcount < 49)
     {
         // Fake players on WHO LIST                            0,   1,    2,   3,    4,   5     6
         QueryResultAutoPtr result = RealmDataDatabase.Query("SELECT guid,name,race,class,level,zone,gender FROM characters WHERE online>1 AND level > 0");
@@ -368,16 +374,10 @@ void WorldSession::HandleWhoOpcode(WorldPacket & recv_data)
                 data << uint8(gender);                      // player gender
                 data << uint32(pzoneid);                    // player zone id
 
-                if ((++clientcount) == 490)
+                if ((++clientcount) == 49)
                     break;
             } while (result->NextRow());
         }
-    }
-
-        // 49 is maximum player count sent to client - can be overridden
-        // through config, but is unstable
-        if ((++clientcount) == sWorld.getConfig(CONFIG_MAX_WHO))
-            break;
     }
 
     data.put(0, clientcount);                //insert right count
