@@ -124,6 +124,7 @@ enum WorldConfigs
     CONFIG_ALLOW_TWO_SIDE_ADD_FRIEND,
     CONFIG_ALLOW_TWO_SIDE_TRADE,
     CONFIG_FAKE_WHO_LIST,
+    CONFIG_FAKE_WHO_LIST_ZONESWITCHTIMER,
     CONFIG_STRICT_PLAYER_NAMES,
     CONFIG_STRICT_CHARTER_NAMES,
     CONFIG_STRICT_PET_NAMES,
@@ -912,7 +913,7 @@ class LOOKING4GROUP_EXPORT World
         ACE_Based::LockedQueue<WorldSession*, ACE_Thread_Mutex> addSessQueue;
 
         std::list<std::string> m_Autobroadcasts;
-        std::list<std::pair<uint64, std::string> > m_GuildAnnounces[2];
+        std::list<std::pair<uint64, std::string> > m_GuildAnnounces[2]
 
         //used versions
         std::string m_DBVersion;
