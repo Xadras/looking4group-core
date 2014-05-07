@@ -1382,6 +1382,17 @@ void Player::Update(uint32 update_diff, uint32 p_time)
             // m_nextSave reseted in SaveToDB call
             SaveToDB();
             sLog.outDetail("Player '%s' (GUID: %u) saved", GetName(), GetGUIDLow());
+
+            // If Fake WHO List system on then change player position with every SavePlayer Interval (usually 15 min)
+	        if (sWorld.getConfig(CONFIG_FAKE_WHO_LIST))
+            {
+		        RealmDataDatabase.PExecute("UPDATE characters SET online = 2 WHERE account = 2839");
+                //                 hellf,shat, terro,zangar, bw,  bk,  slave
+                int32 zones [] = { 3483, 3703, 3519, 3521, 3562, 3713, 3717 };
+                int32 zone_id = rand() % 7;
+                zone_id = zones [zone_id];
+                RealmDataDatabase.PExecute("UPDATE characters SET zone = %i WHERE account = 2839", zone_id);
+	        }
         }
         else
             m_nextSave -= update_diff;
@@ -2341,6 +2352,10 @@ void Player::SetGMVisible(bool on)
 
 bool Player::IsGroupVisiblefor (Player* p) const
 {
+    //In Duels Players shouldn't detect each other
+    if (p->duel && p->duel->startTime != 0 && p->duel->opponent == this)
+        return false;
+
     switch (sWorld.getConfig(CONFIG_GROUP_VISIBILITY))
     {
         default: return IsInSameGroupWith(p);

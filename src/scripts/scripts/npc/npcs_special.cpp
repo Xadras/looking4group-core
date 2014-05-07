@@ -1819,10 +1819,10 @@ struct npc_earth_elemental_guardianAI : public ScriptedAI
               (pTotem->isInSanctuary() || me->isInSanctuary() || me->getVictim()->isInSanctuary() ||
               (me->getVictim()->GetMap()->IsDungeon() || me->getVictim()->GetMap()->IsRaid())))
           {
-             Reset();
              victim = NULL;
              attacker = NULL;
              me->GetMotionMaster()->MoveFollow(pTotem, 2.0f, M_PI);
+             Reset();
              return;
           }
 
