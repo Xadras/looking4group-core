@@ -615,6 +615,7 @@ struct mob_terokkAI : public ScriptedAI
 {
     mob_terokkAI(Creature* creature) : ScriptedAI(creature) {}
 
+    uint32 RemoveShield_Timer;
     uint32 ShadowBoltVolley_Timer;
     uint32 Cleave_Timer;
     uint32 ChosenOne_Timer;
@@ -632,6 +633,7 @@ struct mob_terokkAI : public ScriptedAI
         ShadowBoltVolley_Timer = 5000;
         Cleave_Timer = 7000;
         ChosenOne_Timer = 30000;
+        RemoveShield_Timer = 45000;
         ChosenOneActive_Timer = 0;
         ChosenOneTarget = 0;
         phase = 0;
@@ -767,6 +769,18 @@ struct mob_terokkAI : public ScriptedAI
             }
             else
                 CheckTimer -= diff;
+            
+            if (RemoveShield_Timer < diff)
+            {
+                if (me->HasAura(SPELL_DIVINE_SHIELD))
+                {
+                    me->RemoveAurasDueToSpell(SPELL_DIVINE_SHIELD);
+                    DoCast(me, SPELL_ENRAGE, true);
+                }
+                RemoveShield_Timer = 20000;
+            }
+            else
+                RemoveShield_Timer -= diff;
 
             if(SkyguardFlare_Timer < diff)
             {
