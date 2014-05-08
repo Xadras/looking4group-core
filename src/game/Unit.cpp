@@ -7395,7 +7395,10 @@ bool Unit::IsHostileTo(Unit const* unit) const
             return true;
 
         if (pTester->GetBGTeam() != pTarget->GetBGTeam())
+        {
+            sLog.outLog(LOG_DEFAULT, "BG Attackble");
             return true;
+        }
 
         //= PvP states
         // Green/Blue (can't attack)
@@ -7504,6 +7507,12 @@ bool Unit::IsFriendlyTo(Unit const* unit) const
         // Sanctuary
         if (pTarget->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_SANCTUARY) && pTester->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_SANCTUARY))
             return true;
+
+        if (pTester->GetBGTeam() != pTarget->GetBGTeam())
+        {
+            sLog.outLog(LOG_DEFAULT, "BG Attackble");
+            return false;
+        }
 
         // PvP FFA state
         if (pTester->IsFFAPvP() && pTarget->IsFFAPvP())
