@@ -158,8 +158,7 @@ GroupQueueInfo * BattleGroundQueue::AddGroup(Player *leader, BattleGroundTypeId 
     uint32 index = 0;
     if (!isRated && !isPremade)
         index += BG_TEAMS_COUNT;
-    if (ginfo->Team == HORDE)
-        index++;
+
     DEBUG_LOG("Adding Group to BattleGroundQueue bgTypeId : %u, bracket_id : %u, index : %u", BgTypeId, bracketId, index);
 
     m_QueuedGroups[bracketId][index].push_back(ginfo);
@@ -395,6 +394,9 @@ large groups are disadvantageous, because they will be kicked first if invitatio
 */
 void BattleGroundQueue::FillPlayersToBG(BattleGround* bg, BattleGroundBracketId bracket_id)
 {
+    if (MixPlayersToBG(bg, bracket_id))
+        return;
+
     int32 hordeFree = bg->GetFreeSlotsForTeam(HORDE);
     int32 aliFree   = bg->GetFreeSlotsForTeam(ALLIANCE);
 
@@ -526,6 +528,78 @@ bool BattleGroundQueue::CheckPremadeMatch(BattleGroundBracketId bracket_id, uint
     }
     //selection pools are not set
     return false;
+}
+
+
+bool BattleGroundQueue::CheckMixedMatch(BattleGround* bg_template, BattleGroundBracketId bracket_id, uint32 minPlayers, uint32 maxPlayers)
+{
+    if (!bg_template->isBattleGround())
+        return false;
+
+    // Empty selection pool, we do not want old data.
+    m_SelectionPools[BG_TEAM_ALLIANCE].Init();
+    m_SelectionPools[BG_TEAM_HORDE].Init();
+
+    uint32 addedally = 0;
+    uint32 addedhorde = 0;
+
+    for (GroupsQueueType::const_iterator itr = m_QueuedGroups[bracket_id][BG_QUEUE_NORMAL_ALLIANCE].begin();
+        itr != m_QueuedGroups[bracket_id][BG_QUEUE_NORMAL_ALLIANCE].end(); ++itr)
+    {
+        if (!(*itr)->IsInvitedToBGInstanceGUID)
+        {
+            bool makeally = addedally < addedhorde;
+
+            if (addedally == addedhorde)
+                makeally = urand(0,1);
+
+            makeally ? ++addedally : ++addedhorde;
+
+            (*itr)->Team = makeally ? ALLIANCE : HORDE;
+
+            m_SelectionPools[makeally ? BG_TEAM_ALLIANCE : BG_TEAM_HORDE].AddGroup(*itr, maxPlayers);
+
+            if (m_SelectionPools[BG_TEAM_ALLIANCE].GetPlayerCount() >= minPlayers &&
+                m_SelectionPools[BG_TEAM_HORDE].GetPlayerCount() >= minPlayers)
+                return true;
+        }
+    }
+
+    if (sBattleGroundMgr.isTesting() && (m_SelectionPools[BG_TEAM_ALLIANCE].GetPlayerCount()
+        || m_SelectionPools[BG_TEAM_HORDE].GetPlayerCount()))
+        return true;
+    
+    return false;
+}
+
+bool BattleGroundQueue::MixPlayersToBG(BattleGround* bg, BattleGroundBracketId bracket_id)
+{
+    int32 allyFree   = bg->GetFreeSlotsForTeam(ALLIANCE);
+    int32 hordeFree = bg->GetFreeSlotsForTeam(HORDE);
+
+    uint32 addedally = bg->GetMaxPlayersPerTeam() - bg->GetFreeSlotsForTeam(ALLIANCE);
+    uint32 addedhorde = bg->GetMaxPlayersPerTeam() - bg->GetFreeSlotsForTeam(HORDE);
+
+    for (GroupsQueueType::const_iterator itr = m_QueuedGroups[bracket_id][BG_QUEUE_NORMAL_ALLIANCE].begin();
+        itr != m_QueuedGroups[bracket_id][BG_QUEUE_NORMAL_ALLIANCE].end(); ++itr)
+    {
+        if (!(*itr)->IsInvitedToBGInstanceGUID)
+        {
+            bool makeally = addedally < addedhorde;
+
+            if (addedally == addedhorde)
+                makeally = urand(0,1);
+
+            makeally ? ++addedally : ++addedhorde;
+
+            (*itr)->Team = makeally ? ALLIANCE : HORDE;
+
+            if (!m_SelectionPools[makeally ? BG_TEAM_ALLIANCE : BG_TEAM_HORDE].AddGroup(*itr, makeally ? allyFree : hordeFree))
+                break;
+        }
+    }
+
+    return true;
 }
 
 // this method tries to create battleground or arena with MinPlayersPerTeam against MinPlayersPerTeam
@@ -738,7 +812,8 @@ void BattleGroundQueue::Update(BattleGroundTypeId bgTypeId, BattleGroundBracketI
     if (!isRated)
     {
         // if there are enough players in pools, start new battleground or non rated arena
-        if (CheckNormalMatch(bg_template, bracket_id, MinPlayersPerTeam, MaxPlayersPerTeam)
+        if (CheckMixedMatch(bg_template, bracket_id, MinPlayersPerTeam, MaxPlayersPerTeam) ||
+            CheckNormalMatch(bg_template, bracket_id, MinPlayersPerTeam, MaxPlayersPerTeam)
             || (bg_template->isArena() && CheckSkirmishForSameFaction(bracket_id, MinPlayersPerTeam)) )
         {
             // we successfully created a pool

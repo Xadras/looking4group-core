@@ -79,6 +79,9 @@ enum BattleGroundQueueGroupTypes
 class BattleGround;
 class BattleGroundQueue
 {
+public: 
+    bool CheckMixedMatch(BattleGround* bg_template, BattleGroundBracketId bracket_id, uint32 minPlayers, uint32 maxPlayers);
+    bool MixPlayersToBG(BattleGround* bg, BattleGroundBracketId bracket_id);
     public:
         BattleGroundQueue();
         ~BattleGroundQueue();
