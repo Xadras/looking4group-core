@@ -7394,6 +7394,9 @@ bool Unit::IsHostileTo(Unit const* unit) const
         if (pTester->IsFFAPvP() && pTarget->IsFFAPvP())
             return true;
 
+        if (pTester->GetBGTeam() != pTarget->GetBGTeam())
+            return true;
+
         //= PvP states
         // Green/Blue (can't attack)
         if (pTester->GetTeam() == pTarget->GetTeam())
