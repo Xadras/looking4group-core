@@ -409,6 +409,8 @@ enum UnitState
     UNIT_STAT_NOT_MOVE        = (UNIT_STAT_ROOT | UNIT_STAT_STUNNED | UNIT_STAT_DIED | UNIT_STAT_DISTRACTED),
     UNIT_STAT_CANNOT_AUTOATTACK = (UNIT_STAT_LOST_CONTROL | UNIT_STAT_CASTING | UNIT_STAT_CASTING_NOT_MOVE),
     UNIT_STAT_CANNOT_TURN     = (UNIT_STAT_LOST_CONTROL | UNIT_STAT_ROTATING),
+    UNIT_STAT_MOVING = UNIT_STAT_ROAMING | UNIT_STAT_CHASE | UNIT_STAT_FOLLOW | UNIT_STAT_FLEEING,
+
     UNIT_STAT_ALL_STATE       = 0xffffffff
 };
 
@@ -1551,7 +1553,7 @@ class LOOKING4GROUP_IMPORT_EXPORT Unit : public WorldObject
 
         virtual bool SetPosition(float x, float y, float z, float ang, bool teleport = false);
 
-        void StopMoving();
+        void StopMoving(bool forceSendStop = false);
 
         void AddUnitMovementFlag(uint32 f) { m_movementInfo.AddMovementFlag(MovementFlags(f)); }
         void RemoveUnitMovementFlag(uint32 f) { m_movementInfo.RemoveMovementFlag(MovementFlags(f)); }
