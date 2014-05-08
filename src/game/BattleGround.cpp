@@ -1939,7 +1939,7 @@ void BattleGround::MorphCrossfactionPlayer(Player* player, bool action)
             break;
         }
     }
-    if (player->GetTeam() != player->GetBGTeam() && action)
+    if ((player->TeamForRace(player->getRace()) != player->GetBGTeam()) && action)
     {
         switch (urand(1,2))
         {
