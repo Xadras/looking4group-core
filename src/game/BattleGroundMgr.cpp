@@ -1309,7 +1309,7 @@ void BattleGroundMgr::BuildBattleGroundStatusPacket(WorldPacket *data, BattleGro
             *data << uint32(bg->GetMapId());                // map id
             *data << uint32(Time1);                         // time to bg auto leave, 0 at bg start, 120000 after bg end, milliseconds
             *data << uint32(Time2);                         // time from bg start, milliseconds
-            *data << uint8(0x1);                            // Lua_GetBattlefieldArenaFaction (bool)
+            *data << uint8(team == ALLIANCE ? 1 : 0);       // Lua_GetBattlefieldArenaFaction (bool)
             break;
         default:
             sLog.outLog(LOG_DEFAULT, "ERROR: Unknown BG status!");
