@@ -357,7 +357,7 @@ struct boss_high_astromancer_solarianAI : public ScriptedAI
             {
                 Phase = 3;
                 for (int i=0; i<=2; i++)
-                    for (int j=1; j<=4; j++)
+                    for (int j=1; j<=6; j++)
                         SummonMinion(SOLARIUM_AGENT, Portals[i][0], Portals[i][1], Portals[i][2]);
 
                 DoScriptText(SAY_SUMMON1, m_creature);
