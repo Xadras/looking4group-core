@@ -86,7 +86,7 @@ class ChatHandler
         virtual bool needReportToTarget(Player* chr) const;
 
         void SendGlobalSysMessage(const char *str);
-        void SendGlobalGMSysMessage(const char *str);
+        void SendGlobalGMSysMessage(const char *format, ...);
         void SendGlobalGMSysMessage(int32 entry, ...);
 
         bool SendGMMail(const char* pName, const char* msgSubject, const char* msgText);

@@ -883,11 +883,17 @@ void ChatHandler::SendGlobalGMSysMessage(int32 entry, ...)
     va_start(ap, entry);
     vsnprintf(str,1024,format, ap);
     va_end(ap);
-    SendGlobalGMSysMessage(str);
+    SendGlobalGMSysMessage(str, NULL);
 }
 
-void ChatHandler::SendGlobalGMSysMessage(const char *str)
+void ChatHandler::SendGlobalGMSysMessage(const char *format, ...)
 {
+    va_list ap;
+    char str [1024];
+    va_start(ap, format);
+    vsnprintf(str,1024,format, ap);
+    va_end(ap);
+    
     // Chat output
     WorldPacket data;
 
