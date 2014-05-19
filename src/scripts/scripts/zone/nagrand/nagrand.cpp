@@ -1568,6 +1568,88 @@ CreatureAI* GetAI_npc_fel_cannon(Creature *creature)
     return new npc_fel_cannonAI (creature);
 }
 
+enum Spells
+{
+	SPELL_feuer				= 29948,
+	Spell_feuerimmunity		= 7942
+};
+
+struct npc_erzuernte_FeuerseeleAI : public ScriptedAI
+{
+	npc_erzuernte_FeuerseeleAI(Creature *c) : ScriptedAI(c)
+		{ }
+
+		uint32 t_feuer;
+
+		void Reset()
+		{
+			t_feuer = 20000;
+		}
+
+		void EnterCombat(Unit* /*who*/)
+		{
+			me->CastSpell(me, Spell_feuerimmunity, false);
+			me->AddAura(SPELL_feuer, me->getVictim());
+		}
+		void UpdateAI (const uint32 diff)
+		{
+			if (!UpdateVictim())
+				return;
+			if (t_feuer <= diff)
+			{
+				me->AddAura(SPELL_feuer, me->getVictim());
+				t_feuer = 20000;
+			} else t_feuer -= diff;
+
+			DoMeleeAttackIfReady(); 
+		}
+};
+
+CreatureAI* GetAI_npc_erzuernte_Feuerseele(Creature *creature)
+{
+	return new npc_erzuernte_FeuerseeleAI(creature);
+}
+enum FrostSpells
+{
+	SPELL_wasserball		= 34425,
+	Spell_frostimmunity		= 7940
+};
+
+struct npc_WasserelementarAI : public ScriptedAI
+{
+	npc_WasserelementarAI(Creature *c) : ScriptedAI(c)
+		{ }
+		uint32 t_Wasser;
+		
+		void Reset()
+		{
+			t_Wasser = 4000;
+		}
+
+		void EnterCombat(Unit* /*who*/)
+		{
+			me->CastSpell(me, Spell_frostimmunity, false);
+			me->CastSpell(me->getVictim(), SPELL_wasserball, false);
+		}
+		void UpdateAI (const uint32 diff)
+		{
+			if (!UpdateVictim())
+				return;
+			if (t_Wasser <= diff)
+			{
+				me->CastSpell(me->getVictim(), SPELL_wasserball, false);
+				t_Wasser = 4000;
+			} else t_Wasser -= diff;
+			
+			DoMeleeAttackIfReady(); 
+		}
+};
+
+CreatureAI* GetAI_npc_Wasserelementar(Creature *creature)
+{
+    return new npc_WasserelementarAI(creature);
+}
+
 
 void AddSC_nagrand()
 {
@@ -1658,5 +1740,15 @@ void AddSC_nagrand()
     newscript = new Script;
     newscript->Name="npc_fel_cannon";
     newscript->GetAI = &GetAI_npc_fel_cannon;
+    newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name="npc_erzuernte_Feuerseele";
+    newscript->GetAI = &GetAI_npc_erzuernte_Feuerseele;
+    newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name="npc_Wasserelementar";
+    newscript->GetAI = &GetAI_npc_Wasserelementar;
     newscript->RegisterSelf();
 }
