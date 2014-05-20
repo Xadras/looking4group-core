@@ -690,7 +690,6 @@ void World::LoadConfigSettings(bool reload)
     m_configs[CONFIG_ALLOW_TWO_SIDE_ADD_FRIEND] = sConfig.GetBoolDefault("AllowTwoSide.AddFriend", false);
     m_configs[CONFIG_ALLOW_TWO_SIDE_TRADE] = sConfig.GetBoolDefault("AllowTwoSide.trade", false);
     m_configs[CONFIG_FAKE_WHO_LIST]        = sConfig.GetBoolDefault("Fake.WHO.List", false);
-    m_configs[CONFIG_FAKE_WHO_LIST_ZONESWITCHTIMER] = sConfig.GetIntDefault("Fake.WHO.List.ZoneSwitchTimer", 100000);
     m_configs[CONFIG_STRICT_PLAYER_NAMES]  = sConfig.GetIntDefault("StrictPlayerNames",  0);
     m_configs[CONFIG_STRICT_CHARTER_NAMES] = sConfig.GetIntDefault("StrictCharterNames", 0);
     m_configs[CONFIG_STRICT_PET_NAMES]     = sConfig.GetIntDefault("StrictPetNames",     0);
