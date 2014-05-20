@@ -237,11 +237,15 @@ void PetAI::UpdateAI(const uint32 diff)
     m_owner = me->GetCharmerOrOwner();
 
         if (me->isInCombat())
-        if (!me->getVictim() && (me->GetReactState() != REACT_PASSIVE) && me->GetCharmInfo()->HasCommandState(COMMAND_FOLLOW))
         {
-            Unit* victim = me->SelectNearestTarget(25.0f);
-            if (victim)
-                AttackStart(victim);
+            if (!me->getVictim() && (me->GetReactState() != REACT_PASSIVE) && me->GetCharmInfo()->HasCommandState(COMMAND_FOLLOW))
+            {
+                Unit* victim = me->SelectNearestTarget(25.0f);
+                if (victim && !victim->HasCCAura())
+                    AttackStart(victim);
+                else if (!m_owner->getVictim()->HasCCAura())
+                    AttackStart(m_owner->getVictim());
+            }
         }
 
     // quest support - Razorthorn Ravager, switch to ScriptedAI when charmed and not in combat

@@ -1435,6 +1435,10 @@ class LOOKING4GROUP_IMPORT_EXPORT Unit : public WorldObject
         AuraList const& GetAurasByType(AuraType type) const { return m_modAuras[type]; }
         void ApplyAuraProcTriggerDamage(Aura* aura, bool apply);
 
+        bool HasCCAura() {
+            return (HasAuraType(SPELL_AURA_MOD_CONFUSE) || HasAuraType(SPELL_AURA_MOD_FEAR) || HasAuraType(SPELL_AURA_MOD_STUN) ||
+                    HasAuraType(SPELL_AURA_MOD_ROOT)    || HasAuraType(SPELL_AURA_TRANSFORM));
+        }
         int32 GetTotalAuraModifier(AuraType auratype) const;
         float GetTotalAuraMultiplier(AuraType auratype) const;
         int32 GetMaxPositiveAuraModifier(AuraType auratype) const;
