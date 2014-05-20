@@ -1834,3 +1834,15 @@ AntiCheat.Enable = 1
 #        Default: 5000
 
 Creature.RestoreStateTimer = 5000
+
+###################################################################################################
+# CONFIG GM CHAT BLUE
+#
+#    Gm.Chat.Blue.Enable
+#        Description: Gm.Chat.Blue
+#        Default:     0 - (Disable)
+#                     1 - (Enable)
+#
+###################################################################################################
+Gm.Chat.Blue.Enable = 1
+
