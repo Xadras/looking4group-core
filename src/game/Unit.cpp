@@ -13282,19 +13282,7 @@ void Unit::SetConfused(bool apply)
 void Unit::SetStunned(bool apply)
 {
     if (apply)
-    {
         GetUnitStateMgr().PushAction(UNIT_ACTION_STUN);
-        if (GetTypeId() != TYPEID_PLAYER)
-        {
-            AddUnitMovementFlag(MOVEFLAG_ROOT);
-            ToCreature()->StopMoving();
-        }
-        else
-            SetStandState(UNIT_STAND_STATE_STAND);
-       
-        if (GetTypeId() != TYPEID_PLAYER)
-            RemoveUnitMovementFlag(MOVEFLAG_ROOT);
-    }
     else
         GetUnitStateMgr().DropAction(UNIT_ACTION_STUN);
 }
@@ -13302,22 +13290,9 @@ void Unit::SetStunned(bool apply)
 void Unit::SetRooted(bool apply)
 {
     if (apply)
-    {
         GetUnitStateMgr().PushAction(UNIT_ACTION_ROOT);
-        if (GetTypeId() != TYPEID_PLAYER)
-        {
-            AddUnitMovementFlag(MOVEFLAG_ROOT);
-            ToCreature()->StopMoving();
-        }
-    }
     else
-    {
         GetUnitStateMgr().DropAction(UNIT_ACTION_ROOT);
-        if (GetTypeId() != TYPEID_PLAYER)
-        {
-            RemoveUnitMovementFlag(MOVEFLAG_ROOT);
-        }
-    }
 }
 
 bool Unit::isInSanctuary()
