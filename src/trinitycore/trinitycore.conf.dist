@@ -1834,26 +1834,3 @@ AntiCheat.Enable = 1
 #        Default: 5000
 
 Creature.RestoreStateTimer = 5000
-
-###################################################################################################
-#  CONFIG FAKE WHO LIST
-#    Fake.WHO.List
-#        Add fake players to fill in WHO LIST (who is online list, "O" button) if there is less then
-#        49 real players online (need to set online=2 and account=5 in character database in order to work)
-#        Default: 0 (disabled)
-#                 1 (enabled)
-#
-###################################################################################################
-Fake.Who.List = 1
-
-###################################################################################################
-# CONFIG GM CHAT BLUE
-#
-#    Gm.Chat.Blue.Enable
-#        Description: Gm.Chat.Blue
-#        Default:     0 - (Disable)
-#                     1 - (Enable)
-#
-###################################################################################################
-Gm.Chat.Blue.Enable = 1
-

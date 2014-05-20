@@ -1382,12 +1382,6 @@ void Player::Update(uint32 update_diff, uint32 p_time)
             // m_nextSave reseted in SaveToDB call
             SaveToDB();
             sLog.outDetail("Player '%s' (GUID: %u) saved", GetName(), GetGUIDLow());
-
-            // If Fake WHO List system on then change player position with every SavePlayer Interval (usually 15 min)
-	        if (sWorld.getConfig(CONFIG_FAKE_WHO_LIST))
-            {
-		        RealmDataDatabase.PExecute("UPDATE characters SET online = 2 WHERE account = 2839");
-	        }
         }
         else
             m_nextSave -= update_diff;
