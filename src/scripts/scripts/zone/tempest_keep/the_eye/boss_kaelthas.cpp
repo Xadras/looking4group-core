@@ -261,7 +261,12 @@ struct advisorbase_ai : public ScriptedAI
         DoZoneInCombat(); // So we have now new shiny target list ;]
 
         if(Unit* target = SelectUnit(SELECT_TARGET_RANDOM, 0, 200, true))
+        {
             AttackStart(target);
+            if (me->GetEntry() != 20062)
+                me->GetMotionMaster()->MoveChase(target);
+        }
+
         CanDie = true;
         if (me->GetEntry() == 20062)    //capernian
             ((ScriptedAI*)(me->AI()))->StartAutocast();

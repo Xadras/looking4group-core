@@ -236,7 +236,7 @@ void ArenaTeam::LoadStatsFromDB(uint32 ArenaTeamId)
 void ArenaTeam::LoadMembersFromDB(uint32 ArenaTeamId)
 {
     //                                                                 0           1          2            3              4             5           6      7       8       9         10
-    QueryResultAutoPtr result = RealmDataDatabase.PQuery("SELECT member.guid, played_week, wons_week, played_season, wons_season, personal_rating, member.name, member.class, member.rating2, member.rating3, member.rating5 "
+    QueryResultAutoPtr result = RealmDataDatabase.PQuery("SELECT member.guid, played_week, wons_week, played_season, wons_season, personal_rating, chars.name, chars.class, hidden.rating2, hidden.rating3, hidden.rating5 "
                                                    "FROM arena_team_member member "
                                                    "INNER JOIN characters chars on member.guid = chars.guid "
                                                    "JOIN hidden_rating hidden ON member.guid = hidden.guid "
