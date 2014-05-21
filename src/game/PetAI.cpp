@@ -243,7 +243,7 @@ void PetAI::UpdateAI(const uint32 diff)
                 Unit* victim = me->SelectNearestTarget(25.0f);
                 if (victim && !(victim->isFeared() || victim->isFrozen() || victim->isInRoots() || victim->IsPolymorphed()))
                     AttackStart(victim);
-                else if (!(m_owner->getVictim()->isFeared() || m_owner->getVictim()->isFrozen() || m_owner->getVictim()->isInRoots() || m_owner->getVictim()->IsPolymorphed()))
+                else if (m_owner->getVictim() && !(m_owner->getVictim()->isFeared() || m_owner->getVictim()->isFrozen() || m_owner->getVictim()->isInRoots() || m_owner->getVictim()->IsPolymorphed()))
                     AttackStart(m_owner->getVictim());
             }
         }
