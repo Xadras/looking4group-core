@@ -2350,7 +2350,6 @@ class LOOKING4GROUP_EXPORT Player : public Unit
 
         uint32 m_team;
         uint32 m_nextSave;
-        uint32 m_UpdateFakePlayerZone;
         time_t m_speakTime;
         uint32 m_speakCount;
         uint32 m_dungeonDifficulty;

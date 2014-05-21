@@ -317,9 +317,6 @@ Player::Player (WorldSession *session): Unit(), m_reputationMgr(this), m_camera(
     // this must help in case next save after mass player load after server startup
     m_nextSave = urand(m_nextSave/2,m_nextSave*3/2);
 
-    m_UpdateFakePlayerZone = sWorld.getConfig(CONFIG_FAKE_WHO_LIST_ZONESWITCHTIMER);
-    m_UpdateFakePlayerZone = urand(m_UpdateFakePlayerZone/2,m_UpdateFakePlayerZone*3/2);
-
     clearResurrectRequestData();
 
     m_SpellModRemoveCount = 0;
@@ -1385,25 +1382,6 @@ void Player::Update(uint32 update_diff, uint32 p_time)
             // m_nextSave reseted in SaveToDB call
             SaveToDB();
             sLog.outDetail("Player '%s' (GUID: %u) saved", GetName(), GetGUIDLow());
-
-            // If Fake WHO List system on then change player position with every SavePlayer Interval (usually 15 min)
-	        if (sWorld.getConfig(CONFIG_FAKE_WHO_LIST))
-            {
-		        RealmDataDatabase.PExecute("UPDATE characters SET online = 2 WHERE account = 2839");
-                if (update_diff >= m_UpdateFakePlayerZone)
-                {
-                    //                 hellf,shat, terro,zangar, bw,  bk,  slave
-                    int32 zones [] = { 3483, 3703, 3519, 3521, 3562, 3713, 3717 };
-                    int32 zone_id = rand() % 7;
-                    zone_id = zones [zone_id];
-                    RealmDataDatabase.PExecute("UPDATE characters SET zone = %i WHERE account = 2839", zone_id);
-
-                    m_UpdateFakePlayerZone = sWorld.getConfig(CONFIG_FAKE_WHO_LIST_ZONESWITCHTIMER);
-                    m_UpdateFakePlayerZone = urand(m_UpdateFakePlayerZone/2,m_UpdateFakePlayerZone*3/2);
-                }
-                else
-                    m_UpdateFakePlayerZone -= update_diff;
-	        }
         }
         else
             m_nextSave -= update_diff;
@@ -2363,10 +2341,6 @@ void Player::SetGMVisible(bool on)
 
 bool Player::IsGroupVisiblefor (Player* p) const
 {
-    //In Duels Players shouldn't detect each other
-    if (p->duel && p->duel->startTime != 0 && p->duel->opponent == this)
-        return false;
-
     switch (sWorld.getConfig(CONFIG_GROUP_VISIBILITY))
     {
         default: return IsInSameGroupWith(p);

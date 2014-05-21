@@ -1836,20 +1836,6 @@ AntiCheat.Enable = 1
 Creature.RestoreStateTimer = 5000
 
 ###################################################################################################
-#  CONFIG FAKE WHO LIST
-#    Fake.WHO.List
-#        Add fake players to fill in WHO LIST (who is online list, "O" button) if there is less then
-#        49 real players online (need to set online=2 and account=2839 in character database in order to work)
-#        Default: 0 (disabled)
-#                 1 (enabled)
-#
-#    Fake.WHO.List.ZoneSwitchTimer
-#		Timer in miliseconds when FakePlayers can get into new zone
-###################################################################################################
-Fake.Who.List = 1
-Fake.WHO.List.ZoneSwitchTimer = 100000
-
-###################################################################################################
 # CONFIG GM CHAT BLUE
 #
 #    Gm.Chat.Blue.Enable

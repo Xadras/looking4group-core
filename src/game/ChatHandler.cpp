@@ -245,7 +245,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recv_data)
             return;
         }
     }
-    	
+
     if (_player->isGMChat() && sWorld.getConfig(CONFIG_GM_BLUE_CHAT_ENABLE) && !msg.empty())
 		msg = "|cff2998ff" + msg + "|r";
 
@@ -305,15 +305,6 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recv_data)
             Player *player = sObjectMgr.GetPlayer(to.c_str());
             if (!player || (!HasPermissions(PERM_GMT) && player->GetSession()->HasPermissions(PERM_GMT) && !player->isAcceptWhispers()))
             {
-                // If Fake WHO List system on then show player DND
-                if (sWorld.getConfig(CONFIG_FAKE_WHO_LIST))
-                {
-                    if (to == "Maxikingi" || to == "Sanitäter" || to == "Dimitrii" || to == "Likör" || to == "Roflkopter")
-                    {
-                        ChatHandler(this).PSendSysMessage(LANG_PLAYER_DND, to.c_str(), "Bitte nicht stören");
-                        return;
-                    }
-                }
                 WorldPacket data(SMSG_CHAT_PLAYER_NOT_FOUND, (to.size()+1));
                 data<<to;
                 SendPacket(&data);

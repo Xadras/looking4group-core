@@ -565,7 +565,7 @@ struct mob_ember_of_alarAI : public ScriptedAI
     void JustDied(Unit* killer)
     {
         m_creature->CastSpell(m_creature, SPELL_EMBER_BLAST, true);
-
+/*
         if(pInstance)
         {
             if(Creature* Alar = Creature::GetCreature((*m_creature), pInstance->GetData64(DATA_ALAR)))
@@ -581,6 +581,7 @@ struct mob_ember_of_alarAI : public ScriptedAI
                 }
             }
         }
+*/
     }
     void UpdateAI(const uint32 diff)
     {
