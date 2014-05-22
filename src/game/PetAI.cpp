@@ -43,6 +43,8 @@ PetAI::PetAI(Creature *c) : CreatureAI(c), i_tracker(TIME_INTERVAL_LOOK), m_forc
     m_AllySet.clear();
     m_owner = me->GetCharmerOrOwner();
 
+    targetHasCC = false;
+
     UpdateAllies();
 }
 
@@ -67,11 +69,14 @@ bool PetAI::targetHasInterruptableAura(Unit *target) const
     return false;
 }
 
-bool PetAI::_needToStop() const
+bool PetAI::_needToStop()
 {
     // This is needed for charmed creatures, as once their target was reset other effects can trigger threat
     if (me->isCharmed() && me->getVictim() == me->GetCharmer() ||
     (me->GetOwner() && me->GetOwner()->isInSanctuary() &&  me->getVictim()->GetCharmerOrOwnerPlayerOrPlayerItself()))
+        return true;
+
+    if (_CheckTargetCC(me->getVictim()) && !targetHasCC)
         return true;
 
     return targetHasInterruptableAura(me->getVictim()) || !me->canAttack(me->getVictim());
@@ -179,6 +184,7 @@ void PetAI::AddSpellForAutocast(uint32 spellID, Unit* target)
 
 void PetAI::AutocastPreparedSpells()
 {
+
     //found units to cast on to
     if (!m_targetSpellStore.empty())
     {
@@ -186,6 +192,26 @@ void PetAI::AutocastPreparedSpells()
 
         Spell* spell  = m_targetSpellStore[index].second;
         Unit*  target = m_targetSpellStore[index].first;
+
+        if (!m_creature->isInCombat())
+        {
+            switch (spell->GetSpellInfo()->Id)
+            {
+                //Spurt 1-3
+                case 23110:
+                case 23109:
+                case 23099:
+                //Sturzflug 1-3
+                case 23145:
+                case 23147:
+                case 23148:
+                //Wutgeheul 
+                case 24597:
+                    return;
+                    break;
+            }
+
+        }
 
         m_targetSpellStore.erase(m_targetSpellStore.begin() + index);
 
@@ -235,19 +261,7 @@ void PetAI::MovementInform(uint32 type, uint32 data)
 void PetAI::UpdateAI(const uint32 diff)
 {
     m_owner = me->GetCharmerOrOwner();
-
-        if (me->isInCombat())
-        {
-            if (!me->getVictim() && (me->GetReactState() != REACT_PASSIVE) && me->GetCharmInfo()->HasCommandState(COMMAND_FOLLOW))
-            {
-                Unit* victim = me->SelectNearestTarget(25.0f);
-                if (victim && !(victim->isFeared() || victim->isFrozen() || victim->isInRoots() || victim->IsPolymorphed()))
-                    AttackStart(victim);
-                else if (m_owner->getVictim() && !(m_owner->getVictim()->isFeared() || m_owner->getVictim()->isFrozen() || m_owner->getVictim()->isInRoots() || m_owner->getVictim()->IsPolymorphed()))
-                    AttackStart(m_owner->getVictim());
-            }
-        }
-
+    Unit* owner = m_creature->GetCharmerOrOwner();
     // quest support - Razorthorn Ravager, switch to ScriptedAI when charmed and not in combat
     if (me->GetEntry() == 24922 && me->isCharmed() && !me->isInCombat())
         me->NeedChangeAI = true;
@@ -264,45 +278,77 @@ void PetAI::UpdateAI(const uint32 diff)
             m_forceTimer -= diff;
     }
 
-    if (me->getVictim())
+    if (m_creature->getVictim())
     {
         if (_needToStop())
         {
+            sLog.outLog(LOG_DEFAULT,  "PetAI (guid = %u) is stopping attack.", m_creature->GetGUIDLow());
             _stopAttack();
             return;
         }
 
-        DoMeleeAttackIfReady();
-    }
-    else
-    {
-        if (me->isInCombat())
-        {
-            if (!me->GetOwner() || !me->GetOwner()->GetObjectGuid().IsPlayer())
-                _stopAttack();
-        }
-        else if (Unit* owner = me->GetOwner())
-        {
-            if (!me->HasReactState(REACT_PASSIVE) && !me->GetCharmInfo()->HasCommandState(COMMAND_STAY))
-            {
-                Unit* target = NULL;
-                if (owner->isInCombat())
-                    target = owner->getAttackerForHelper();
-                if (!target)
-                    target = me->getAttackerForHelper();
+        bool meleeReach = m_creature->IsWithinMeleeRange(m_creature->getVictim());
 
-                if (target)
-                    AttackStart(target);
+        if (m_creature->IsStopped() || meleeReach)
+        {
+            // required to be stopped cases
+            if (m_creature->IsStopped() && m_creature->IsNonMeleeSpellCasted(false))
+            {
+                if (m_creature->hasUnitState(UNIT_STAT_FOLLOW))
+                    m_creature->InterruptNonMeleeSpells(false);
+                else
+                    return;
             }
 
-            // we still do NOT have target, if follow command were appliend and we are NOT followin, reapply movegen :P
-            if (!me->getVictim() && me->GetCharmInfo()->HasCommandState(COMMAND_FOLLOW) && !me->hasUnitState(UNIT_STAT_FOLLOW))
-                me->GetMotionMaster()->MoveFollow(owner, PET_FOLLOW_DIST,PET_FOLLOW_ANGLE);
+            targetHasCC = _CheckTargetCC(me->getVictim());
+            // not required to be stopped case
+            DoMeleeAttackIfReady();
+            
+            if (!m_creature->getVictim())
+                return;
+
+            // if pet misses its target, it will also be the first in threat list
+            m_creature->getVictim()->AddThreat(m_creature, 1.0);
+
+            if (_needToStop())
+                _stopAttack();
+            }
+        }
+    else if (owner && m_creature->GetCharmInfo())
+    {
+        if (owner->isInCombat() && !(m_creature->HasReactState(REACT_PASSIVE) || m_creature->GetCharmInfo()->HasCommandState(COMMAND_STAY)))
+        {
+            Unit *target =NULL;
+            target = owner->getAttackerForHelper();
+            if (!target)
+            {
+                target = m_creature->getAttackerForHelper();
+            }
+            if (target){
+                AttackStart(target);
+            }
+            else
+            {
+                std::list<HostilReference*>& m_threatlist = m_creature->getThreatManager().getThreatList();
+                std::list<HostilReference*>::iterator itr;
+
+                for(itr = m_threatlist.begin(); itr != m_threatlist.end(); ++itr)
+                {
+                    Unit* pUnit = NULL;
+                    pUnit = Unit::GetUnit((*m_creature), (*itr)->getUnitGuid());
+                    if(pUnit && pUnit->isAlive())
+                    AttackStart(pUnit);
+                }
+            }
+        }
+        else if (m_creature->GetCharmInfo()->HasCommandState(COMMAND_FOLLOW))
+        {
+            if (!m_creature->hasUnitState(UNIT_STAT_FOLLOW))
+            {
+                m_creature->GetMotionMaster()->MoveFollow(owner, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
+            }
         }
     }
-
-    if (!me->GetCharmInfo())
-        return;
 
     if (!me->hasUnitState(UNIT_STAT_CASTING))
     {
@@ -475,3 +521,15 @@ void FelhunterAI::PrepareSpellForAutocast(uint32 spellID)
     else
         PetAI::PrepareSpellForAutocast(spellID);
 }
+
+bool PetAI::_CheckTargetCC(Unit *target)
+{
+    if (!target)
+        return false;
+
+    if (target->HasCCAura())
+        return true;
+
+    return false;
+}
+
