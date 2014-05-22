@@ -312,32 +312,7 @@ bool ItemUse_item_tame_beast_rods(Player *player, Item* _Item, SpellCastTargets 
     return true;
 }
 
-/*#####
-# item_yehkinyas_bramble
-#####*/
 
-bool ItemUse_item_yehkinyas_bramble(Player *player, Item* _Item, SpellCastTargets const& targets)
-{
-    if (player->GetQuestStatus(3520) == QUEST_STATUS_INCOMPLETE)
-    {
-        Unit * unit_target = targets.getUnitTarget();
-        if( unit_target &&
-            unit_target->GetTypeId()==TYPEID_UNIT &&
-            unit_target->isDead() &&
-                                                            // cast only on corpse 5307 or 5308
-            (unit_target->GetEntry()==5307 || unit_target->GetEntry()==5308) )
-        {
-            ((Creature*)unit_target)->RemoveCorpse();       // remove corpse for cancelling second use
-            return false;                                   // all ok
-        }
-    }
-    WorldPacket data(SMSG_CAST_FAILED, (4+2));              // prepare packet error message
-    data << uint32(10699);                                  // itemId
-    data << uint8(SPELL_FAILED_BAD_TARGETS);                // reason
-    player->GetSession()->SendPacket(&data);                // send message: Bad target
-    player->SendEquipError(EQUIP_ERR_NONE,_Item,NULL);      // break spell
-    return true;
-}
 /*#####
 # item_specific_target
 #####*/
@@ -385,6 +360,7 @@ bool ItemUse_item_specific_target(Player *player, Item* _Item, SpellCastTargets 
         case 23337: cEntry[0] = 16880; targetState = T_ALIVE; break;    // Cenarion Antidote
         case 29818: cEntry[0] = 20774; targetState = T_ALIVE; break;    // Energy Field Modulator
         case 13289: cEntry[0] = 10384; cEntry[1] = 10385; targetState = T_ALIVE; break;    // Egan's Blaster
+        case 10699: cEntry[0] = 5307;  cEntry[1] = 5308;  targetState = T_DEAD; break;  // Yehkinyas Bramble
     }
 
     if(uTarget && uTarget->GetTypeId() == TYPEID_UNIT)
@@ -597,11 +573,6 @@ void AddSC_item_scripts()
     newscript = new Script;
     newscript->Name="item_tame_beast_rods";
     newscript->pItemUse = &ItemUse_item_tame_beast_rods;
-    newscript->RegisterSelf();
-
-    newscript = new Script;
-    newscript->Name="item_yehkinyas_bramble";
-    newscript->pItemUse = &ItemUse_item_yehkinyas_bramble;
     newscript->RegisterSelf();
 
     newscript = new Script;
