@@ -184,7 +184,6 @@ void PetAI::AddSpellForAutocast(uint32 spellID, Unit* target)
 
 void PetAI::AutocastPreparedSpells()
 {
-
     //found units to cast on to
     if (!m_targetSpellStore.empty())
     {
@@ -205,12 +204,14 @@ void PetAI::AutocastPreparedSpells()
                 case 23145:
                 case 23147:
                 case 23148:
-                //Wutgeheul 
-                case 24597:
+                //Wutgeheul 1-4
+                case 24604:
+                case 24605:
+                case 24603:
+                case 24597:                
                     return;
                     break;
             }
-
         }
 
         m_targetSpellStore.erase(m_targetSpellStore.begin() + index);
