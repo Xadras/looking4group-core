@@ -111,10 +111,27 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
             switch (spellId)
             {
                 case REACT_PASSIVE:                         //passive
-                case REACT_DEFENSIVE:                       //recovery
-                case REACT_AGGRESSIVE:                      //activete
+                    if (Pet* pPet = pCharm->ToPet())
+                    {
+                        pPet->AttackStop();
+                        pPet->InterruptNonMeleeSpells(false);
+                        pPet->GetMotionMaster()->MoveFollow(pPet->GetCharmerOrOwner(), PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
+                    }
                     if (pCharm->GetTypeId() == TYPEID_UNIT)
+                    {
                         pCharm->ToCreature()->SetReactState(ReactStates(spellId));
+                    }
+                    break;
+                case REACT_DEFENSIVE:                       //recovery
+                    if (pCharm->GetTypeId() == TYPEID_UNIT)
+                    {
+                        pCharm->ToCreature()->SetReactState(ReactStates(spellId));
+                    }
+                    break;
+                case REACT_AGGRESSIVE:                      //activete
+                    if (pCharm->GetTypeId() == TYPEID_UNIT){
+                        pCharm->ToCreature()->SetReactState(ReactStates(spellId));
+                    }
                     break;
             }
             break;

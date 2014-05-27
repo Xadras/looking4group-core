@@ -57,7 +57,7 @@ class PetAI : public CreatureAI
         void UpdateMotionMaster();
 
         bool _isVisible(Unit *) const;
-        bool _needToStop(void) const;
+        bool _needToStop(void);
         void _stopAttack(void);
 
         void UpdateAllies();
@@ -68,8 +68,12 @@ class PetAI : public CreatureAI
         TimeTrackerSmall updateAlliesTimer;
         uint32 m_forceTimer;
 
+        bool targetHasCC;
+
         typedef std::pair<Unit*, Spell*> TargetSpellPair;
         std::vector<TargetSpellPair> m_targetSpellStore;
+
+        bool _CheckTargetCC(Unit *target);
 
         Unit* m_owner;              // pointer updated every UpdateAI call
 };
