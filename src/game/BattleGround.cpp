@@ -650,7 +650,7 @@ void BattleGround::EndBattleGround(uint32 winner)
         }
         else if (winner !=0)
         {
-            RewardMark(plr, sWorld.getConfig(CONFIG_BG_MARKS_LOOSER_COUNT));
+            RewardMark(plr, sWorld.getConfig(CONFIG_BG_MARKS_LOSER_COUNT));
         }
         else if (winner == 0)
         {
@@ -659,7 +659,7 @@ void BattleGround::EndBattleGround(uint32 winner)
                 //if(almost_winning_team == team)                    //player's team had more points
                 //    RewardMark(plr,ITEM_WINNER_COUNT);
                 //else
-                RewardMark(plr, sWorld.getConfig(CONFIG_BG_MARKS_LOOSER_COUNT));            // if scores were the same, each team gets 1 mark.
+                RewardMark(plr, sWorld.getConfig(CONFIG_BG_MARKS_LOSER_COUNT));            // if scores were the same, each team gets 1 mark.
             }
         }
 

@@ -1586,9 +1586,9 @@ Arena.EnableFakeWho.ForGuild = 0
 #              Default: 0 - disable
 #                       1 - enable
 #
-# Battlegroundmarks.*: How many marks BG Winner and looser should get when BG is finished?
+# Battlegroundmarks.*: amount of marks BG winner and loser get after BG is finished
 #				Default: 3 - winner
-#				Default: 1 - looser
+#				Default: 1 - loser
 #
 ###################################################################################################################
 
@@ -1596,7 +1596,7 @@ BattleGround.PrematureFinishTimer = 300000
 BattleGround.AnnounceStart = 0
 BattleGround.QueueInfo = 0
 Battlegroundmarks.Winner = 3
-Battlegroundmarks.Looser = 1
+Battlegroundmarks.Loser = 1
 
 ###################################################################################################################
 #
