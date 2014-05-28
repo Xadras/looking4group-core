@@ -1586,7 +1586,7 @@ Arena.EnableFakeWho.ForGuild = 0
 #              Default: 0 - disable
 #                       1 - enable
 #
-# Battlegroundmarks.*: How many marks BG winner and loser get when BG is finished?
+# Battlegroundmarks.*: amount of marks BG winner and loser get after BG is finished
 #				Default: 3 - winner
 #				Default: 1 - loser
 #
