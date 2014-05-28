@@ -60,12 +60,6 @@ enum BattleGroundMarks
     ITEM_EY_MARK_OF_HONOR           = 29024
 };
 
-enum BattleGroundMarksCount
-{
-    ITEM_WINNER_COUNT               = 3,
-    ITEM_LOSER_COUNT                = 1
-};
-
 enum BattleGroundSpells
 {
     SPELL_WAITING_FOR_RESURRECT     = 2584,                 // Waiting to Resurrect

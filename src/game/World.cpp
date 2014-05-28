@@ -594,7 +594,9 @@ void World::LoadConfigSettings(bool reload)
     }
 
     ///- Read other configuration items from the config file
-
+    
+    m_configs[CONFIG_BG_MARKS_WINNER_COUNT] = sConfig.GetIntDefault("Battlegroundmarks.Winner", 3);
+    m_configs[CONFIG_BG_MARKS_LOOSER_COUNT] = sConfig.GetIntDefault("Battlegroundmarks.Looser", 1);
     m_configs[CONFIG_AUTOBROADCAST_INTERVAL] = (sConfig.GetIntDefault("AutoBroadcast.Timer", 35)*MINUTE*1000);
     m_configs[CONFIG_GUILD_ANN_INTERVAL] = (sConfig.GetIntDefault("GuildAnnounce.Timer", 1)*MINUTE*1000);
     m_configs[CONFIG_GUILD_ANN_COOLDOWN] = (sConfig.GetIntDefault("GuildAnnounce.Cooldown", 60)*MINUTE);
