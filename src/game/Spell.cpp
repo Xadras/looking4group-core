@@ -4765,8 +4765,7 @@ bool Spell::CanAutoCast(Unit* target)
             }
             else
             {   
-                Aura* aura = target->GetAura(GetSpellInfo()->Id, j);
-                if (target->GetAuras().count(Unit::spellEffectPair(GetSpellInfo()->Id, j)) >= GetSpellInfo()->StackAmount && aura->GetAuraDuration() > 1000)
+                if (target->GetAuras().count(Unit::spellEffectPair(GetSpellInfo()->Id, j)) >= GetSpellInfo()->StackAmount)
                     return false;
             }
         }
