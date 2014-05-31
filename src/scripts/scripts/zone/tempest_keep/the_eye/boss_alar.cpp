@@ -75,7 +75,8 @@ struct boss_alarAI : public ScriptedAI
     boss_alarAI(Creature *c) : ScriptedAI(c)
     {
         pInstance = (ScriptedInstance*)c->GetInstanceData();
-        DefaultMoveSpeedRate = c->GetSpeedRate(MOVE_RUN);
+        //DefaultMoveSpeedRate = c->GetSpeedRate(MOVE_RUN);
+        DefaultMoveSpeedRate = 1.5;
         //m_creature->GetPosition(wLoc);
         wLoc.coord_x = 331;
         wLoc.coord_y = 0.01;
