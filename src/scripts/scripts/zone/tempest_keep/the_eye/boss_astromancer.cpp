@@ -349,7 +349,7 @@ struct boss_high_astromancer_solarianAI : public ScriptedAI
         }
         else if(Phase == 2)
         {
-            //10 seconds after Solarian disappears, 12 mobs spawn out of the three portals.
+            //10 seconds after Solarian disappears, 21 mobs spawn out of the three portals.
             m_creature->AttackStop();
             m_creature->StopMoving();
 
@@ -357,7 +357,7 @@ struct boss_high_astromancer_solarianAI : public ScriptedAI
             {
                 Phase = 3;
                 for (int i=0; i<=2; i++)
-                    for (int j=1; j<=6; j++)
+                    for (int j=1; j<=7; j++)
                         SummonMinion(SOLARIUM_AGENT, Portals[i][0], Portals[i][1], Portals[i][2]);
 
                 DoScriptText(SAY_SUMMON1, m_creature);
