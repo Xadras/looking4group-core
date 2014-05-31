@@ -434,6 +434,7 @@ struct boss_alarAI : public ScriptedAI
                     {
                         cur_wp = 4;
                         WaitEvent = WE_QUILL;
+                        m_creature->Yell("Denkt ihr tatsächlich, dass ihr eine Chance habt? Seht selbst...", LANG_UNIVERSAL, me->getVictimGUID());
                     }
                 }
 
