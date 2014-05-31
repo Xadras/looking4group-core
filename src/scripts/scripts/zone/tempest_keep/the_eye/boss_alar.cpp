@@ -127,8 +127,8 @@ struct boss_alarAI : public ScriptedAI
 
         cur_wp = 4;
         m_creature->SetDisplayId(m_creature->GetNativeDisplayId());
-        m_creature->SetSpeed(MOVE_RUN, 2.0);
-        m_creature->SetSpeed(MOVE_FLIGHT, 2.0);
+        m_creature->SetSpeed(MOVE_RUN, 1.5);
+        m_creature->SetSpeed(MOVE_FLIGHT, 1.5);
         m_creature->ApplySpellImmune(0, IMMUNITY_SCHOOL, SPELL_SCHOOL_MASK_FIRE, true);
         m_creature->SetWalk(false);
         m_creature->SetLevitate(true);
