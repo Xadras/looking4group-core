@@ -2142,7 +2142,7 @@ struct npc_protectorate_demolitionistAI : public npc_escortAI
                 switch (EventStage)
                 {
                     case 0:
-                        me->SummonCreature(NPC_ARCHON, 3875.69f, 2308.72f, 115.80f, 1.48f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 10000);
+                        me->SummonCreature(NPC_ARCHON, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()+1.0f, 1.48f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 10000);
                         EventTimer = 8000;
                         break;
                     case 1:
