@@ -76,8 +76,8 @@ bool PetAI::_needToStop()
     (me->GetOwner() && me->GetOwner()->isInSanctuary() &&  me->getVictim()->GetCharmerOrOwnerPlayerOrPlayerItself()))
         return true;
 
-    if (_CheckTargetCC(me->getVictim()) && !targetHasCC)
-        return true;
+    //if (_CheckTargetCC(me->getVictim()) && !targetHasCC)
+        //return true;
 
     return targetHasInterruptableAura(me->getVictim()) || !me->canAttack(me->getVictim());
 }
@@ -301,7 +301,7 @@ void PetAI::UpdateAI(const uint32 diff)
                     return;
             }
 
-            targetHasCC = _CheckTargetCC(me->getVictim());
+            //targetHasCC = _CheckTargetCC(me->getVictim());
             // not required to be stopped case
             DoMeleeAttackIfReady();
             

@@ -75,7 +75,8 @@ struct boss_alarAI : public ScriptedAI
     boss_alarAI(Creature *c) : ScriptedAI(c)
     {
         pInstance = (ScriptedInstance*)c->GetInstanceData();
-        DefaultMoveSpeedRate = c->GetSpeedRate(MOVE_RUN);
+        //DefaultMoveSpeedRate = c->GetSpeedRate(MOVE_RUN);
+        DefaultMoveSpeedRate = 1.5;
         //m_creature->GetPosition(wLoc);
         wLoc.coord_x = 331;
         wLoc.coord_y = 0.01;
@@ -127,8 +128,8 @@ struct boss_alarAI : public ScriptedAI
 
         cur_wp = 4;
         m_creature->SetDisplayId(m_creature->GetNativeDisplayId());
-        m_creature->SetSpeed(MOVE_RUN, 2.0);
-        m_creature->SetSpeed(MOVE_FLIGHT, 2.0);
+        m_creature->SetSpeed(MOVE_RUN, 1.5);
+        m_creature->SetSpeed(MOVE_FLIGHT, 1.5);
         m_creature->ApplySpellImmune(0, IMMUNITY_SCHOOL, SPELL_SCHOOL_MASK_FIRE, true);
         m_creature->SetWalk(false);
         m_creature->SetLevitate(true);
@@ -433,6 +434,7 @@ struct boss_alarAI : public ScriptedAI
                     {
                         cur_wp = 4;
                         WaitEvent = WE_QUILL;
+                        m_creature->Yell("Denkt ihr tatsaechlich, dass ihr eine Chance habt? Seht selbst...", LANG_UNIVERSAL, me->getVictimGUID());
                     }
                 }
 
