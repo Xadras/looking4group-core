@@ -431,7 +431,7 @@ struct npc_isla_starmaneAI : public npc_escortAI
     void Reset()
     {
         Completed = false;
-        me->setFaction(1660);
+        me->setFaction(113);
     }
 
     void EnterCombat(Unit* who){}
@@ -460,7 +460,7 @@ bool QuestAccept_npc_isla_starmane(Player* player, Creature* creature, Quest con
     {
         if (npc_escortAI* pEscortAI = CAST_AI(npc_isla_starmaneAI, creature->AI()))
             pEscortAI->Start(true, true, player->GetGUID(), quest);
-        creature->setFaction(113);
+        creature->setFaction(1660);
     }
     return true;
 }
