@@ -96,6 +96,32 @@ namespace Movement
         return move_spline.Duration();
     }
 
+    void MoveSplineInit::Stop()
+    {
+        MoveSpline& move_spline = *unit.movespline;
+
+        // No need to stop if we are not moving
+        if (move_spline.Finalized())
+            return;
+
+        Location loc;
+            loc.x = unit.GetPositionX();
+            loc.y = unit.GetPositionY();
+            loc.z = unit.GetPositionZ();
+            loc.orientation = unit.GetOrientation();
+        
+
+        args.flags = MoveSplineFlag::Done;
+        unit.m_movementInfo.RemoveMovementFlag(MOVEFLAG_SPLINE_ENABLED);
+        unit.m_movementInfo.RemoveMovementFlag(MOVEFLAG_FORWARD);
+        move_spline.Initialize(args);
+
+        WorldPacket data(SMSG_MONSTER_MOVE, 64);
+        data << unit.GetPackGUID();
+        PacketBuilder::WriteMonsterMove(move_spline, data);
+        unit.BroadcastPacket(&data,true);
+    }
+
     MoveSplineInit::MoveSplineInit(Unit& m) : unit(m)
     {
         // mix existing state into new

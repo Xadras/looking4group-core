@@ -133,6 +133,14 @@ namespace Movement
             WriteLinearPath(spline, data);
     }
 
+    void PacketBuilder::WriteStopMovement(const MoveSpline& move_spline, WorldPacket& data)
+    {
+        data << uint8(0);                                       // sets/unsets MOVEMENTFLAG2_UNK7 (0x40)
+        data << move_spline.ComputePosition();
+        data << move_spline.GetId();
+        data << uint8(MonsterMoveStop);
+    }
+
     void PacketBuilder::WriteCreate(const MoveSpline& move_spline, ByteBuffer& data)
     {
         //WriteClientStatus(mov,data);
