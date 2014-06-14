@@ -11543,7 +11543,7 @@ void Unit::StopMoving(bool forceSendStop /*=false*/)
     if (IsStopped() && !forceSendStop)
         return;
 
-    if (forceSendStop)
+    if (!forceSendStop)
  	{
  	    Movement::Location loc = movespline->ComputePosition();
  	    movespline->_Interrupt();
