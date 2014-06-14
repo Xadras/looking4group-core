@@ -42,6 +42,7 @@ EndScriptData */
 #define SPELL_SUMMON_LIQUID_FIRE    (HeroicMode?30928:23971)
 #define SPELL_BELLOW_ROAR           39427
 #define SPELL_REVENGE               (HeroicMode?40392:19130)
+#define SPELL_BLAZE                 (HeroicMode?32492:30927)
 #define SPELL_KIDNEY_SHOT           30621
 #define SPELL_FIRE_NOVA_VISUAL      19823
 #define SPELL_SUMMON_VAZRUDEN       30717
@@ -77,13 +78,10 @@ struct boss_vazruden_the_heraldAI : public ScriptedAI
     uint32 ConeOfFireTimer;
     uint32 BellowingRoarTimer;
     uint32 checktimer;
-    uint32 CastTimer;
     uint32 FlyTimer;
-    uint32 SpawnCounter;
     uint64 PlayerGUID;
     uint64 VazrudenGUID;
     uint64 VictimGUID;
-    uint64 SummonedGUID;
 
     void Reset()
     {
@@ -98,14 +96,11 @@ struct boss_vazruden_the_heraldAI : public ScriptedAI
         PlayerGUID = 0;
         VazrudenGUID = 0;
         VictimGUID = 0;
-        SummonedGUID = 0;
         checktimer = 0;
-        CastTimer = 0;
         FireballTimer = 0;
         ConeOfFireTimer = 1200+rand()%3000;
         BellowingRoarTimer = 1800+rand()%3000;
         FlyTimer = 45000+rand()%3000;
-        SpawnCounter = 0;
         me->SetLevitate(true);
         me->SetSpeed(MOVE_FLIGHT, 1.0f);
         me->GetMotionMaster()->MovePath(PATH_ENTRY, true);
@@ -114,15 +109,6 @@ struct boss_vazruden_the_heraldAI : public ScriptedAI
         {
             Vazruden->SetLootRecipient(NULL);
             Vazruden->RemoveCorpse();
-        }
-
-        for (int i = 0; i < SpawnCounter; i++)
-        {
-            Unit *HaveToKill = FindCreature(ENTRY_LIQUID_FIRE, 150, me);
-            if (!HaveToKill)
-                break;
-            else
-                HaveToKill->ToCreature()->DisappearAndDie();
         }
     }
 
@@ -217,11 +203,7 @@ struct boss_vazruden_the_heraldAI : public ScriptedAI
 
     void SpellHitTarget(Unit* target, const SpellEntry* entry)
     {
-        if (target && entry->Id == SPELL_FIREBALL)
-        {
-            me->SummonCreature(ENTRY_LIQUID_FIRE,target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(),target->GetOrientation(),TEMPSUMMON_TIMED_DESPAWN,30000);
-            SpawnCounter++;
-        }
+
     }
 
     void JustSummoned(Creature* summoned)
@@ -237,8 +219,6 @@ struct boss_vazruden_the_heraldAI : public ScriptedAI
             case ENTRY_LIQUID_FIRE:
                 summoned->SetLevel(me->getLevel());
                 summoned->setFaction(me->getFaction());
-                SummonedGUID = summoned->GetGUID();
-                CastTimer = 1000;
                 break;
         }
     }
@@ -250,7 +230,7 @@ struct boss_vazruden_the_heraldAI : public ScriptedAI
 
         DoMoveToCombat();
     }
-    
+
     void SentryDownBy(Unit* who)
     {
         if (SentryDown)
@@ -282,21 +262,7 @@ struct boss_vazruden_the_heraldAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CastTimer)
-        {
-            if (CastTimer <= diff)
-            {
-                if (Creature* trigger = me->GetCreature(SummonedGUID))
-                {
-                    trigger->CastSpell(trigger,SPELL_FIRE_NOVA_VISUAL,true);
-                    trigger->CastSpell(trigger,SPELL_SUMMON_LIQUID_FIRE,true);
-                }
-
-                CastTimer = 0;
-            }
-            else
-                CastTimer -= diff;
-        }
+       
 
         switch (phase)
         {
@@ -588,4 +554,3 @@ void AddSC_boss_vazruden_the_herald()
     newscript->GetAI = &GetAI_mob_hellfire_sentry;
     newscript->RegisterSelf();
 }
-
