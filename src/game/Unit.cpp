@@ -11547,7 +11547,7 @@ void Unit::StopMoving(bool forceSendStop /*=false*/)
         return;
 
     DisableSpline();
-
+    ToCreature()->Say("hold", LANG_UNIVERSAL, GetGUID());
     Movement::MoveSplineInit init(*this);
     init.SetFacing(GetOrientation());
     init.Launch();
@@ -11562,6 +11562,7 @@ void Unit::InterruptMoving(bool forceSendStop /*=false*/)
  	    movespline->_Interrupt();
  	    Relocate(loc.x, loc.y, loc.z, loc.orientation);
  	    isMoving = true;
+        ToCreature()->Say("hold", LANG_UNIVERSAL, GetGUID());
  	}
  	
  	StopMoving(forceSendStop || isMoving);
