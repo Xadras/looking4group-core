@@ -47,7 +47,7 @@ void ConfusedMovementGenerator<UNIT>::Reset(UNIT &u)
 template<class UNIT>
 void ConfusedMovementGenerator<UNIT>::Interrupt(UNIT &unit)
 {
-    InterruptMoving();
+    unit.InterruptMoving();
     unit.clearUnitState(UNIT_STAT_CONFUSED);
 }
 
