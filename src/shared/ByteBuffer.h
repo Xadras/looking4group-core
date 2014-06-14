@@ -496,7 +496,6 @@ class ByteBuffer
             }
             sLog.outDebugInLine("\n");
         }
-    private:
         // limited for internal use because can "append" any unexpected type (like pointer and etc) with hard detection problem
         template <typename T> void append(T value)
         {

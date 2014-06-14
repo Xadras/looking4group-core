@@ -11540,26 +11540,19 @@ void Unit::StopMoving(bool forceSendStop /*=false*/)
 {
     clearUnitState(UNIT_STAT_MOVING);
 
-    if (IsStopped() && !forceSendStop)
-        return;
+    // send explicit stop packet
+    // rely on vmaps here because for example stormwind is in air
+    //float z = MapManager::Instance().GetBaseMap(GetMapId())->GetHeight(GetPositionX(), GetPositionY(), GetPositionZ(), true);
+    //if (fabs(GetPositionZ() - z) < 2.0f)
+    //    Relocate(GetPositionX(), GetPositionY(), z);
+    Relocate(GetPositionX(), GetPositionY(), GetPositionZ());
 
-    if (forceSendStop)
- 	{
- 	    Movement::Location loc = movespline->ComputePosition();
- 	    movespline->_Interrupt();
- 	    Relocate(loc.x, loc.y, loc.z, loc.orientation);
-        ToCreature()->Say("holding me", LANG_UNIVERSAL, GetGUID());
- 	}
-
-    if (!IsInWorld())
-        return;
-
-    DisableSpline();
     SendMonsterStop();
-    ToCreature()->Say("holder", LANG_UNIVERSAL, GetGUID());
-    Movement::MoveSplineInit init(*this);
-    init.SetFacing(GetOrientation());
-    init.Stop();
+
+    // update position and orientation;
+    WorldPacket data;
+    BuildHeartBeatMsg(&data);
+    BroadcastPacket(&data, false);
 }
 
 void Unit::InterruptMoving(bool forceSendStop /*=false*/)

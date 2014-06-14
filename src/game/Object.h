@@ -518,6 +518,8 @@ class LOOKING4GROUP_IMPORT_EXPORT WorldObject : public Object//, public WorldLoc
         float GetAngle(const float x, const float y) const;
         bool HasInArc(const float arcangle, WorldObject const* obj) const;
 
+        void BuildHeartBeatMsg(WorldPacket *data) const;
+
         virtual void CleanupsBeforeDelete(); // used in destructor or explicitly before mass creature delete to remove cross-references to already deleted units
 
         // method used to broadcast packets to all players around object

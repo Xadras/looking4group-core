@@ -1495,6 +1495,23 @@ void WorldObject::BroadcastPacketExcept(WorldPacket* data, Player* except)
     GetMap()->BroadcastPacketExcept(this, data, except);
 }
 
+void WorldObject::BuildHeartBeatMsg(WorldPacket *data) const {
+    //Heartbeat message cannot be used for non-units
+    if (GetTypeId() != TYPEID_UNIT)
+        return;
+
+    data->Initialize(MSG_MOVE_HEARTBEAT, 32);
+    data->append(GetPackGUID());
+    *data << uint32(((Unit*)this)->GetUnitMovementFlags()); // movement flags
+    *data << uint8(0); // 2.3.0
+    *data << getMSTime(); // time
+    *data << m_positionX;
+    *data << m_positionY;
+    *data << m_positionZ;
+    *data << m_orientation;
+    *data << uint32(0);
+}
+
 void WorldObject::SendObjectDeSpawnAnim(uint64 guid)
 {
     WorldPacket data(SMSG_GAMEOBJECT_DESPAWN_ANIM, 8);
