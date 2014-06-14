@@ -11558,7 +11558,7 @@ void Unit::StopMoving(bool forceSendStop /*=false*/)
     ToCreature()->Say("holder", LANG_UNIVERSAL, GetGUID());
     Movement::MoveSplineInit init(*this);
     init.SetFacing(GetOrientation());
-    init.Launch();
+    init.Stop();
 }
 
 void Unit::InterruptMoving(bool forceSendStop /*=false*/)
