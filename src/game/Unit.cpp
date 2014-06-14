@@ -11543,11 +11543,19 @@ void Unit::StopMoving(bool forceSendStop /*=false*/)
     if (IsStopped() && !forceSendStop)
         return;
 
+    if (forceSendStop)
+ 	{
+ 	    Movement::Location loc = movespline->ComputePosition();
+ 	    movespline->_Interrupt();
+ 	    Relocate(loc.x, loc.y, loc.z, loc.orientation);
+        ToCreature()->Say("holding me", LANG_UNIVERSAL, GetGUID());
+ 	}
+
     if (!IsInWorld())
         return;
 
     DisableSpline();
-    ToCreature()->Say("hold", LANG_UNIVERSAL, GetGUID());
+    ToCreature()->Say("holder", LANG_UNIVERSAL, GetGUID());
     Movement::MoveSplineInit init(*this);
     init.SetFacing(GetOrientation());
     init.Launch();
