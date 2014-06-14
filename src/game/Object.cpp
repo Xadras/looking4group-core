@@ -1504,7 +1504,7 @@ void WorldObject::BuildHeartBeatMsg(WorldPacket *data) const {
     data->append(GetPackGUID());
     *data << uint32(((Unit*)this)->GetUnitMovementFlags()); // movement flags
     *data << uint8(0); // 2.3.0
-    *data << getMSTime(); // time
+    *data << WorldTimer::getMSTime(); // time
     *data << m_positionX;
     *data << m_positionY;
     *data << m_positionZ;
