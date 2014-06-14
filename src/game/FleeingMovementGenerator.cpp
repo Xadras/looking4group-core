@@ -110,7 +110,7 @@ void FleeingMovementGenerator<UNIT>::Finalize(UNIT &unit)
 template<class UNIT>
 void FleeingMovementGenerator<UNIT>::Interrupt(UNIT &unit)
 {
-    unit.StopMoving();
+    unit.InterruptMoving();
     unit.clearUnitState(UNIT_STAT_FLEEING);
 }
 

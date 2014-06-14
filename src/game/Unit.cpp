@@ -11543,7 +11543,7 @@ void Unit::StopMoving(bool forceSendStop /*=false*/)
     if (IsStopped() && !forceSendStop)
         return;
 
-    if (!IsInWorld() || IsStopped())
+    if (!IsInWorld())
         return;
 
     DisableSpline();
@@ -11551,6 +11551,20 @@ void Unit::StopMoving(bool forceSendStop /*=false*/)
     Movement::MoveSplineInit init(*this);
     init.SetFacing(GetOrientation());
     init.Launch();
+}
+
+void Unit::InterruptMoving(bool forceSendStop /*=false*/)
+{
+    bool isMoving = false;
+ 	if (!movespline->Finalized())
+ 	{
+ 	    Movement::Location loc = movespline->ComputePosition();
+ 	    movespline->_Interrupt();
+ 	    Relocate(loc.x, loc.y, loc.z, loc.orientation);
+ 	    isMoving = true;
+ 	}
+ 	
+ 	StopMoving(forceSendStop || isMoving);
 }
 
 bool Unit::IsStopped() const
