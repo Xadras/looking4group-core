@@ -99,6 +99,7 @@ void WorldSession::HandleGossipSelectOptionOpcode(WorldPacket & recv_data)
 
     Creature *unit = NULL;
     GameObject *go = NULL;
+    Item* item = NULL;
 
     uint32 sender = _player->PlayerTalkClass->GossipOptionSender(option);
     uint32 action = _player->PlayerTalkClass->GossipOptionAction(option);
@@ -121,6 +122,15 @@ void WorldSession::HandleGossipSelectOptionOpcode(WorldPacket & recv_data)
             return;
         }
     }
+    else if (IS_ITEM_GUID(guid))
+    {
+        item = _player->GetItemByGuid(guid);
+        if (!item || _player->IsBankPos(item->GetPos()))
+        {
+            sLog.outDebug("WORLD: HandleGossipSelectOptionOpcode - Item (GUID: %u) not found.", uint32(GUID_LOPART(guid)));
+            return;
+        }
+    }
     else
     {
         sLog.outDebug("WORLD: HandleGossipSelectOptionOpcode - unsupported GUID type for highguid %u. lowpart %u.", uint32(GUID_HIPART(guid)), uint32(GUID_LOPART(guid)));
@@ -135,6 +145,10 @@ void WorldSession::HandleGossipSelectOptionOpcode(WorldPacket & recv_data)
     {
         if (!sScriptMgr.OnGossipSelect(_player, unit, sender, action, code.empty() ? NULL : code.c_str()))
             unit->OnGossipSelect(_player, option);
+    }
+    else if (item)
+    {
+        sScriptMgr.OnGossipSelect(_player, item, sender, action, code.empty() ? NULL : code.c_str());
     }
     else
         sScriptMgr.OnGossipSelect(_player, go, sender, action, code.empty() ? NULL : code.c_str());

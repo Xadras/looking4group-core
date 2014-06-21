@@ -530,6 +530,32 @@ bool ItemUse_item_maxskill(Player *player, Item* _Item, SpellCastTargets const& 
         return false;
 }
 
+bool ItemUse_item_lootbox(Player *player, Item* _Item, SpellCastTargets const& targets)
+{
+        player->PlayerTalkClass->ClearMenus();                              // Clears old options
+        player->ADD_GOSSIP_ITEM(0, "Morph", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+        player->ADD_GOSSIP_ITEM(0, "Demorph", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+        player->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, _Item->GetGUID());
+        return true;
+}
+
+bool ItemGossipSelect_item_lootbox(Player* pPlayer, Item* pItem, uint32 Sender, uint32 action)
+{
+    switch(action)
+    {
+        case GOSSIP_ACTION_INFO_DEF+1:
+            pPlayer->SetDisplayId(999);
+            break;
+        case GOSSIP_ACTION_INFO_DEF+2:
+            pPlayer->DeMorph();
+            break;
+    }
+
+    pPlayer->CLOSE_GOSSIP_MENU();
+    return true;
+}
+
+//Registrations
 void AddSC_item_scripts()
 {
     Script *newscript;
@@ -598,6 +624,13 @@ void AddSC_item_scripts()
     newscript = new Script;
     newscript->Name="item_maxskill";
     newscript->pItemUse = &ItemUse_item_maxskill;
+    newscript->RegisterSelf();
+
+    
+    newscript = new Script;
+    newscript->Name="item_lootbox";
+    newscript->pItemUse = &ItemUse_item_lootbox;
+    newscript->pGossipSelectItem =  &ItemGossipSelect_item_lootbox;
     newscript->RegisterSelf();
 }
 
