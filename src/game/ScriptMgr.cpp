@@ -767,14 +767,6 @@ bool ScriptMgr::OnGossipSelect(Player* pPlayer, GameObject* pGameObject, uint32 
         return m_pOnGOGossipSelect != NULL && m_pOnGOGossipSelect(pPlayer, pGameObject, sender, action);
 }
 
-bool ScriptMgr::OnGossipSelect(Player* pPlayer, Item* pItem, uint32 sender, uint32 action, const char* code)
-{
-    if (code)
-        return m_pOnGOGossipSelectWithCode != NULL && m_pOnItemGossipSelectWithCode(pPlayer, pItem, sender, action, code);
-    else
-        return m_pOnGOGossipSelect != NULL && m_pOnItemGossipSelect(pPlayer, pItem, sender, action);
-}
-
 bool ScriptMgr::OnQuestAccept(Player* pPlayer, Creature* pCreature, Quest const* pQuest)
 {
     return m_pOnQuestAccept != NULL && m_pOnQuestAccept(pPlayer, pCreature, pQuest);
