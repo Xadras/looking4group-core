@@ -531,11 +531,11 @@ bool ItemUse_item_maxskill(Player *player, Item* _Item, SpellCastTargets const& 
 }
 
 bool ItemUse_item_lootbox(Player *player, Item* _Item, SpellCastTargets const& targets)
-{                          // Clears old options
-    player->Say("muh", LANG_UNIVERSAL);
+{
+        player->PlayerTalkClass->ClearMenus();                              // Clears old options
         player->ADD_GOSSIP_ITEM(0, "Morph", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
         player->ADD_GOSSIP_ITEM(0, "Demorph", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
-        player->SEND_GOSSIP_MENU(50010, _Item->GetGUID());
+        player->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, _Item->GetGUID());
         return true;
 }
 
