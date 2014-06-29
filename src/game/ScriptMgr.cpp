@@ -767,14 +767,6 @@ bool ScriptMgr::OnGossipSelect(Player* pPlayer, GameObject* pGameObject, uint32 
         return m_pOnGOGossipSelect != NULL && m_pOnGOGossipSelect(pPlayer, pGameObject, sender, action);
 }
 
-bool ScriptMgr::OnGossipSelect(Player* pPlayer, Item* pItem, uint32 sender, uint32 action, const char* code)
-{
-    if (code)
-        return m_pOnItemGossipSelectWithCode != NULL && m_pOnItemGossipSelectWithCode(pPlayer, pItem, sender, action, code);
-    else
-        return m_pOnItemGossipSelect != NULL && m_pOnItemGossipSelect(pPlayer, pItem, sender, action);
-}
-
 bool ScriptMgr::OnQuestAccept(Player* pPlayer, Creature* pCreature, Quest const* pQuest)
 {
     return m_pOnQuestAccept != NULL && m_pOnQuestAccept(pPlayer, pCreature, pQuest);
@@ -899,10 +891,8 @@ bool ScriptMgr::LoadScriptLibrary(const char* libName)
     GetScriptHookPtr(m_pOnGossipHello,              "GossipHello");
     GetScriptHookPtr(m_pOnGossipSelect,             "GossipSelect");
     GetScriptHookPtr(m_pOnGOGossipSelect,           "GOGossipSelect");
-    GetScriptHookPtr(m_pOnItemGossipSelect,         "ItemGossipSelect");
     GetScriptHookPtr(m_pOnGossipSelectWithCode,     "GossipSelectWithCode");
     GetScriptHookPtr(m_pOnGOGossipSelectWithCode,   "GOGossipSelectWithCode");
-    GetScriptHookPtr(m_pOnItemGossipSelectWithCode, "ItemGossipSelectWithCode");
     GetScriptHookPtr(m_pOnQuestAccept,              "QuestAccept");
     GetScriptHookPtr(m_pOnGOQuestAccept,            "GOQuestAccept");
     GetScriptHookPtr(m_pOnItemQuestAccept,          "ItemQuestAccept");
@@ -957,10 +947,8 @@ void ScriptMgr::UnloadScriptLibrary()
     m_pOnGossipHello            = NULL;
     m_pOnGossipSelect           = NULL;
     m_pOnGOGossipSelect         = NULL;
-    m_pOnItemGossipSelect       = NULL;
     m_pOnGossipSelectWithCode   = NULL;
     m_pOnGOGossipSelectWithCode = NULL;
-    m_pOnItemGossipSelectWithCode = NULL;
     m_pOnQuestAccept            = NULL;
     m_pOnGOQuestAccept          = NULL;
     m_pOnItemQuestAccept        = NULL;
