@@ -1555,6 +1555,9 @@
     <ClCompile Include="..\..\src\scripts\scripts\custom\enchant_npc.cpp">
       <Filter>Scripts\custom</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\scripts\scripts\custom\lootbox.cpp">
+      <Filter>Scripts\custom</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\scripts\scripts\creature\simple_ai.h">
