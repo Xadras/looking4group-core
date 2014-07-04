@@ -4939,6 +4939,9 @@ void Spell::EffectSummonPet(uint32 i)
     std::string new_name=sObjectMgr.GeneratePetName(petentry);
     if (!new_name.empty())
         pet->SetName(new_name);
+
+    if (pet->isDead() && (pet->getPetType() == HUNTER_PET) && (owner->GetTypeId() == TYPEID_PLAYER))
+        ((Player*)owner)->PetSpellInitialize();
 }
 
 void Spell::EffectLearnPetSpell(uint32 i)
