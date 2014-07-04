@@ -7671,7 +7671,7 @@ void Spell::EffectSummonDeadPet(uint32 /*i*/)
     pet->SetHealth(uint32(pet->GetMaxHealth()*(float(damage)/100)));
 
     pet->SavePetToDB(PET_SAVE_AS_CURRENT);
-    _player->Say("/dance", LANG_UNIVERSAL);
+    pet->SetReactState(REACT_PASSIVE);
 }
 
 void Spell::EffectDestroyAllTotems(uint32 /*i*/)
