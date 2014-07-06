@@ -20796,8 +20796,24 @@ float Player::GetXPRate(Rates rate)
 {
     if (sWorld.getConfig(CONFIG_ENABLE_CUSTOM_XP_RATES) && GetSession()->IsAccountFlagged(ACC_BLIZZLIKE_RATES))
         return 1.0f;
+    else if (sWorld.getConfig(CONFIG_ENABLE_CUSTOM_XP_RATES) && GetSession()->IsAccountFlagged(ACC_CUSTOM_XP_RATE_3))
+        return 3.0f;
+    
+    if (getLevel() <= 10)
+        return (sWorld.getRate(Rates(rate)))+7.0f;
+    else if (getLevel() <= 20)
+        return (sWorld.getRate(Rates(rate)))+6.0f;
+    else if (getLevel() <= 30)
+        return (sWorld.getRate(Rates(rate)))+5.0f;
+    else if (getLevel() <= 40)
+        return (sWorld.getRate(Rates(rate)))+4.0f;
+    else if (getLevel() <= 50)
+        return (sWorld.getRate(Rates(rate)))+2.0f;
+    else if (getLevel() < 58)
+        return (sWorld.getRate(Rates(rate)))+1.0f;
     else
         return sWorld.getRate(Rates(rate));
+
 }
 
 uint32 Player::CalculateTalentsPoints() const

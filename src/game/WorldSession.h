@@ -71,6 +71,7 @@ enum AccountFlags
     ACC_HIDE_BONES          = 0x0010,   // client won't show bones created from corpses
     ACC_DISABLED_BGANN      = 0x0020,   // BG start announce will be disabled for this account
     ACC_DISABLED_BROADCAST  = 0x0040,   // Broadcast accounces will be disabled for this account
+    ACC_CUSTOM_XP_RATE_3    = 0x0080    // enables 3x blizzlike rates for account. ex: XP, QXP etc
 };
 
 enum PartyOperation
