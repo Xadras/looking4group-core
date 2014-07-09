@@ -3653,8 +3653,7 @@ bool ChatHandler::HandleLookupPlayerIpListCommand(const char* /*args*/)
         "WHERE EXISTS ("
             "SELECT account_id FROM account Dup "
             "WHERE account.last_ip = Dup.last_ip AND account.account_id <> Dup.account_id "
-            "AND account.online ='1' "
-            "AND account.username NOT LIKE '%-2' AND Dup.username NOT LIKE '%-2') "
+            "AND account.online ='1') "
         "AND NOT EXISTS ("
             "SELECT acc_id FROM account_multi WHERE account.account_id = account_multi.acc_id) "
         "ORDER BY last_ip;");

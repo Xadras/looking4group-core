@@ -20836,26 +20836,7 @@ void Player::InterruptTaxiFlying()
 
 uint8 Player::GetValidForPush()
 {
-// return: 1 = zu hohes level; 2 = bereits zu viele auf zu hohem level; 3 = alles okay, gib feuer; 4 = second account, nix machen
-    
-    //check if second account
-    uint32 acc_id = sObjectMgr.GetPlayerAccountIdByGUID(GetGUID());
-    std::string acc_name = "";
-
-    QueryResultAutoPtr result = AccountsDatabase.PQuery("SELECT username FROM account WHERE account_id = %u", acc_id);
-    if (result)
-    {
-        Field* fields = result->Fetch();
-        acc_name = fields[0].GetCppString();
-
-        if (acc_name != "")
-        {
-            std::size_t found = acc_name.find("-2");
-            if (found!=std::string::npos)
-                return 4;
-        }
-    }
-
+// return: 1 = zu hohes level; 2 = bereits zu viele auf zu hohem level; 3 = alles okay, gib feuer
     if (getLevel() >= 60)
     {
         QueryResultAutoPtr result = RealmDataDatabase.PQuery("SELECT guid FROM characters WHERE account in (SELECT account FROM characters WHERE guid = '%u')", GUID_LOPART(GetGUID()));

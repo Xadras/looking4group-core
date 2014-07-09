@@ -95,12 +95,6 @@ bool GossipSelect_custom_gossip_codebox(Player* Player, Creature* Creature, uint
                     Player->PlayerTalkClass->SendGossipMenu(30009, Creature->GetGUID());
                     return true;
                 }
-                case 4: // Second Account
-                {
-                    Player->ADD_GOSSIP_ITEM(0, "Schliessen", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 111);
-                    Player->PlayerTalkClass->SendGossipMenu(30020, Creature->GetGUID());
-                    return true;
-                }
                 default:
                     return false;
             }
