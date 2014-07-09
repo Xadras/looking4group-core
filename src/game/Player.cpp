@@ -20842,10 +20842,10 @@ uint8 Player::GetValidForPush()
     uint32 acc_id = sObjectMgr.GetPlayerAccountIdByGUID(GetGUID());
     std::string acc_name = "";
 
-    QueryResultAutoPtr acc_result = AccountsDatabase.PQuery("SELECT username FROM account WHERE account_id = %u", acc_id);
-    if (acc_result)
+    QueryResultAutoPtr result = AccountsDatabase.PQuery("SELECT username FROM account WHERE account_id = %u", acc_id);
+    if (result)
     {
-        Field* fields = acc_result->Fetch();
+        Field* fields = result->Fetch();
         acc_name = fields[0].GetCppString();
 
         if (acc_name != "")
