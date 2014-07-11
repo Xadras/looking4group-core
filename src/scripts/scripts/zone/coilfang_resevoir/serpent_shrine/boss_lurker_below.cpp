@@ -196,10 +196,11 @@ struct boss_the_lurker_belowAI : public BossAI
         for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
         {
             //Player *target = i->getSource();
-            if(i->getSource() && i->getSource()->isAlive() && !i->getSource()->HasAura(36151) && me->HasInArc((double)diff/20000*(double)M_PI*2,i->getSource()) && me->GetDistance(i->getSource()) <= SPOUT_DIST && !i->getSource()->IsInWater()){
-                DoCast(i->getSource(),SPELL_SPOUT,true);//only knock back palyers in arc, in 100yards, not in water
-                DoCast(i->getSource(), 36151, true);
-            }
+			if (i->getSource() && i->getSource()->IsInWater())
+				if(i->getSource()->isAlive() && !i->getSource()->HasAura(36151) && me->HasInArc((double)diff/20000*(double)M_PI*2,i->getSource()) && (me->GetDistance(i->getSource()) <= SPOUT_DIST)){
+					DoCast(i->getSource(),SPELL_SPOUT,true);//only knock back palyers in arc, in 100yards, not in water
+					DoCast(i->getSource(), 36151, true);
+				}
         }
 
     }
