@@ -3226,6 +3226,52 @@ CreatureAI* GetAI_npc_nearly_dead_combat_dummy(Creature *_Creature)
     return new npc_nearly_dead_combat_dummyAI(_Creature);
 }
 
+
+struct npc_fel_cannon_master : public Scripted_NoMovementAI
+{
+    npc_fel_cannon_master(Creature* c) : Scripted_NoMovementAI(c)
+    {
+        me->SetAggroRange(25.0f); // radius of spell
+    }
+    uint32 CheckTimer;
+
+    void Reset() 
+    {
+        CheckTimer = 3000;
+    }
+
+    bool UpdateVictim()
+    {
+        if (ScriptedAI::UpdateVictim())
+            return true;
+
+        if (Unit* target = me->SelectNearestTarget(25.0f))
+            AttackStart(target);
+
+        return me->getVictim();
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+		if (!UpdateVictim())
+            return;
+
+        if (CheckTimer < diff)
+        {
+			me->CastSpell(me->getVictim(), 36238, false);
+            CheckTimer = 3000;
+        }
+		else
+			CheckTimer -= diff;
+    }
+};
+
+CreatureAI* GetAI_npc_fel_cannon_master(Creature *_Creature)
+{
+    return new npc_fel_cannon_master(_Creature);
+}
+
+
 void AddSC_npcs_special()
 {
     Script *newscript;
@@ -3441,5 +3487,10 @@ void AddSC_npcs_special()
     newscript = new Script;
     newscript->Name="npc_nearly_dead_combat_dummy";
     newscript->GetAI = &GetAI_npc_nearly_dead_combat_dummy;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name="npc_fel_cannon_master";
+    newscript->GetAI = &GetAI_npc_fel_cannon_master;
     newscript->RegisterSelf();
 }
