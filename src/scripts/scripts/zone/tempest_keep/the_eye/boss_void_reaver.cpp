@@ -154,7 +154,6 @@ struct boss_void_reaverAI : public ScriptedAI
         if (KnockAway_Timer < diff)
         {
             AddSpellToCast(m_creature->getVictim(), SPELL_KNOCK_AWAY);
-            me->getThreatManager().addThreat(m_creature->getVictim(), -12000.0f);
             KnockAway_Timer = 30000;
         }
         else
