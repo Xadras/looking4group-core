@@ -1415,8 +1415,75 @@ bool GossipHello_npc_jaz(Player *player, Creature *creature)
     return true;
 }
 /*######
-##
+##Thunderbrew Lager Keg workaround
 ######*/
+bool GOUse_go_thunderbrew_lager_keg(Player *player, GameObject* _GO)
+{
+    if (player->GetQuestStatus(4134) == QUEST_STATUS_INCOMPLETE)
+    {
+        _GO->SummonCreature(9537, _GO->GetPositionX(), _GO->GetPositionY(), _GO->GetPositionZ(), 0,TEMPSUMMON_CORPSE_TIMED_DESPAWN, 12000);
+        _GO->SummonCreature(9541, _GO->GetPositionX(), _GO->GetPositionY(), _GO->GetPositionZ(), 0,TEMPSUMMON_CORPSE_TIMED_DESPAWN, 12000);
+        _GO->SummonCreature(9541, _GO->GetPositionX(), _GO->GetPositionY(), _GO->GetPositionZ(), 0,TEMPSUMMON_CORPSE_TIMED_DESPAWN, 12000);
+        _GO->SummonCreature(9541, _GO->GetPositionX(), _GO->GetPositionY(), _GO->GetPositionZ(), 0,TEMPSUMMON_CORPSE_TIMED_DESPAWN, 12000);
+    }
+    return true;
+}
+
+/*######
+##relic coffer
+######*/
+bool GOUse_go_relic_coffer(Player *player, GameObject* _GO)
+{
+    if (player->GetQuestStatus(4123) == QUEST_STATUS_INCOMPLETE)
+    {
+        if (!player->GetMap()->GetCreatureGUID(9476))
+        {
+            _GO->SummonCreature(9476, _GO->GetPositionX(), _GO->GetPositionY(), _GO->GetPositionZ(), 0,TEMPSUMMON_CORPSE_TIMED_DESPAWN, 1200000);
+            _GO->SummonCreature(8905, _GO->GetPositionX(), _GO->GetPositionY(), _GO->GetPositionZ(), 0,TEMPSUMMON_CORPSE_TIMED_DESPAWN, 12000);
+            _GO->SummonCreature(8905, _GO->GetPositionX(), _GO->GetPositionY(), _GO->GetPositionZ(), 0,TEMPSUMMON_CORPSE_TIMED_DESPAWN, 12000);
+            _GO->SummonCreature(8905, _GO->GetPositionX(), _GO->GetPositionY(), _GO->GetPositionZ(), 0,TEMPSUMMON_CORPSE_TIMED_DESPAWN, 12000);
+        }
+    }
+    return true;
+}
+
+struct mob_watchman_doomgripAI : public ScriptedAI
+{
+    mob_watchman_doomgripAI(Creature *c) : ScriptedAI(c) {}
+
+    uint32 Cast_Timer;
+
+    void JustDied(Unit* Killer)
+    {
+        Killer->SummonGameObject(165554, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), 5.48, 0, 0, 0, 0, 0);
+    }
+
+    void Reset()
+    {
+        Cast_Timer = 5000;
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if(!UpdateVictim())
+            return;
+
+        if(Cast_Timer < diff)
+        {
+            me->CastSpell(me->getVictim(), 15504, false);
+            Cast_Timer = 5000;
+        }
+        else
+            Cast_Timer -= diff;
+
+        DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_mob_watchman_doomgrip(Creature *_Creature)
+{
+    return new mob_watchman_doomgripAI (_Creature);
+}
 
 void AddSC_blackrock_depths()
 {
@@ -1496,6 +1563,21 @@ void AddSC_blackrock_depths()
     newscript->Name="npc_jaz";
     newscript->pGossipHello =  &GossipHello_npc_jaz;
     newscript->GetAI = &GetAI_npc_jaz;
+    newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name = "go_thunderbrew_lager_keg";
+    newscript->pGOUse = &GOUse_go_thunderbrew_lager_keg;
+    newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name = "go_relic_coffer";
+    newscript->pGOUse = &GOUse_go_relic_coffer;
+    newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name="mob_watchman_doomgrip";
+    newscript->GetAI = &GetAI_mob_watchman_doomgrip;
     newscript->RegisterSelf();
 }
 
