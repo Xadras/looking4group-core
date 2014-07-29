@@ -1415,8 +1415,19 @@ bool GossipHello_npc_jaz(Player *player, Creature *creature)
     return true;
 }
 /*######
-##
+##Thunderbrew Lager Keg workaround
 ######*/
+bool GOUse_go_thunderbrew_lager_keg(Player *player, GameObject* _GO)
+{
+    if (player->GetQuestStatus(4134) == QUEST_STATUS_INCOMPLETE)
+    {
+        _GO->SummonCreature(9537, _GO->GetPositionX(), _GO->GetPositionY(), _GO->GetPositionZ(), 0,TEMPSUMMON_CORPSE_TIMED_DESPAWN, 12000);
+        _GO->SummonCreature(9541, _GO->GetPositionX(), _GO->GetPositionY(), _GO->GetPositionZ(), 0,TEMPSUMMON_CORPSE_TIMED_DESPAWN, 12000);
+        _GO->SummonCreature(9541, _GO->GetPositionX(), _GO->GetPositionY(), _GO->GetPositionZ(), 0,TEMPSUMMON_CORPSE_TIMED_DESPAWN, 12000);
+        _GO->SummonCreature(9541, _GO->GetPositionX(), _GO->GetPositionY(), _GO->GetPositionZ(), 0,TEMPSUMMON_CORPSE_TIMED_DESPAWN, 12000);
+    }
+    return true;
+}
 
 void AddSC_blackrock_depths()
 {
@@ -1496,6 +1507,11 @@ void AddSC_blackrock_depths()
     newscript->Name="npc_jaz";
     newscript->pGossipHello =  &GossipHello_npc_jaz;
     newscript->GetAI = &GetAI_npc_jaz;
+    newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name = "go_thunderbrew_lager_keg";
+    newscript->pGOUse = &GOUse_go_thunderbrew_lager_keg;
     newscript->RegisterSelf();
 }
 
