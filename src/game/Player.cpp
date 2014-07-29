@@ -20517,7 +20517,7 @@ void Player::UpdateUnderwaterState(Map* m, float x, float y, float z)
         m_MirrorTimerFlags &= ~UNDERWATER_INDARKWATER;
 
     // in lava check, anywhere in lava level
-    if (liquid_status.type&MAP_LIQUID_TYPE_MAGMA)
+	if ((liquid_status.type&MAP_LIQUID_TYPE_MAGMA) || GetAreaId() == 25 || GetAreaId() == 1584)
     {
         if (res & (LIQUID_MAP_UNDER_WATER|LIQUID_MAP_IN_WATER|LIQUID_MAP_WATER_WALK))
             m_MirrorTimerFlags |= UNDERWATER_INLAVA;
