@@ -66,13 +66,13 @@ bool ChatHandler::HandleAccountXPToggleCommand(const char* args)
             {
                 session->RemoveAccountFlag(ACC_CUSTOM_XP_RATE_3);
                 session->RemoveAccountFlag(ACC_BLIZZLIKE_RATES);
-                PSendSysMessage("Now your rates are serverlike: x3. And if your Level is <58 you will become a serverside bonus.");
+                PSendSysMessage("Now your rates are serverlike: x3. If your Level is < 58 you will get a serverside bonus.");
             }
             else
             {
                 session->RemoveAccountFlag(ACC_CUSTOM_XP_RATE_3);
                 session->RemoveAccountFlag(ACC_BLIZZLIKE_RATES);
-                PSendSysMessage("Now your rates are serverlike: x3. And if your Level is <58 you will become a serverside bonus. Beware.");
+                PSendSysMessage("Now your rates are serverlike: x3. And if your Level is <58 you will get a serverside bonus. Beware.");
             }
 
         }
