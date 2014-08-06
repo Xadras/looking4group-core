@@ -25,14 +25,17 @@ EndScriptData */
 
 bool ItemUse_item_lootbox(Player *player, Item* _Item, SpellCastTargets const& targets)
 {
-    switch (_Item->GetEntry())
-    {
-        case 12345: player->SummonCreature(21323, player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN, 120000);
-            break;
-        case 12346: player->SummonCreature(23456, player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN, 120000);
-            break;
-        default: return false;
-    }       
+    if (!FindCreature(1000010, 50.0f, player))
+        switch (_Item->GetEntry())
+        {
+            case 1000033: 
+                player->SummonCreature(1000010, player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN, 120000);
+                break;
+            case 12346: 
+                player->SummonCreature(23456, player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN, 120000);
+                break;
+            default: return false;
+        }       
     return true;
 }
 
