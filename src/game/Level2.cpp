@@ -3649,14 +3649,13 @@ bool ChatHandler::HandleLookupPlayerIpCommand(const char* args)
 bool ChatHandler::HandleLookupPlayerIpListCommand(const char* /*args*/)
 {
     QueryResultAutoPtr result = AccountsDatabase.PQuery("SELECT account_id, username, last_ip "
-        "FROM account "
-        "WHERE EXISTS ("
-            "SELECT account_id FROM account Dup "
-            "WHERE account.last_ip = Dup.last_ip AND account.account_id <> Dup.account_id "
-            "AND account.online ='1' "
-            "AND account.username NOT LIKE '%-2' AND Dup.username NOT LIKE '%-2') "
-        "AND NOT EXISTS ("
-            "SELECT acc_id FROM account_multi WHERE account.account_id = account_multi.acc_id) "
+        "FROM (SELECT account_id, username, last_ip FROM account WHERE online = '1') AS temp "
+        "WHERE EXISTS ( "
+            "SELECT account_id FROM (SELECT account_id, username, last_ip FROM account WHERE online = '1') AS  Dup "
+            "WHERE temp.last_ip = Dup.last_ip AND temp.account_id <> Dup.account_id "
+            "AND temp.username NOT LIKE '%-2' AND Dup.username NOT LIKE '%-2') "
+        "AND NOT EXISTS ( "
+            "SELECT acc_id FROM account_multi WHERE temp.account_id = account_multi.acc_id) "
         "ORDER BY last_ip;");
 
     if (result){
