@@ -2538,6 +2538,11 @@ void Player::GiveLevel(uint32 level)
     Pet* pet = GetPet();
     if (pet && pet->getPetType()==SUMMON_PET)
         pet->GivePetLevel(level);
+
+    if (uint32 goodEntry = sWorld.getConfig(CONFIG_XP_RATE_MODIFY_ITEM_ENTRY))
+    {
+        DestroyItemCount(goodEntry, 1, true);
+    }
 }
 
 void Player::UpdateFreeTalentPoints(bool resetIfNeed)
