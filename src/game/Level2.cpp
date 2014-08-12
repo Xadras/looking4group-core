@@ -3651,7 +3651,7 @@ bool ChatHandler::HandleLookupPlayerIpListCommand(const char* /*args*/)
     QueryResultAutoPtr result = AccountsDatabase.PQuery("SELECT account_id, username, last_ip "
         "FROM (SELECT account_id, username, last_ip FROM account WHERE online = '1') AS temp "
         "WHERE EXISTS ( "
-            "SELECT account_id FROM (SELECT account_id, username, last_ip FROM account WHERE online = '1') AS  Dup "
+            "SELECT account_id FROM (SELECT account_id, username, last_ip FROM account WHERE online = '1') AS Dup "
             "WHERE temp.last_ip = Dup.last_ip AND temp.account_id <> Dup.account_id "
             "AND temp.username NOT LIKE '%-2' AND Dup.username NOT LIKE '%-2') "
         "AND NOT EXISTS ( "
