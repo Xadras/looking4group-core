@@ -79,6 +79,7 @@ struct boss_moroesAI : public ScriptedAI
     uint32 Wait_Timer;
     uint32 CheckAdds_Timer;
     uint32 AddId[4];
+    uint32 CheckTimer;
 
     bool InVanish;
     bool Enrage;
@@ -92,6 +93,8 @@ struct boss_moroesAI : public ScriptedAI
         CheckAdds_Timer = 5000;
         Enrage = false;
         InVanish = false;
+        CheckTimer = 3000;
+
         if(m_creature->GetHealth() > 0)
         {
             SpawnAdds();
@@ -245,6 +248,14 @@ struct boss_moroesAI : public ScriptedAI
     {
         if(!UpdateVictim() )
             return;
+
+        if (CheckTimer < diff)
+        {
+            DoZoneInCombat();
+            CheckTimer = 3000;
+        }
+        else
+            CheckTimer -= diff;
 
         if(pInstance && !pInstance->GetData(DATA_MOROES_EVENT))
         {

@@ -498,6 +498,9 @@ void CreatureEventAI::ProcessAction(CreatureEventAI_Action const& action, uint32
             //Allowed to cast only if not casting (unless we interrupt ourself) or if spell is triggered
             bool canCast = !caster->hasUnitState(UNIT_STAT_LOST_CONTROL) && (!caster->IsNonMeleeSpellCasted(false) || (action.cast.castFlags & (CAST_TRIGGERED | CAST_INTURRUPT_PREVIOUS)));
 
+            //Determine if creature can reach the target
+            bool canReach = caster->IsWithinLOSInMap(target) && caster->IsWithinLOS(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ());
+
             // If cast flag CAST_AURA_NOT_PRESENT is active, check if target already has aura on them
             if (action.cast.castFlags & CAST_AURA_NOT_PRESENT)
             {
@@ -527,7 +530,16 @@ void CreatureEventAI::ProcessAction(CreatureEventAI_Action const& action, uint32
                                 m_creature->GetMotionMaster()->MoveChase(m_creature->getVictim(), AttackDistance, AttackAngle);
                             }
                         }
+                    }
+                    if(!canReach)
+                    {
+                        //if (me->GetMotionMaster()->GetCurrentMovementGeneratorType() == CHASE_MOTION_TYPE || me->GetMotionMaster()->GetCurrentMovementGeneratorType() == ASSISTANCE_MOTION_TYPE || me->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
+                        {
+                            AttackDistance = 0.0f;
+                            AttackAngle = 0.0f;
 
+                            me->GetMotionMaster()->MoveChase(me->getVictim(), AttackDistance, AttackAngle);
+                        }
                     }
                     else
                     {
