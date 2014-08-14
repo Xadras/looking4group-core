@@ -499,7 +499,7 @@ void CreatureEventAI::ProcessAction(CreatureEventAI_Action const& action, uint32
             bool canCast = !caster->hasUnitState(UNIT_STAT_LOST_CONTROL) && (!caster->IsNonMeleeSpellCasted(false) || (action.cast.castFlags & (CAST_TRIGGERED | CAST_INTURRUPT_PREVIOUS)));
 
             //Determine if creature can reach the target
-            bool canReach = caster->IsWithinLOSInMap(target) && caster->IsWithinLOS(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ());
+            bool canReach = caster->IsWithinLOS(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ());
 
             // If cast flag CAST_AURA_NOT_PRESENT is active, check if target already has aura on them
             if (action.cast.castFlags & CAST_AURA_NOT_PRESENT)
