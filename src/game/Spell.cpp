@@ -4360,21 +4360,21 @@ SpellCastResult Spell::CheckCast(bool strict)
                 if (pCaster->GetBattleGround())
                     return SPELL_FAILED_DONT_REPORT; // Ritual of Summoning Effect is triggered so don't report
 
-				// check if our area is Tempest keep (3842) or one of this 4 Instances (The Eye, Mecha, Arkatraz or Botanica)
-				uint32 areaid = m_caster->GetTypeId() == TYPEID_PLAYER ? ((Player*)m_caster)->GetCachedArea() : m_caster->GetAreaId();
+                // check if our area is Tempest keep (3842) or one of this 4 Instances (The Eye, Mecha, Arkatraz or Botanica)
+                uint32 areaid = m_caster->GetTypeId() == TYPEID_PLAYER ? ((Player*)m_caster)->GetCachedArea() : m_caster->GetAreaId();
                 if (areaid == 3842)
                     return SPELL_FAILED_NOT_HERE;
 
-				if (areaid == 3845)
+                if (areaid == 3845)
                     return SPELL_FAILED_NOT_HERE;
 
-				if (areaid == 3849)
+                if (areaid == 3849)
                     return SPELL_FAILED_NOT_HERE;
 
-				if (areaid == 3848)
+                if (areaid == 3848)
                     return SPELL_FAILED_NOT_HERE;
 
-				if (areaid == 3847)
+                if (areaid == 3847)
                     return SPELL_FAILED_NOT_HERE;
 
                 // check if our map is dungeon
