@@ -3595,6 +3595,9 @@ void SpellMgr::LoadSpellCustomAttr()
             case 37770:
                 spellInfo->Effect[0] = 2;
                 break;
+            case 42630:  //Jan'Alai Fire Bomb Dmg Spell - Radius set to 3m instead of 5m
+                spellInfo->EffectRadiusIndex[0] = 15;
+                break;
             default:
                 break;
         }
