@@ -81,20 +81,13 @@ bool PathFinder::calculate(float destX, float destY, float destZ, bool forceDest
     // check if destination moved - if not we can optimize something here
     // we are following old, precalculated path?
     float dist = m_sourceUnit->GetObjectBoundingRadius();
-    if (inRange(oldDest, dest, dist, dist))
+    if (inRange(oldDest, dest, dist, dist) && m_pathPoints.size() > 2)
     {
         // our target is not moving - we just coming closer
         // we are moving on precalculated path - enjoy the ride
         //DEBUG_FILTER_LOG(LOG_FILTER_PATHFINDING, "++ PathFinder::calculate:: precalculated path\n");
 
-        if (m_pathPoints.size() > 2)
-        {
-            m_pathPoints.erase(m_pathPoints.begin());
-        }
-        else if (!inRange(dest, m_pathPoints[m_pathPoints.size() -1], dist, dist))
-            /* We are struggling under/near the target and don't have path (no nodes left) */
-            m_type = PATHFIND_NOPATH;
-
+        m_pathPoints.erase(m_pathPoints.begin());
         return false;
     }
     else
