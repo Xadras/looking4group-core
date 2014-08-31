@@ -11536,51 +11536,18 @@ bool Unit::SetPosition(float x, float y, float z, float orientation, bool telepo
     return (relocated || turn);
 }
 
-void Unit::StopMoving(bool forceSendStop /*=false*/)
+void Unit::StopMoving()
 {
-    clearUnitState(UNIT_STAT_MOVING);
-
-<<<<<<< HEAD
-    // send explicit stop packet
-    // rely on vmaps here because for example stormwind is in air
-    //float z = MapManager::Instance().GetBaseMap(GetMapId())->GetHeight(GetPositionX(), GetPositionY(), GetPositionZ(), true);
-    //if (fabs(GetPositionZ() - z) < 2.0f)
-    //    Relocate(GetPositionX(), GetPositionY(), z);
-    Relocate(GetPositionX(), GetPositionY(), GetPositionZ());
-=======
-    if (IsStopped() && !forceSendStop)
-        return;
-
     if (!IsInWorld() || IsStopped())
         return;
->>>>>>> parent of bf5c16c... Core/Movement: Try to fix bug, that npc with gossips do not stop moving
 
-    SendMonsterStop();
+    DisableSpline();
 
-    // update position and orientation;
-    WorldPacket data;
-    BuildHeartBeatMsg(&data);
-    BroadcastPacket(&data, false);
+    Movement::MoveSplineInit init(*this);
+    init.SetFacing(GetOrientation());
+    init.Launch();
 }
 
-<<<<<<< HEAD
-void Unit::InterruptMoving(bool forceSendStop /*=false*/)
-{
-    bool isMoving = false;
- 	if (!movespline->Finalized())
- 	{
- 	    Movement::Location loc = movespline->ComputePosition();
- 	    movespline->_Interrupt();
- 	    Relocate(loc.x, loc.y, loc.z, loc.orientation);
- 	    isMoving = true;
-        ToCreature()->Say("hold", LANG_UNIVERSAL, GetGUID());
- 	}
- 	
- 	StopMoving(forceSendStop || isMoving);
-}
-
-=======
->>>>>>> parent of bf5c16c... Core/Movement: Try to fix bug, that npc with gossips do not stop moving
 bool Unit::IsStopped() const
 {
     return movespline->Finalized();
