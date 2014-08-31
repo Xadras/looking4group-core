@@ -4187,7 +4187,7 @@ SpellCastResult Spell::CheckCast(bool strict)
 
                     if (_path.getPathType() & PATHFIND_SHORT)
                         return SPELL_FAILED_OUT_OF_RANGE;
-                    else if (!result)
+                    else if (!result && !m_caster->ToCreature()->isPet()) //Petcharge with mmaps doesn't work
                         return SPELL_FAILED_NOPATH;
                 }
                 break;

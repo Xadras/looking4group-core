@@ -281,7 +281,12 @@ void WorldSession::HandleGossipHelloOpcode(WorldPacket & recv_data)
     //    GetPlayer()->RemoveSpellsCausingAura(SPELL_AURA_FEIGN_DEATH);
 
     if (unit->isArmorer() || unit->isCivilian() || unit->isQuestGiver() || unit->isServiceProvider())
+    {
+        unit->SendMonsterStop();
         unit->StopMoving();
+        unit->m_movementInfo.RemoveMovementFlag(MOVEFLAG_MOVING);
+        unit->GetMotionMaster()->MoveDistract(20000);
+    }
 
     // If spirit guide, no need for gossip menu, just put player into resurrect queue
     if (unit->isSpiritGuide())
