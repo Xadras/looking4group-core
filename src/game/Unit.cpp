@@ -11540,12 +11540,20 @@ void Unit::StopMoving(bool forceSendStop /*=false*/)
 {
     clearUnitState(UNIT_STAT_MOVING);
 
+<<<<<<< HEAD
     // send explicit stop packet
     // rely on vmaps here because for example stormwind is in air
     //float z = MapManager::Instance().GetBaseMap(GetMapId())->GetHeight(GetPositionX(), GetPositionY(), GetPositionZ(), true);
     //if (fabs(GetPositionZ() - z) < 2.0f)
     //    Relocate(GetPositionX(), GetPositionY(), z);
     Relocate(GetPositionX(), GetPositionY(), GetPositionZ());
+=======
+    if (IsStopped() && !forceSendStop)
+        return;
+
+    if (!IsInWorld() || IsStopped())
+        return;
+>>>>>>> parent of bf5c16c... Core/Movement: Try to fix bug, that npc with gossips do not stop moving
 
     SendMonsterStop();
 
@@ -11555,6 +11563,7 @@ void Unit::StopMoving(bool forceSendStop /*=false*/)
     BroadcastPacket(&data, false);
 }
 
+<<<<<<< HEAD
 void Unit::InterruptMoving(bool forceSendStop /*=false*/)
 {
     bool isMoving = false;
@@ -11570,6 +11579,8 @@ void Unit::InterruptMoving(bool forceSendStop /*=false*/)
  	StopMoving(forceSendStop || isMoving);
 }
 
+=======
+>>>>>>> parent of bf5c16c... Core/Movement: Try to fix bug, that npc with gossips do not stop moving
 bool Unit::IsStopped() const
 {
     return movespline->Finalized();

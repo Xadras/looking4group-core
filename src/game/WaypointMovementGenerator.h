@@ -94,9 +94,6 @@ class WaypointMovementGenerator<Creature> : public MovementGeneratorMedium< Crea
         bool _isArrivalDone;
         uint32 _pathId;
         bool _repeating;
-
-    protected:
-        void _Interrupt(Creature &);
 };
 
 /** FlightPathMovementGenerator generates movement of the player for the paths

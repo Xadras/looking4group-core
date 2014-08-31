@@ -1559,7 +1559,6 @@ class LOOKING4GROUP_IMPORT_EXPORT Unit : public WorldObject
         virtual bool SetPosition(float x, float y, float z, float ang, bool teleport = false);
 
         void StopMoving(bool forceSendStop = false);
-        void InterruptMoving(bool forceSendStop = false);
 
         void AddUnitMovementFlag(uint32 f) { m_movementInfo.AddMovementFlag(MovementFlags(f)); }
         void RemoveUnitMovementFlag(uint32 f) { m_movementInfo.RemoveMovementFlag(MovementFlags(f)); }

@@ -58,15 +58,11 @@ void WaypointMovementGenerator<Creature>::Initialize(Creature &creature)
 
 void WaypointMovementGenerator<Creature>::Finalize(Creature &creature)
 {
-    creature.clearUnitState(UNIT_STAT_ROAMING);
-    creature.SetWalk(false);
-}
+    creature.StopMoving();
 
-void WaypointMovementGenerator<Creature>::_Interrupt(Creature &creature)
-{
-    creature.InterruptMoving();
     creature.clearUnitState(UNIT_STAT_ROAMING);
     creature.SetWalk(false);
+    creature.setActive(false, ACTIVE_BY_WAYPOINT_MOVEMENT);
 }
 
 bool WaypointMovementGenerator<Creature>::atNode(Creature& creature)

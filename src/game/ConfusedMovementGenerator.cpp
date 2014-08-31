@@ -47,7 +47,11 @@ void ConfusedMovementGenerator<UNIT>::Reset(UNIT &u)
 template<class UNIT>
 void ConfusedMovementGenerator<UNIT>::Interrupt(UNIT &unit)
 {
+<<<<<<< HEAD
     unit.InterruptMoving();
+=======
+    unit.StopMoving();
+>>>>>>> parent of bf5c16c... Core/Movement: Try to fix bug, that npc with gossips do not stop moving
     unit.clearUnitState(UNIT_STAT_CONFUSED);
 }
 

@@ -55,14 +55,13 @@ void PointMovementGenerator<UNIT>::Initialize(UNIT &unit)
 template<class UNIT>
 void PointMovementGenerator<UNIT>::Interrupt(UNIT &unit)
 {
-    unit.InterruptMoving();
+    unit.StopMoving();
     unit.clearUnitState(UNIT_STAT_ROAMING);
 }
 
 template<class UNIT>
 void PointMovementGenerator<UNIT>::Reset(UNIT &unit)
 {
-    unit.StopMoving();
     Initialize(unit);
 }
 

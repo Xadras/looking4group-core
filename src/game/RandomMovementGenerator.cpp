@@ -66,7 +66,6 @@ void RandomMovementGenerator<Creature>::Reset(Creature &creature)
 template<>
 void RandomMovementGenerator<Creature>::Interrupt(Creature &creature)
 {
-    creature.InterruptMoving();
     creature.clearUnitState(UNIT_STAT_ROAMING);
     creature.SetWalk(false);
 }
