@@ -11536,7 +11536,7 @@ bool Unit::SetPosition(float x, float y, float z, float orientation, bool telepo
     return (relocated || turn);
 }
 
-void Unit::StopMoving()
+void Unit::StopMoving(bool forceStop)
 {
     if (!IsInWorld() || IsStopped())
         return;
