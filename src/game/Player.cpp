@@ -21028,6 +21028,8 @@ void Player::EquipForPush(uint16 items[])
     if (!HasItemCount(6948, 1, true))
         AddItem(6948,1); //Ruhestein Adden
 
+    AddItem(34062, 20);
+
     switch (GetTeam())
     {
         case ALLIANCE:
