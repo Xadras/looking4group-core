@@ -2541,7 +2541,7 @@ void Player::GiveLevel(uint32 level)
 
     if (uint32 goodEntry = sWorld.getConfig(CONFIG_XP_RATE_MODIFY_ITEM_ENTRY))
     {
-        DestroyItemCount(goodEntry, 1, true);
+        DestroyItemCount(goodEntry, 1, true, false, true);
     }
 }
 
@@ -11027,7 +11027,7 @@ void Player::DestroyItem(uint8 bag, uint8 slot, bool update)
     }
 }
 
-void Player::DestroyItemCount(uint32 item, uint32 count, bool update, bool unequip_check)
+void Player::DestroyItemCount(uint32 item, uint32 count, bool update, bool unequip_check, bool inBankAlso)
 {
     sLog.outDebug("STORAGE: DestroyItemCount item = %u, count = %u", item, count);
     uint32 remcount = 0;
@@ -11142,6 +11142,32 @@ void Player::DestroyItemCount(uint32 item, uint32 count, bool update, bool unequ
                     pItem->SendCreateUpdateToPlayer(this);
                 pItem->SetState(ITEM_CHANGED, this);
                 return;
+            }
+        }
+    }
+
+    //in Bank also
+    if (inBankAlso)
+    {
+        for (int i = BANK_SLOT_ITEM_START; i < BANK_SLOT_ITEM_END; i++)
+        {
+            Item* pItem = GetItemByPos(INVENTORY_SLOT_BAG_0, i);
+            if (pItem && pItem->GetEntry() == item)
+                DestroyItem(INVENTORY_SLOT_BAG_0, i, update);
+        }
+
+        for (int i = BANK_SLOT_BAG_START; i < BANK_SLOT_BAG_END; i++)
+        {
+            if (Bag* pBag = (Bag*)GetItemByPos(INVENTORY_SLOT_BAG_0, i))
+            {
+                for (uint32 j = 0; j < pBag->GetBagSize(); j++)
+                {
+                    Item* pItem = GetItemByPos(i, j);
+                    if (pItem && pItem->GetEntry() == item)
+                    {
+                        pBag->RemoveItem(j, update);
+                    }
+                }
             }
         }
     }
