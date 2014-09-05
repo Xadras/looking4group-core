@@ -1976,6 +1976,8 @@ bool ChatHandler::HandlePInfoCommand(const char* args)
         level = fields[1].GetUInt32();
         money = fields[2].GetUInt32();
         accId = fields[3].GetUInt32();
+        race  = fields[4].GetUInt32();
+        Class = fields[5].GetUInt32();
     }
 
     std::string username = GetTrinityString(LANG_ERROR);
