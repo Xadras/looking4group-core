@@ -34,7 +34,6 @@ m_polyLength(0), m_type(PATHFIND_BLANK),
 
     if (m_sourceUnit->GetTypeId() == TYPEID_UNIT && m_sourceUnit->ToCreature()->isPet() && (!m_sourceUnit->ToPet()->getVictim() && m_sourceUnit->isInCombat()))
     {
-        createFilter();
         return;
     }
 
