@@ -532,18 +532,137 @@ bool ChatHandler::HandleShowLowLevelQuestCommand(const char* /*args*/)
      "WHERE guid = '%u' "
      "AND show_low_level_quest = 1",
      idchar);
-    if (levelresult) // if account premium
+    if (levelresult) // if char has activated seeing of low level quests, disable it
     {
          RealmDataDatabase.PExecute("UPDATE character_quest SET show_low_level_quest = 0 WHERE guid= '%u'", idchar);
-         PSendSysMessage("%s%s", "|cff00ff00", "You won't see any low level quests from now on until you press .showLowLevelQuest again.");
+         PSendSysMessage("%s%s", "|cff00ff00", "You won't see any low level quests from now on until you press '.quest showlowlevel' again.");
          return true;
     }
-    else
+    else 
     {
         RealmDataDatabase.PExecute("REPLACE INTO character_quest (guid, show_low_level_quest) VALUES ('%u', 1)", idchar);
-        PSendSysMessage("%s%s", "|cff00ff00", "You see low level quests from now on until you press .showLowLevelQuest again.");
+        PSendSysMessage("%s%s", "|cff00ff00", "You see low level quests from now on until you press .quest showlowlevel again.");
         return true;
     }
     PSendSysMessage("%s%s", "|cff00ff00", "Something went wrong...");
     return true;
 }
+
+bool ChatHandler::HandleMentoringCommand(const char* args)
+{
+    if (!*args)
+    {
+        SendSysMessage("Gebe den Charnamen des Mentees ein");
+        return true;
+    }
+    std::string argstr = (char*)args;
+    if (argstr != "")
+    {
+        uint32 mentee_acc;
+        QueryResultAutoPtr accresult = RealmDataDatabase.PQuery("SELECT account FROM characters WHERE name = '%s'", argstr.c_str());
+        if (accresult)
+        {
+            Field* fields = accresult->Fetch();
+            mentee_acc = fields[0].GetInt32();
+        }
+
+        uint32 mentor;
+        SendSysMessage("t6");
+        QueryResultAutoPtr mentor_result = AccountsDatabase.PQuery("SELECT mentor FROM mentoring_program WHERE mentee = %u", mentee_acc);
+        if (mentor_result)
+        {
+            Field* fields = mentor_result->Fetch();
+            mentor = fields[0].GetInt32();
+
+            if (mentor && (mentor != m_session->GetAccountId()))
+            {
+                PSendSysMessage("Dieser Spieler hat bereits einen Mentor.");
+                return true;
+            }
+            else if (mentor == m_session->GetAccountId())
+            {
+                AccountsDatabase.PExecute("DELETE FROM mentoring_program WHERE mentee = '%u'", mentee_acc);
+                PSendSysMessage("Dein Mentee ist nun aus dem Mentoren Programm gestrichen.");
+                return true;
+            }
+        }
+        AccountsDatabase.PExecute("UPDATE mentoring_program SET mentor = %u WHERE mentee = %u",m_session->GetAccountId(), mentee_acc);
+        SendGlobalMentoringSysMessage("Spieler %s hat das Mentoring fuer Spieler %s uebernommen.", m_session->GetPlayerName(), argstr.c_str());
+        PSendSysMessage("Wenn du meinst, der Spieler ist nicht mehr auf dich angewiesen, kannst du die Mentorenschaft durch nochmaliges tippen dieses Befehles aufheben.");
+        return true;
+    }
+
+    SendSysMessage("Ein Fehler ist aufgetreten.");
+    return true;
+}
+
+bool ChatHandler::HandleMentorCommand(const char* /*args*/)
+{
+    if (m_session->GetPlayer()->isMentor())
+    {
+        AccountsDatabase.PExecute("DELETE FROM account_mentor WHERE acc_id = '%u'", m_session->GetAccountId());
+        PSendSysMessage("Du bist nun nicht mehr im Mentoring Programm als Mentor eingetragen.");
+        return true;
+    }
+    else
+    {
+        AccountsDatabase.PExecute("INSERT INTO account_mentor SET acc_id = '%u'", m_session->GetAccountId());
+        PSendSysMessage("Du bist nun im Mentoring Programm als Mentor eingetragen.");
+        return true;
+    }
+    SendSysMessage("Ein Fehler ist aufgetreten.");
+    return true;
+}
+
+bool ChatHandler::HandleMentorListCommand(const char* /*args*/)
+{
+    PSendSysMessage("Mentees ohne Mentoren:");
+    QueryResultAutoPtr mentee_result = AccountsDatabase.PQuery("SELECT mentee FROM mentoring_program WHERE mentor = 0");
+    uint32 mentee;
+    std::string name;
+    if (mentee_result)
+    {
+        do
+        {
+            Field* fields = mentee_result->Fetch();
+            mentee = fields[0].GetInt32();
+            QueryResultAutoPtr result = RealmDataDatabase.PQuery("SELECT name FROM characters WHERE account = %u", mentee);
+            if (result)
+            {
+                do
+                {
+                    Field* fields = result->Fetch();
+                    name = fields[0].GetString();
+                    PSendSysMessage("Account: %u Character: %s", mentee, fields[0].GetString());
+                } while (result->NextRow());
+            }
+        } while (mentee_result->NextRow());
+    }
+    
+    PSendSysMessage("Deine Mentees:");
+    mentee_result = AccountsDatabase.PQuery("SELECT mentee FROM mentoring_program WHERE mentor = %u", m_session->GetAccountId());
+
+    if (mentee_result)
+    {
+        do
+        {
+            Field* fields = mentee_result->Fetch();
+            mentee = fields[0].GetInt32();
+            QueryResultAutoPtr result = RealmDataDatabase.PQuery("SELECT name FROM characters WHERE account = %u", mentee);
+            if (result)
+            {
+                do
+                {
+                    Field* fields = result->Fetch();
+                    name = fields[0].GetString();
+                    PSendSysMessage("Account: %u Character: %s", mentee, fields[0].GetString());
+                } while (result->NextRow());
+            }
+        } while (mentee_result->NextRow());
+    }
+    PSendSysMessage("Mit .mentoring NAME kannst du das Mentoring aufheben. Das solltest du nur machen, wenn dein Mentee nun auf eigenen Beinen stehen kann.");
+    return true;
+}
+
+
+

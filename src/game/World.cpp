@@ -2074,6 +2074,23 @@ void World::SendGlobalGMMessage(WorldPacket *packet, WorldSession *self, uint32 
     }
 }
 
+void World::SendGlobalMentoringMessage(WorldPacket *packet, WorldSession *self, uint32 team)
+{
+    SessionMap::iterator itr;
+    for (itr = m_sessions.begin(); itr != m_sessions.end(); itr++)
+    {
+        if (itr->second &&
+            itr->second->GetPlayer() &&
+            itr->second->GetPlayer()->IsInWorld() &&
+            itr->second != self &&
+            itr->second->GetPlayer()->isMentor() &&
+            (team == 0 || itr->second->GetPlayer()->GetTeam() == team))
+        {
+            itr->second->SendPacket(packet);
+        }
+    }
+}
+
 /// Send a System Message to all players (except self if mentioned)
 void World::SendWorldText(int32 string_id, uint32 preventFlags, ...)
 {

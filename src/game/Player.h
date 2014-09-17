@@ -2076,6 +2076,11 @@ class LOOKING4GROUP_EXPORT Player : public Unit
 
         void BuildTeleportAckMsg(WorldPacket & data, float x, float y, float z, float ang) const;
 
+        bool isMentor();
+        bool isMenteeWithoutMentor();
+        int  isMenteeOfAccount();
+        int  GetOnlineChar(uint32 acc_id);
+
         bool isInSanctuary();
         bool isMoving() const { return HasUnitMovementFlag(MOVEFLAG_MOVING); }
         bool isTurning() const { return HasUnitMovementFlag(MOVEFLAG_TURNING); }

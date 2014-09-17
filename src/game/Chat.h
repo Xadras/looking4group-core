@@ -69,6 +69,7 @@ class ChatHandler
         void SendSysMessage(         int32     entry);
         void PSendSysMessage(        const char *format, ...) ATTR_PRINTF(2,3);
         void PSendSysMessage(        int32     entry, ... );
+        void SendGlobalMentoringSysMessage(const char *format, ...);
         std::string PGetParseString(int32 entry, ...);
 
         int ParseCommands(const char* text);
@@ -543,6 +544,9 @@ class ChatHandler
         bool HandleShowLowLevelQuestCommand(const char* args);
         bool HandleChangeWeather(const char* args);
         bool HandleKickPlayerCommand(const char * args);
+        bool HandleMentoringCommand(const char* args);
+        bool HandleMentorCommand(const char* args);
+        bool HandleMentorListCommand(const char* args);
 
         // accpremium commands
         bool HandleStopLevelCharacterCommand(const char* args);
