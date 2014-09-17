@@ -566,12 +566,19 @@ bool ChatHandler::HandleMentoringCommand(const char* args)
             mentee_acc = fields[0].GetInt32();
         }
 
-        uint32 mentor;
-        QueryResultAutoPtr mentor_result = AccountsDatabase.PQuery("SELECT mentor FROM mentoring_program WHERE mentee = %u", mentee_acc);
+        uint32 mentor = 0, mentee = 0;
+        QueryResultAutoPtr mentor_result = AccountsDatabase.PQuery("SELECT mentor, mentee FROM mentoring_program WHERE mentee = %u", mentee_acc);
         if (mentor_result)
         {
             Field* fields = mentor_result->Fetch();
             mentor = fields[0].GetInt32();
+            mentee = fields[1].GetInt32();
+
+            if (!mentee || mentee == 0)
+            {
+                PSendSysMessage("Dieser Spieler möchte keinen Mentoren haben!");
+                return true;
+            }
 
             if (mentor && (mentor != m_session->GetAccountId()))
             {
