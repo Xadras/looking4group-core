@@ -32,14 +32,19 @@ m_polyLength(0), m_type(PATHFIND_BLANK),
 {
     //DEBUG_FILTER_LOG(LOG_FILTER_PATHFINDING, "++ PathFinder::PathInfo for %u \n", m_sourceUnit->GetGUIDLow());
 
-    if (!m_sourceUnit->GetTypeId() == TYPEID_UNIT && !m_sourceUnit->ToCreature()->isPet())
-        if (m_sourceUnit->GetTerrain() && m_sourceUnit->GetTerrain()->IsPathFindingEnabled())
-        {
-            uint32 mapId = m_sourceUnit->GetMapId();
-            MMAP::MMapManager* mmap = MMAP::MMapFactory::createOrGetMMapManager();
-            m_navMesh = mmap->GetNavMesh(mapId);
-            m_navMeshQuery = mmap->GetNavMeshQuery(mapId, m_sourceUnit->GetInstanceId());
-        }
+    if (m_sourceUnit->GetTypeId() == TYPEID_UNIT && m_sourceUnit->ToCreature()->isPet() && (!m_sourceUnit->ToCreature()->ToPet()->getVictim() && m_sourceUnit->isInCombat()))
+    {
+        createFilter();
+        return;
+    }
+
+    if (m_sourceUnit->GetTerrain() && m_sourceUnit->GetTerrain()->IsPathFindingEnabled())
+    {
+        uint32 mapId = m_sourceUnit->GetMapId();
+        MMAP::MMapManager* mmap = MMAP::MMapFactory::createOrGetMMapManager();
+        m_navMesh = mmap->GetNavMesh(mapId);
+        m_navMeshQuery = mmap->GetNavMeshQuery(mapId, m_sourceUnit->GetInstanceId());
+    }
 
     createFilter();
 }
