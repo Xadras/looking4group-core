@@ -567,7 +567,6 @@ bool ChatHandler::HandleMentoringCommand(const char* args)
         }
 
         uint32 mentor;
-        SendSysMessage("t6");
         QueryResultAutoPtr mentor_result = AccountsDatabase.PQuery("SELECT mentor FROM mentoring_program WHERE mentee = %u", mentee_acc);
         if (mentor_result)
         {
