@@ -71,6 +71,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "xp",             PERM_PLAYER,    false,  &ChatHandler::HandleAccountXPToggleCommand,     "", NULL },
         { "whisp",          PERM_ADM,       true,   &ChatHandler::HandleAccountWhispLogCommand,     "", NULL },
         { "delmultiacc",    PERM_GMT,       true,   &ChatHandler::HandleAccountDelMultiaccCommand,  "", NULL },
+        { "mentor",         PERM_PLAYER,    false,  &ChatHandler::HandleMentorCommand,              "", NULL },
         { "",               PERM_PLAYER,    false,  &ChatHandler::HandleAccountCommand,             "", NULL },
         { NULL,             0,              false,  NULL,                                           "", NULL }
     };
@@ -758,8 +759,10 @@ ChatCommand * ChatHandler::getCommandTable()
         { "vipdel",         PERM_ADM,       true,   &ChatHandler::HandleDelVIPAccountCommand,       "", NULL },
         { "charstoplevel",  PERM_PLAYER,    true,   &ChatHandler::HandleStopLevelCharacterCommand,  "", NULL },
         { "charactivatelevel", PERM_PLAYER, true,   &ChatHandler::HandleActivateLevelCharacterCommand, "", NULL },
-        { "characterimport", PERM_GMT,      true,   &ChatHandler::HandleCharacterImportCommand,     "", NULL },
-        { "changeaccount", PERM_GMT,      true,   &ChatHandler::HandleChangeAccountCommand,     "", NULL },
+        { "characterimport",PERM_GMT,       true,   &ChatHandler::HandleCharacterImportCommand,     "", NULL },
+        { "changeaccount",  PERM_GMT,       true,   &ChatHandler::HandleChangeAccountCommand,     "", NULL },
+        { "mentoring",      PERM_PLAYER,    true,   &ChatHandler::HandleMentoringCommand,           "", NULL},
+        { "mentorlist",     PERM_PLAYER,    false,  &ChatHandler::HandleMentorListCommand,          "", NULL },
         { NULL,             0,              false,  NULL,                                           "", NULL }
     };
 
@@ -908,6 +911,30 @@ void ChatHandler::SendGlobalGMSysMessage(const char *format, ...)
      }
     delete [] buf;
 }
+
+void ChatHandler::SendGlobalMentoringSysMessage(const char *format, ...)
+{
+    va_list ap;
+    char str [1024];
+    va_start(ap, format);
+    vsnprintf(str,1024,format, ap);
+    va_end(ap);
+    
+    // Chat output
+    WorldPacket data;
+
+    // need copy to prevent corruption by strtok call in LineFromMessage original string
+    char* buf = mangos_strdup(str);
+    char* pos = buf;
+
+    while (char* line = LineFromMessage(pos))
+    {
+        FillSystemMessageData(&data, line);
+        sWorld.SendGlobalMentoringMessage(&data);
+     }
+    delete [] buf;
+}
+
 
 void ChatHandler::SendSysMessage(int32 entry)
 {

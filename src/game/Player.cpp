@@ -1964,6 +1964,14 @@ void Player::AddToWorld()
     ///- The player should only be added when logging in
     Unit::AddToWorld();
 
+    //Mentoren Program
+    if (isMenteeWithoutMentor())
+        ChatHandler(GetSession()).SendGlobalMentoringSysMessage("Der Mentee '%s' hat die Welt betreten! Willst du sein Mentor sein, dann tippe: '.mentoring %s' und melde dich einfach mal bei ihm ;)", GetName(), GetName());
+   
+    if (GetOnlineChar(isMenteeOfAccount()))    
+        if (GetPlayer(GetOnlineChar(isMenteeOfAccount()))->isMentor())
+            ChatHandler(GetPlayer(GetOnlineChar(isMenteeOfAccount()))).PSendSysMessage("Dein Mentee '%s' hat die Welt betreten!", GetName());
+
     for (int i = PLAYER_SLOT_START; i < PLAYER_SLOT_END; i++)
     {
         if (m_items[i])
@@ -21592,3 +21600,72 @@ bool Player::isInSanctuary()
 {
     return HasFlag(PLAYER_FLAGS,PLAYER_FLAGS_SANCTUARY);
 }
+
+bool Player::isMentor()
+{
+    uint32 isMentor = 0;
+    uint32 accid = sObjectMgr.GetPlayerAccountIdByGUID(GetGUID());
+    QueryResultAutoPtr result = AccountsDatabase.PQuery("SELECT acc_id FROM account_mentor WHERE acc_id = %u", accid);
+    if (result)
+    {
+        Field* fields = result->Fetch();
+        isMentor = fields[0].GetInt32();
+    }
+
+    if (isMentor == accid)
+        return true;
+    else
+        return false;
+    
+}
+
+bool Player::isMenteeWithoutMentor()
+{
+    uint32 isMentee = 0;
+    uint32 accid = sObjectMgr.GetPlayerAccountIdByGUID(GetGUID());
+    QueryResultAutoPtr result = AccountsDatabase.PQuery("SELECT mentee FROM mentoring_program WHERE mentee = %u AND mentor = 0", accid);
+    if (result)
+    {
+        Field* fields = result->Fetch();
+        isMentee = fields[0].GetInt32();
+    }
+
+    if (isMentee == accid)
+        return true;
+    else
+        return false;
+    
+}
+
+int Player::isMenteeOfAccount()
+{
+    uint32 acc_mentor = 0;
+    uint32 accid = sObjectMgr.GetPlayerAccountIdByGUID(GetGUID());
+    QueryResultAutoPtr result = AccountsDatabase.PQuery("SELECT mentor FROM mentoring_program WHERE mentee = %u", accid);
+    if (result)
+    {
+        Field* fields = result->Fetch();
+        acc_mentor = fields[0].GetInt32();
+    }
+
+    if (acc_mentor)
+        return acc_mentor;
+    else
+        return 0;
+}
+
+int Player::GetOnlineChar(uint32 acc_id)
+{
+    uint32 char_mentor = 0;
+    QueryResultAutoPtr result = RealmDataDatabase.PQuery("SELECT guid FROM characters WHERE account = %u AND online = 1", acc_id);
+    if (result)
+    {
+        Field* fields = result->Fetch();
+        char_mentor = fields[0].GetInt32();
+    }
+    if (char_mentor)
+        return char_mentor;
+    else
+        return 0;
+}
+
