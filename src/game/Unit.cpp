@@ -471,16 +471,14 @@ void Unit::Update(uint32 update_diff, uint32 p_time)
     if (uint32 ranged_att = getAttackTimer(RANGED_ATTACK))
         setAttackTimer(RANGED_ATTACK, (update_diff >= ranged_att ? 0 : ranged_att - update_diff));
 
+    //npcs should enter evade mode if players just fly above them.. except in instances
     if (isInCombat() && GetTypeId() == TYPEID_UNIT && ToCreature())
         if (getVictim())
             if (getVictim()->GetTypeId() == TYPEID_PLAYER)
-            {
-                if (getVictim()->ToPlayer()->IsFlying() && (GetDistanceZ(getVictim()) >= 5.0f))
-                {
-                    if (((Creature*)this)->IsAIEnabled)
-                        ((Creature*)this)->AI()->EnterEvadeMode();
-                }
-            }
+                if (!getVictim()->GetMap()->IsDungeon() || !getVictim()->GetMap()->IsRaid())
+                    if (getVictim()->ToPlayer()->IsFlying() && (GetDistanceZ(getVictim()) >= 5.0f))
+                        if (((Creature*)this)->IsAIEnabled)
+                            ((Creature*)this)->AI()->EnterEvadeMode();
 
     // update abilities available only for fraction of time
     UpdateReactives(update_diff);
