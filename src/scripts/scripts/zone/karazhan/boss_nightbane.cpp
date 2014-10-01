@@ -101,13 +101,14 @@ struct boss_nightbaneAI : public ScriptedAI
     {
         if(Summoned)
         {
-            if(pInstance->GetData64(DATA_NIGHTBANE) || pInstance->GetData(DATA_NIGHTBANE_EVENT) == DONE)
-            {
-                m_creature->setDeathState(JUST_DIED);
-                m_creature->RemoveCorpse();
-            }
-            else
-                pInstance->SetData64(DATA_NIGHTBANE, m_creature->GetGUID());
+            if (pInstance)
+                if(pInstance->GetData64(DATA_NIGHTBANE) || pInstance->GetData(DATA_NIGHTBANE_EVENT) == DONE)
+                {
+                    m_creature->setDeathState(JUST_DIED);
+                    m_creature->RemoveCorpse();
+                }
+                else
+                    pInstance->SetData64(DATA_NIGHTBANE, m_creature->GetGUID());
         }
 
         BellowingRoarTimer = 30000;
