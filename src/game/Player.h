@@ -2016,7 +2016,7 @@ class LOOKING4GROUP_EXPORT Player : public Unit
         }
 
         void SetBGTeam(uint32 team) { m_bgTeam = team; }
-        uint32 GetBGTeam() const { return m_bgTeam ? m_bgTeam : GetTeam(); }
+        uint32 GetBGTeam() const { return m_bgTeam; }
 
         Creature* GetBGCreature(uint32 type);
 

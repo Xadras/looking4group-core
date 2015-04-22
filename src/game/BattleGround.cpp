@@ -146,6 +146,11 @@ void BattleGround::Update(uint32 diff)
         for (std::map<uint64, uint8>::iterator itr = m_RemovedPlayers.begin(); itr != m_RemovedPlayers.end(); ++itr)
         {
             Player *plr = sObjectMgr.GetPlayer(itr->first);
+            if (!plr)
+            {
+                sLog.outDebug("BattleGround: Player " UI64FMTD " not found!", itr->first);
+                continue;
+            }
             switch (itr->second)
             {
                 case 1:                                     // currently in bg and was removed from bg
@@ -170,6 +175,13 @@ void BattleGround::Update(uint32 diff)
         for (BattleGroundPlayerMap::iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
         {
             Player *plr = sObjectMgr.GetPlayer(itr->first);
+
+            if (!plr)
+            {
+                sLog.outDebug("BattleGround: Player " UI64FMTD " not found!", itr->first);
+                continue;
+            }
+
             itr->second.LastOnlineTime += diff;
 
             if (plr)
@@ -352,7 +364,7 @@ void BattleGround::SendPacketToTeam(uint32 TeamID, WorldPacket *packet, Player *
         if (!self && sender == plr)
             continue;
 
-        uint32 team = itr->second.Team;//GetPlayerTeam(plr->GetGUID());
+        uint32 team = plr->GetBGTeam();//GetPlayerTeam(plr->GetGUID());
         if (!team) team = plr->GetBGTeam();
 
         if (team == TeamID)
@@ -381,7 +393,7 @@ void BattleGround::PlaySoundToTeam(uint32 SoundID, uint32 TeamID)
             continue;
         }
 
-        uint32 team = itr->second.Team;//GetPlayerTeam(plr->GetGUID());
+        uint32 team = plr->GetBGTeam();//GetPlayerTeam(plr->GetGUID());
         if (!team) team = plr->GetBGTeam();
 
         if (team == TeamID)
@@ -404,7 +416,7 @@ void BattleGround::CastSpellOnTeam(uint32 SpellID, uint32 TeamID)
             continue;
         }
 
-        uint32 team = itr->second.Team;//GetPlayerTeam(plr->GetGUID());
+        uint32 team = plr->GetBGTeam();//GetPlayerTeam(plr->GetGUID());
         if (!team) team = plr->GetBGTeam();
 
         if (team == TeamID)
@@ -441,7 +453,7 @@ void BattleGround::RewardHonorToTeam(uint32 Honor, uint32 TeamID)
             continue;
         }
 
-        uint32 team = itr->second.Team;//GetPlayerTeam(plr->GetGUID());
+        uint32 team = plr->GetBGTeam();//GetPlayerTeam(plr->GetGUID());
         if (!team) team = plr->GetBGTeam();
 
         if (team == TeamID)
@@ -466,7 +478,7 @@ void BattleGround::RewardReputationToTeam(uint32 faction_id, uint32 Reputation, 
             continue;
         }
 
-        uint32 team = itr->second.Team;//GetPlayerTeam(plr->GetGUID());
+        uint32 team = plr->GetBGTeam();//GetPlayerTeam(plr->GetGUID());
         if (!team) team = plr->GetBGTeam();
 
         if (team == TeamID)
@@ -627,7 +639,7 @@ void BattleGround::EndBattleGround(uint32 winner)
             plr->SpawnCorpseBones();
         }
 
-        uint32 team = itr->second.Team;
+        uint32 team = plr->GetBGTeam();
         if (!team) team = plr->GetBGTeam();
 
         // per player calculation
@@ -1734,7 +1746,10 @@ uint32 BattleGround::GetPlayerTeam(uint64 guid)
 {
     BattleGroundPlayerMap::const_iterator itr = m_Players.find(guid);
     if (itr!=m_Players.end())
-        return itr->second.Team;
+    {
+        if (Player *plr = sObjectMgr.GetPlayer(itr->first))
+            return plr->GetBGTeam();
+    }
     return 0;
 }
 
@@ -1775,10 +1790,15 @@ uint32 BattleGround::GetAlivePlayersCountByTeam(uint32 Team) const
     int count = 0;
     for (BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
     {
-        if (itr->second.Team == Team)
+        Player *plr = sObjectMgr.GetPlayer(itr->first);
+        if (!plr)
         {
-            Player * pl = sObjectMgr.GetPlayer(itr->first);
-            if (pl && pl->isAlive() && !pl->HasByteFlag(UNIT_FIELD_BYTES_2, 3, FORM_SPIRITOFREDEMPTION))
+            sLog.outDebug("BattleGround: Player " UI64FMTD " not found!", itr->first);
+            continue;
+        }
+        if (plr->GetBGTeam() == Team)
+        {
+            if (plr && plr->isAlive() && !plr->HasByteFlag(UNIT_FIELD_BYTES_2, 3, FORM_SPIRITOFREDEMPTION))
                 ++count;
         }
     }
@@ -1853,8 +1873,8 @@ void BattleGround::SendObjectiveComplete(uint32 id, uint32 TeamID, float x, floa
             continue;
         }
 
-        uint32 team = itr->second.Team;//GetPlayerTeam(plr->GetGUID());
-        if (!team) team = plr->GetBGTeam();
+        uint32 team = plr->GetBGTeam();//GetPlayerTeam(plr->GetGUID());
+        //if (!team) team = plr->GetBGTeam();
 
         if (team == TeamID && plr->IsInWorld())
         {
@@ -1883,7 +1903,7 @@ void BattleGroundMgr::HandleCrossfactionSendToBattle(Player* player, BattleGroun
 
                 if (pGroupGuy->GetBattleGround() && pGroupGuy->GetBattleGround()->GetInstanceID() == InstanceID && pGroupGuy->GetBattleGround()->GetTypeID() == bgTypeId)
                 {
-                    if (pGroupGuy->GetBGTeam() == TEAM_ALLIANCE)
+                    if (pGroupGuy->GetBGTeam() == ALLIANCE)
                         GrpTeam = ALLIANCE;
                     else
                         GrpTeam = HORDE;

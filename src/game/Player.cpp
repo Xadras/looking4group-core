@@ -4606,10 +4606,10 @@ void Player::TeleportToNearestGraveyard()
             case BATTLEGROUND_EY:
             case BATTLEGROUND_AV:
             case BATTLEGROUND_WS:
-                ClosestGrave = bg->GetClosestGraveYard(GetPositionX(), GetPositionY(), GetPositionZ(), GetTeam());
+                ClosestGrave = bg->GetClosestGraveYard(GetPositionX(), GetPositionY(), GetPositionZ(), GetBGTeam());
                 break;
             default:
-                ClosestGrave = sObjectMgr.GetClosestGraveYard(GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId(), GetTeam());
+                ClosestGrave = sObjectMgr.GetClosestGraveYard(GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId(), GetBGTeam());
                 break;
 
         }
