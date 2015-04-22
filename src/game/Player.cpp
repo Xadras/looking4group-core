@@ -14583,6 +14583,60 @@ bool Player::LoadFromDB(uint32 guid, SqlQueryHolder *holder)
                     setFaction(2); // orc, and generic for horde
                 else if (GetBGTeam() == ALLIANCE)
                     setFaction(1); // dwarf/gnome, and generic for alliance
+
+                if (TeamForRace(getRace()) != GetBGTeam())
+                {
+                    switch (urand(1,2))
+                    {
+                    case 1:
+                        // Human / Bloodelf
+                        if (GetBGTeam() == ALLIANCE && getGender() == GENDER_MALE)
+                        {
+                            SetDisplayId(19723);
+                            SetNativeDisplayId(19723);
+                        }
+                        else if (GetBGTeam() == ALLIANCE && getGender() == GENDER_FEMALE)
+                        {
+                            SetDisplayId(19724);
+                            SetNativeDisplayId(19724);
+                        }
+                        else if (GetBGTeam() == HORDE && getGender() == GENDER_MALE)
+                        {
+                            SetDisplayId(20578);
+                            SetNativeDisplayId(20578);
+                        }
+                        else if (GetBGTeam() == HORDE && getGender() == GENDER_FEMALE)
+                        {
+                            SetDisplayId(20579);
+                            SetNativeDisplayId(20579);
+                        }
+                        break;
+                    case 2:
+                        // Gnome / Tauren
+                        if (GetBGTeam() == HORDE && getGender() == GENDER_MALE)
+                        {
+                            SetDisplayId(20585);
+                            SetNativeDisplayId(20585);
+                        }
+                        else if (GetBGTeam() == HORDE && getGender() == GENDER_FEMALE)
+                        {
+                            SetDisplayId(20584);
+                            SetNativeDisplayId(20584);
+                        }
+                        else if (GetBGTeam() == ALLIANCE && getGender() == GENDER_MALE)
+                        {
+                            SetDisplayId(20580);
+                            SetNativeDisplayId(20580);
+                        }
+                        else if (GetBGTeam() == ALLIANCE && getGender() == GENDER_FEMALE)
+                        {
+                            SetDisplayId(20581);
+                            SetNativeDisplayId(20581);
+                        }
+                        break;
+                    }
+                }
+
                 SetInviteForBattleGroundQueueType(bgQueueTypeId,currentBg->GetInstanceID());
             }
             else
@@ -16079,7 +16133,28 @@ void Player::SaveToDB()
     SetByteValue(UNIT_FIELD_BYTES_2, 3, 0);                 // shapeshift
     SetByteValue(UNIT_FIELD_BYTES_1, 3, 0);                 // stand flags?
     RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_ROTATE);
-    SetDisplayId(GetNativeDisplayId());
+
+    PlayerInfo const* info = sObjectMgr.GetPlayerInfo(getRace(), getClass());
+    if (!info)
+    {
+        sLog.outLog(LOG_DEFAULT, "ERROR: Player have incorrect race/class pair. Can't be loaded.");
+    }
+                
+    switch (getGender())
+    {
+    case GENDER_FEMALE:
+        SetDisplayId(info->displayId_f);
+        SetNativeDisplayId(info->displayId_f);
+        break;
+    case GENDER_MALE:
+        SetDisplayId(info->displayId_m);
+        SetNativeDisplayId(info->displayId_m);
+        break;
+    default:
+        SetDisplayId(GetNativeDisplayId());
+        sLog.outLog(LOG_DEFAULT, "ERROR: Invalid gender %u for player",getGender());
+        break;
+    }
 
     bool inworld = IsInWorld();
 
