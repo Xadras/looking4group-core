@@ -14579,7 +14579,10 @@ bool Player::LoadFromDB(uint32 guid, SqlQueryHolder *holder)
                 SetBattleGroundId(currentBg->GetInstanceID(), currentBg->GetTypeID());
                 SetBGTeam(bgteam);
                 currentBg->AddOrSetPlayerToCorrectBgGroup(this, GetGUID(), bgteam);
-
+                if (GetBGTeam() == HORDE)
+                    setFaction(2); // orc, and generic for horde
+                else if (GetBGTeam() == ALLIANCE)
+                    setFaction(1); // dwarf/gnome, and generic for alliance
                 SetInviteForBattleGroundQueueType(bgQueueTypeId,currentBg->GetInstanceID());
             }
             else
