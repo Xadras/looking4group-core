@@ -365,7 +365,6 @@ void BattleGround::SendPacketToTeam(uint32 TeamID, WorldPacket *packet, Player *
             continue;
 
         uint32 team = plr->GetBGTeam();//GetPlayerTeam(plr->GetGUID());
-        if (!team) team = plr->GetBGTeam();
 
         if (team == TeamID)
             plr->SendPacketToSelf(packet);
@@ -394,7 +393,6 @@ void BattleGround::PlaySoundToTeam(uint32 SoundID, uint32 TeamID)
         }
 
         uint32 team = plr->GetBGTeam();//GetPlayerTeam(plr->GetGUID());
-        if (!team) team = plr->GetBGTeam();
 
         if (team == TeamID)
         {
@@ -417,7 +415,6 @@ void BattleGround::CastSpellOnTeam(uint32 SpellID, uint32 TeamID)
         }
 
         uint32 team = plr->GetBGTeam();//GetPlayerTeam(plr->GetGUID());
-        if (!team) team = plr->GetBGTeam();
 
         if (team == TeamID)
             plr->CastSpell(plr, SpellID, true);
@@ -454,7 +451,6 @@ void BattleGround::RewardHonorToTeam(uint32 Honor, uint32 TeamID)
         }
 
         uint32 team = plr->GetBGTeam();//GetPlayerTeam(plr->GetGUID());
-        if (!team) team = plr->GetBGTeam();
 
         if (team == TeamID)
             UpdatePlayerScore(plr, SCORE_BONUS_HONOR, Honor);
@@ -1965,22 +1961,22 @@ void BattleGround::MorphCrossfactionPlayer(Player* player, bool action)
         {
         case 1:
             // Human / Bloodelf
-            if (player->GetBGTeam() == HORDE && player->getGender() == GENDER_MALE)
+            if (player->GetBGTeam() == ALLIANCE && player->getGender() == GENDER_MALE)
             {
                 player->SetDisplayId(19723);
                 player->SetNativeDisplayId(19723);
             }
-            else if (player->GetBGTeam() == HORDE && player->getGender() == GENDER_FEMALE)
+            else if (player->GetBGTeam() == ALLIANCE && player->getGender() == GENDER_FEMALE)
             {
                 player->SetDisplayId(19724);
                 player->SetNativeDisplayId(19724);
             }
-            else if (player->GetBGTeam() == ALLIANCE && player->getGender() == GENDER_MALE)
+            else if (player->GetBGTeam() == HORDE && player->getGender() == GENDER_MALE)
             {
                 player->SetDisplayId(20578);
                 player->SetNativeDisplayId(20578);
             }
-            else if (player->GetBGTeam() == ALLIANCE && player->getGender() == GENDER_FEMALE)
+            else if (player->GetBGTeam() == HORDE && player->getGender() == GENDER_FEMALE)
             {
                 player->SetDisplayId(20579);
                 player->SetNativeDisplayId(20579);
