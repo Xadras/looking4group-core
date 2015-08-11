@@ -1722,7 +1722,7 @@ struct boss_illidan_flameofazzinothAI : public ScriptedAI
     void EnterCombat(Unit *pWho)
     {
         events.ScheduleEvent(EVENT_FLAME_RANGE_CHECK, 2000);
-        events.ScheduleEvent(EVENT_FLAME_FLAME_BLAST, urand(25000, 30000));
+        events.ScheduleEvent(EVENT_FLAME_FLAME_BLAST, urand(15000, 20000));
         me->SetReactState(REACT_AGGRESSIVE);
     }
 
@@ -1790,7 +1790,7 @@ struct boss_illidan_flameofazzinothAI : public ScriptedAI
                 {
                     AddSpellToCast(me->getVictim(), SPELL_FLAME_FLAME_BLAST);
                     AddSpellToCast(me->getVictim(), SPELL_FLAME_BLAZE);
-                    events.ScheduleEvent(EVENT_FLAME_FLAME_BLAST, urand(16000, 25000));
+                    events.ScheduleEvent(EVENT_FLAME_FLAME_BLAST, urand(10000, 15000));
                     break;
                 }
             }
